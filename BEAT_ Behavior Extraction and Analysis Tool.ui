@@ -5028,7 +5028,7 @@
     <property name="title">
      <string>GroupBox</string>
     </property>
-    <widget class="QPushButton" name="pushButton_6">
+    <widget class="QPushButton" name="new_project_button">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -5088,7 +5088,7 @@
       </palette>
      </property>
     </widget>
-    <widget class="QLineEdit" name="Project_View">
+    <widget class="QLineEdit" name="project_view">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -5154,7 +5154,7 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="Detail_Project_View">
+    <widget class="QLineEdit" name="detailed_project_view">
      <property name="geometry">
       <rect>
        <x>260</x>
@@ -5223,7 +5223,7 @@
       <string>Detailed Project View</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="Project_Search_Text">
+    <widget class="QLineEdit" name="project_serch_text">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -5551,7 +5551,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QListWidget" name="Project_List">
+    <widget class="QListWidget" name="project_list">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -6154,7 +6154,7 @@
        <set>Qt::NoTextInteraction</set>
       </property>
      </widget>
-     <widget class="QLineEdit" name="Project_Name_Text">
+     <widget class="QLineEdit" name="project_name_text">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -6588,7 +6588,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLineEdit" name="File_Path_Text">
+     <widget class="QLineEdit" name="file_path_text">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -7019,7 +7019,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLineEdit" name="Project_Desc_Text">
+     <widget class="QLineEdit" name="project_desc_text">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -7450,7 +7450,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="File_Browse_Btn">
+     <widget class="QPushButton" name="file_browse_button">
       <property name="geometry">
        <rect>
         <x>730</x>
@@ -7463,7 +7463,7 @@
        <string>Browse</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_9">
+     <widget class="QPushButton" name="delete_project_button">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -7476,7 +7476,7 @@
        <string>Delete</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_11">
+     <widget class="QPushButton" name="save_project_button">
       <property name="geometry">
        <rect>
         <x>960</x>
@@ -7940,14 +7940,14 @@
      </property>
     </widget>
     <zorder>Projects_Col</zorder>
-    <zorder>Project_View</zorder>
-    <zorder>Detail_Project_View</zorder>
-    <zorder>Project_Search_Text</zorder>
-    <zorder>Project_List</zorder>
+    <zorder>project_view</zorder>
+    <zorder>detailed_project_view</zorder>
+    <zorder>project_serch_text</zorder>
+    <zorder>project_list</zorder>
     <zorder>Project_Detail_Col</zorder>
     <zorder>groupBox_4</zorder>
     <zorder>label</zorder>
-    <zorder>pushButton_6</zorder>
+    <zorder>new_project_button</zorder>
    </widget>
    <widget class="QGroupBox" name="points_of_interest_groupBox">
     <property name="geometry">
@@ -12560,8 +12560,8 @@
    <zorder>points_of_interest_groupBox</zorder>
    <zorder>plugin_management_groupBox</zorder>
    <zorder>analysis_groupBox</zorder>
-   <zorder>project_groupBox</zorder>
    <zorder>button_bar</zorder>
+   <zorder>project_groupBox</zorder>
   </widget>
  </widget>
  <resources/>

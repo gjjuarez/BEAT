@@ -61,7 +61,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string/>
     </property>
     <widget class="QLineEdit" name="PluginView_4">
      <property name="geometry">

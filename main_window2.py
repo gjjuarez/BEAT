@@ -4204,14 +4204,23 @@ class Ui_MainWindow(object):
         self.analysis_button.clicked.connect(self.plugin_management_groupBox.hide)
         self.analysis_button.clicked.connect(self.points_of_interest_groupBox.hide)
 
-        self.deleat_project_button.clicked.connect(self.removeProject)
+        self.deleat_project_button.clicked.connect(self.remove_project)
+        self.File_Browse_Btn.clicked.connect(self.browse_path)
+        #save project
+        self.pushButton_11.clicked.connect(self.save_project)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def removeProject(self):
+    def remove_project(self):
         listItems=self.Project_List.selectedItems()
         if not listItems: return        
         for item in listItems:
            self.Project_List.takeItem(self.Project_List.row(item))
+    def save_project(self):
+        self.Project_List.addItem(self.Project_Name_Text.text())
+
+    def browse_path(self):
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
+        self.File_Path_Text.setText(file_path)
 
 
     def retranslateUi(self, MainWindow):

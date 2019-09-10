@@ -7,6 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from Figure_12_Analysis_Result_Review import Ui_Figure_12_Analysis_Result_Review
+from Figure_10_Output_Field_View import Ui_Figure_10_Output_Field_View
+from Figure_11_Comment_View import Ui_Figure_11_Comment_View
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -4223,6 +4226,14 @@ class Ui_MainWindow(object):
         self.pushButton_17.clicked.connect(self.browse_plugin_structure)
         self.pushButton_18.clicked.connect(self.browse_plugin_dataset)
 
+        '''
+        A O C Button calls
+        '''
+        self.pushButton_2.clicked.connect(self.analysisResult)
+        self.pushButton_7.clicked.connect(self.commentView)
+        self.pushButton_4.clicked.connect(self.outputField)
+
+        
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def new_project(self):
@@ -4256,7 +4267,23 @@ class Ui_MainWindow(object):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.lineEdit_17.setText(file_path)
 
+    def analysisResult(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_Figure_12_Analysis_Result_Review()
+        self.ui.setupUi(self.window)
+        self.window.show()
 
+    def outputField(self): 
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_Figure_10_Output_Field_View()
+        self.ui.setupUI(self.window) 
+        self.window.show()
+
+    def commentView(self): 
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_Figure_11_Comment_View()
+        self.ui.setupUI(self.window)
+        self.window.show()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

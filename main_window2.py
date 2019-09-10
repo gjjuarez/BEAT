@@ -4203,12 +4203,26 @@ class Ui_MainWindow(object):
         self.analysis_button.clicked.connect(self.analysis_groupBox.show)
         self.analysis_button.clicked.connect(self.plugin_management_groupBox.hide)
         self.analysis_button.clicked.connect(self.points_of_interest_groupBox.hide)
+###############################################################################################################################################
+###############################################################################################################################################
+###############################################################################################################################################
+###############################################################################################################################################
+###############################################################################################################################################
+        self.new_project_button.clicked.connect(self.new_project)
 
         self.deleat_project_button.clicked.connect(self.remove_project)
         self.File_Browse_Btn.clicked.connect(self.browse_path)
         #save project
         self.pushButton_11.clicked.connect(self.save_project)
+
+        #delete plugin
+        self.pushButton_19.clicked.connect(self.remove_plugin)
+        self.pushButton_20.clicked.connect(self.save_plugin)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def new_project(self):
+        self.groupBox_4.show()
+        self.label.show()
 
     def remove_project(self):
         listItems=self.Project_List.selectedItems()
@@ -4218,9 +4232,18 @@ class Ui_MainWindow(object):
     def save_project(self):
         self.Project_List.addItem(self.Project_Name_Text.text())
 
+    def save_plugin(self):
+        self.listWidget_4.addItem(self.lineEdit_18.text())
+
     def browse_path(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.File_Path_Text.setText(file_path)
+
+    def remove_plugin(self):
+        listItems=self.listWidget_4.selectedItems()
+        if not listItems: return        
+        for item in listItems:
+           self.listWidget_4.takeItem(self.listWidget_4.row(item))
 
 
     def retranslateUi(self, MainWindow):
@@ -4429,6 +4452,8 @@ if __name__ == "__main__":
     ui.plugin_management_groupBox.hide()
     ui.analysis_groupBox.hide()
     ui.documentation_groupBox.hide()
+    ui.groupBox_4.hide()
+    ui.label.hide()
     MainWindow.show()
     sys.exit(app.exec_())
 

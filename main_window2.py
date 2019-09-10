@@ -4217,7 +4217,12 @@ class Ui_MainWindow(object):
 
         #delete plugin
         self.pushButton_19.clicked.connect(self.remove_plugin)
+        # add
         self.pushButton_20.clicked.connect(self.save_plugin)
+        #plugin Browse
+        self.pushButton_17.clicked.connect(self.browse_plugin_structure)
+        self.pushButton_18.clicked.connect(self.browse_plugin_dataset)
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def new_project(self):
@@ -4244,6 +4249,13 @@ class Ui_MainWindow(object):
         if not listItems: return        
         for item in listItems:
            self.listWidget_4.takeItem(self.listWidget_4.row(item))
+    def browse_plugin_structure(self):
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
+        self.lineEdit_16.setText(file_path)
+    def browse_plugin_dataset(self):
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
+        self.lineEdit_17.setText(file_path)
+
 
 
     def retranslateUi(self, MainWindow):

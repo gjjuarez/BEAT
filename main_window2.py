@@ -4276,13 +4276,13 @@ class Ui_MainWindow(object):
     def outputField(self): 
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Figure_10_Output_Field_View()
-        self.ui.setupUI(self.window) 
+        self.ui.setupUi(self.window) 
         self.window.show()
 
     def commentView(self): 
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Figure_11_Comment_View()
-        self.ui.setupUI(self.window)
+        self.ui.setupUi(self.window)
         self.window.show()
 
     def retranslateUi(self, MainWindow):

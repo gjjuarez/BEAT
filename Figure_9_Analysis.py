@@ -17,7 +17,7 @@ class Ui_DockWidget(object):
 	def analysisResult(self):
 		self.window = QtWidgets.QDockWidget()
 		self.ui =  Ui_GroupBox()
-		self.ui.setupUi(self.window)
+		self.ui.setupUi(selfgit .window)
 		self.window.show()
 		
 	def outputField(self): 

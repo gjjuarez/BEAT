@@ -14,7 +14,7 @@ from Figure_11_Comment_View import Ui_Figure_11_Comment_View
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1921, 1013)
+        MainWindow.resize(1731, 830)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.button_bar = QtWidgets.QFrame(self.centralwidget)
@@ -4232,6 +4232,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.clicked.connect(self.analysisResult)
         self.pushButton_7.clicked.connect(self.commentView)
         self.pushButton_4.clicked.connect(self.outputField)
+        self.pushButton_21.clicked.connect(self.enableDynamicAnalysis)
 
         
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -4246,7 +4247,8 @@ class Ui_MainWindow(object):
         for item in listItems:
            self.Project_List.takeItem(self.Project_List.row(item))
     def save_project(self):
-        self.Project_List.addItem(self.Project_Name_Text.text())
+        temp = "                     " + self.Project_Name_Text.text()
+        self.Project_List.addItem(temp)
 
     def save_plugin(self):
         self.listWidget_4.addItem(self.lineEdit_18.text())
@@ -4254,6 +4256,11 @@ class Ui_MainWindow(object):
     def browse_path(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.File_Path_Text.setText(file_path)
+
+    def enableDynamicAnalysis(self):
+        ui.pushButton_22.setDisabled(False)
+        ui.pushButton_23.setDisabled(False)
+
 
     def remove_plugin(self):
         listItems=self.listWidget_4.selectedItems()
@@ -4493,6 +4500,8 @@ if __name__ == "__main__":
     ui.documentation_groupBox.hide()
     ui.groupBox_4.hide()
     ui.label.hide()
+    ui.pushButton_22.setDisabled(True)
+    ui.pushButton_23.setDisabled(True)
     MainWindow.show()
     sys.exit(app.exec_())
 

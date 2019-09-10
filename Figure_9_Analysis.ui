@@ -63,7 +63,7 @@
     <property name="title">
      <string>GroupBox</string>
     </property>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="Project">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -828,7 +828,7 @@
       </palette>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_4">
+    <widget class="QPushButton" name="Analysis">
      <property name="geometry">
       <rect>
        <x>160</x>
@@ -890,7 +890,7 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_5">
+    <widget class="QPushButton" name="PluginManagement">
      <property name="geometry">
       <rect>
        <x>310</x>
@@ -903,7 +903,7 @@
       <string>Plugin Management</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_6">
+    <widget class="QPushButton" name="PointsofInterest_2">
      <property name="geometry">
       <rect>
        <x>460</x>
@@ -916,7 +916,7 @@
       <string>Points of Interest</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_7">
+    <widget class="QPushButton" name="Documentation">
      <property name="geometry">
       <rect>
        <x>610</x>
@@ -955,7 +955,7 @@
       <string>Run</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_10">
+    <widget class="QPushButton" name="CommentView">
      <property name="geometry">
       <rect>
        <x>780</x>
@@ -1672,7 +1672,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="Plugin">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1701,7 +1701,7 @@
       <set>Qt::NoTextInteraction</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="PointofInterestType">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -2716,7 +2716,7 @@
       <set>Qt::NoTextInteraction</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="StaticAnalysis">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -2787,45 +2787,6 @@
         </colorrole>
        </disabled>
       </palette>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButton">
-     <property name="geometry">
-      <rect>
-       <x>1900</x>
-       <y>270</y>
-       <width>16</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButton_2">
-     <property name="geometry">
-      <rect>
-       <x>1900</x>
-       <y>290</y>
-       <width>16</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButton_3">
-     <property name="geometry">
-      <rect>
-       <x>1870</x>
-       <y>330</y>
-       <width>16</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBox">
@@ -2926,39 +2887,78 @@
       <set>Qt::NoTextInteraction</set>
      </property>
     </widget>
+    <widget class="QPushButton" name="AnalysisResult">
+     <property name="geometry">
+      <rect>
+       <x>1900</x>
+       <y>270</y>
+       <width>20</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>A</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="OutputField">
+     <property name="geometry">
+      <rect>
+       <x>1900</x>
+       <y>290</y>
+       <width>20</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>O</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_11">
+     <property name="geometry">
+      <rect>
+       <x>1870</x>
+       <y>330</y>
+       <width>20</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>C</string>
+     </property>
+    </widget>
     <zorder>PluginView</zorder>
     <zorder>PluginView_3</zorder>
     <zorder>PluginView_7</zorder>
     <zorder>PluginView_6</zorder>
     <zorder>PluginView_2</zorder>
     <zorder>lineEdit</zorder>
-    <zorder>pushButton</zorder>
+    <zorder>Project</zorder>
     <zorder>PluginView_5</zorder>
     <zorder>PluginView_4</zorder>
-    <zorder>pushButton_4</zorder>
-    <zorder>pushButton_5</zorder>
-    <zorder>pushButton_6</zorder>
-    <zorder>pushButton_7</zorder>
+    <zorder>Analysis</zorder>
+    <zorder>PluginManagement</zorder>
+    <zorder>PointsofInterest_2</zorder>
+    <zorder>Documentation</zorder>
     <zorder>pushButton_8</zorder>
     <zorder>pushButton_9</zorder>
-    <zorder>pushButton_10</zorder>
+    <zorder>CommentView</zorder>
     <zorder>listWidget</zorder>
     <zorder>comboBox</zorder>
     <zorder>comboBox_2</zorder>
-    <zorder>label_3</zorder>
-    <zorder>label_2</zorder>
+    <zorder>Plugin</zorder>
+    <zorder>PointofInterestType</zorder>
     <zorder>lineEdit_5</zorder>
     <zorder>lineEdit_6</zorder>
     <zorder>label_4</zorder>
-    <zorder>label_5</zorder>
-    <zorder>radioButton</zorder>
-    <zorder>radioButton_2</zorder>
-    <zorder>radioButton_3</zorder>
+    <zorder>StaticAnalysis</zorder>
     <zorder>checkBox</zorder>
     <zorder>checkBox_2</zorder>
     <zorder>checkBox_3</zorder>
     <zorder>checkBox_4</zorder>
     <zorder>label_6</zorder>
+    <zorder>AnalysisResult</zorder>
+    <zorder>OutputField</zorder>
+    <zorder>pushButton_11</zorder>
    </widget>
   </widget>
  </widget>

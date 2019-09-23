@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<project>
+	<name maxOccurs="1">
+		Project Name
+	</name>
+	<description maxOccurs="1">
+		Description of Project
+	</description>
+	<functionSource maxOccurs="1">
+		[File Path to the source of the project]
+	</functionSource>
+</project>

@@ -1,0 +1,28 @@
+<plugin>
+	<name maxOccurs="1"> 
+	</name>
+	<description maxOccurs="1"> 
+	</description>
+	<pointOfInterest minOccurs="1" maxOccurs="unbounded">
+		<name maxOccurs="1" > 
+		</name>
+			<attribute minOccurs="1" maxOccurs="unbounded" isInSetup=Boolean>
+				<name maxOccurs="1"> 
+				</name>
+				<guiComponentType maxOccurs="1"> 
+				</guiComponentType >
+				<value minOccurs = "1" maxOccurs="unbounded"> 
+				</value>
+				<valueDatatype maxOccurs="1"> 
+				</datatype>
+			</attribute>
+	</pointOfInterest>
+	<output minOccurs="1" maxOccurs="unbounded" default="Boolean">
+		<name maxOccurs="1"> 
+		</name>
+		<functionName maxOccurs="1"> 
+		</functionName>
+		<functionSource maxOccurs="1"> 
+		</functionSource>
+	</output>
+</plugin>

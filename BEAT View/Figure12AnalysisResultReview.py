@@ -10,11 +10,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_AnalysisResultReviewFigure12(object):
-    def setupUi(self, AnalysisResultReviewFigure12):
-        AnalysisResultReviewFigure12.setObjectName("AnalysisResultReviewFigure12")
-        AnalysisResultReviewFigure12.resize(670, 400)
-        self.centralwidget = QtWidgets.QWidget(AnalysisResultReviewFigure12)
+class Ui_Figure12AnalysisResultReview(object):
+    def setupUi(self, Figure12AnalysisResultReview):
+        Figure12AnalysisResultReview.setObjectName("Figure12AnalysisResultReview")
+        Figure12AnalysisResultReview.resize(670, 400)
+        self.centralwidget = QtWidgets.QWidget(Figure12AnalysisResultReview)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -360,39 +360,39 @@ class Ui_AnalysisResultReviewFigure12(object):
         self.analysis_result_area_lineedit.setObjectName("analysis_result_area_lineedit")
         self.gridLayout.addWidget(self.analysis_result_area_lineedit, 0, 0, 1, 4)
         self.gridLayout_2.addWidget(self.analysis_result_area_groupbox, 0, 1, 1, 1)
-        AnalysisResultReviewFigure12.setCentralWidget(self.centralwidget)
+        Figure12AnalysisResultReview.setCentralWidget(self.centralwidget)
         self.name_label.setBuddy(self.name_lineedit)
         self.description_label.setBuddy(self.description_textedit)
 
-        self.retranslateUi(AnalysisResultReviewFigure12)
-        QtCore.QMetaObject.connectSlotsByName(AnalysisResultReviewFigure12)
+        self.retranslateUi(Figure12AnalysisResultReview)
+        QtCore.QMetaObject.connectSlotsByName(Figure12AnalysisResultReview)
 
-    def retranslateUi(self, AnalysisResultReviewFigure12):
+    def retranslateUi(self, Figure12AnalysisResultReview):
         _translate = QtCore.QCoreApplication.translate
-        AnalysisResultReviewFigure12.setWindowTitle(_translate("AnalysisResultReviewFigure12", "Analysis Result Review"))
-        self.analysis_result_search.setPlaceholderText(_translate("AnalysisResultReviewFigure12", "Analysis Result Search"))
+        Figure12AnalysisResultReview.setWindowTitle(_translate("Figure12AnalysisResultReview", "Analysis Result Review"))
+        self.analysis_result_search.setPlaceholderText(_translate("Figure12AnalysisResultReview", "Analysis Result Search"))
         __sortingEnabled = self.analysis_result_listwidget.isSortingEnabled()
         self.analysis_result_listwidget.setSortingEnabled(False)
         item = self.analysis_result_listwidget.item(0)
-        item.setText(_translate("AnalysisResultReviewFigure12", "Analysis Result A"))
+        item.setText(_translate("Figure12AnalysisResultReview", "Analysis Result A"))
         item = self.analysis_result_listwidget.item(1)
-        item.setText(_translate("AnalysisResultReviewFigure12", "Analysis Result B"))
+        item.setText(_translate("Figure12AnalysisResultReview", "Analysis Result B"))
         item = self.analysis_result_listwidget.item(2)
-        item.setText(_translate("AnalysisResultReviewFigure12", "Analysis Result C"))
+        item.setText(_translate("Figure12AnalysisResultReview", "Analysis Result C"))
         self.analysis_result_listwidget.setSortingEnabled(__sortingEnabled)
-        self.new_button.setText(_translate("AnalysisResultReviewFigure12", "New"))
-        self.delete_button.setText(_translate("AnalysisResultReviewFigure12", "Delete"))
-        self.name_label.setText(_translate("AnalysisResultReviewFigure12", "Name"))
-        self.description_label.setText(_translate("AnalysisResultReviewFigure12", "Description"))
-        self.save_button.setText(_translate("AnalysisResultReviewFigure12", "Save"))
-        self.analysis_result_area_lineedit.setText(_translate("AnalysisResultReviewFigure12", "Analysis Result Area"))
+        self.new_button.setText(_translate("Figure12AnalysisResultReview", "New"))
+        self.delete_button.setText(_translate("Figure12AnalysisResultReview", "Delete"))
+        self.name_label.setText(_translate("Figure12AnalysisResultReview", "Name"))
+        self.description_label.setText(_translate("Figure12AnalysisResultReview", "Description"))
+        self.save_button.setText(_translate("Figure12AnalysisResultReview", "Save"))
+        self.analysis_result_area_lineedit.setText(_translate("Figure12AnalysisResultReview", "Analysis Result Area"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    AnalysisResultReviewFigure12 = QtWidgets.QMainWindow()
-    ui = Ui_AnalysisResultReviewFigure12()
-    ui.setupUi(AnalysisResultReviewFigure12)
-    AnalysisResultReviewFigure12.show()
+    Figure12AnalysisResultReview = QtWidgets.QMainWindow()
+    ui = Ui_Figure12AnalysisResultReview()
+    ui.setupUi(Figure12AnalysisResultReview)
+    Figure12AnalysisResultReview.show()
     sys.exit(app.exec_())

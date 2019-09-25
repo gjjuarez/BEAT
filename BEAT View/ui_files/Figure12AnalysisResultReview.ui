@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AnalysisResultReviewFigure12</class>
- <widget class="QMainWindow" name="AnalysisResultReviewFigure12">
+ <class>Figure12AnalysisResultReview</class>
+ <widget class="QMainWindow" name="Figure12AnalysisResultReview">
   <property name="geometry">
    <rect>
     <x>0</x>

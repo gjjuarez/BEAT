@@ -3103,3 +3103,13 @@ class Ui_BEAT(object):
         self.document_content_area_textedit.setPlaceholderText(_translate("BEAT", "Document Content Area"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Documentation), _translate("BEAT", "Documentation"))
 
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    BEAT = QtWidgets.QGroupBox()
+    ui = Ui_BEAT()
+    ui.setupUi(BEAT)
+    BEAT.show()
+    sys.exit(app.exec_())
+

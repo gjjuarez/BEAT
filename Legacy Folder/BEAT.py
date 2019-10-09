@@ -11,6 +11,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+class EmbTerminal(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super(EmbTerminal, self).__init__(parent)
+        self.process = QtCore.QProcess(self)
+        self.terminal = QtWidgets.QWidget(self)
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.addWidget(self.terminal)
+        # Works also with urxvt:
+        self.process.start('urxvt',['-embed', str(int(self.winId()))])
+        self.setFixedSize(640, 480)
 
 class Ui_BEAT(object):
     def setupUi(self, BEAT):
@@ -3132,6 +3142,9 @@ class Ui_BEAT(object):
         '''
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
+        self.tabWidget.addTab(EmbTerminal(), "EmbTerminal")
+
+        self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
 
     #########################################################################################
     # Project Tab Functions
@@ -3432,3 +3445,4 @@ if __name__ == "__main__":
     ui.dynamic_stop_button.setDisabled(True)
     BEAT.show()
     sys.exit(app.exec_())
+

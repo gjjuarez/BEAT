@@ -1,13 +1,24 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import UiView
+
+
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
-UiView
+
 class UiMain(UiView.Ui_BEAT):
-    def setupUi(BEAT):
+    def setupUi(self, BEAT):
         super().setupUi(BEAT)
+        print("hi")
+        self.dynamic_run_button.setDisabled(True)
+        self.dynamic_stop_button.setDisabled(True)
+
+        #QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        #########################################################################################
+        # Project Tab Functions
+        #########################################################################################
         '''
         Project Tab Listeners
         '''
@@ -52,7 +63,10 @@ class UiMain(UiView.Ui_BEAT):
         Documentation Tab Listeners
         '''
 
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(BEAT)
+        #self.tabWidget.addTab(EmbTerminal(), "EmbTerminal")
+
+        self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
 
     #########################################################################################
     # Project Tab Functions
@@ -73,7 +87,7 @@ class UiMain(UiView.Ui_BEAT):
         for item in listItems:
            self.project_list.takeItem(self.project_list.row(item))
     '''
-    Adds a project name to the project list within Project
+    Adds a project name to the projdynamic_runect list within Project
     '''
     def save_project(self):
         temp = self.project_name_text.text()
@@ -149,13 +163,14 @@ class UiMain(UiView.Ui_BEAT):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
+  
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     BEAT = QtWidgets.QGroupBox()
     ui = UiMain()
-    UiView.dynamic_run_button.setDisabled(True)
-    UiView.dynamic_stop_button.setDisabled(True)
+
     ui.setupUi(BEAT)
     BEAT.show()
     sys.exit(app.exec_())

@@ -6,6 +6,7 @@ import UiView
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from radare2_scripts import radare_commands_interface
 
 class UiMain(UiView.Ui_BEAT):
     def setupUi(self, BEAT):
@@ -62,6 +63,13 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Documentation Tab Listeners
         '''
+        '''
+        Analysis Run Tab Listeners
+        '''
+        self.static_run_button.clicked.connect(radare_commands_interface.run_static_analysis)
+        # self.static_run_button.clicked.connect(radare_commands_interface.extract_strings)
+        self.static_run_button.clicked.connect(radare_commands_interface.extract_all)
+        self.static_run_button.clicked.connect(self.read_and_display_all_imports)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         #self.tabWidget.addTab(EmbTerminal(), "EmbTerminal")
@@ -132,6 +140,18 @@ class UiMain(UiView.Ui_BEAT):
         self.ui = Ui_Figure11CommentView()
         self.ui.setupUi(self.window)
         self.window.show()
+    '''
+    Opens imports text file and displays it on detailed POI view
+    '''
+    def read_and_display_all_imports(self):
+        print("They dont pay me")
+        imports = open("imports.txt", "r")
+        for lines in imports:
+            # print(imports.readline())
+            importss = imports.read().split("\n")
+            #self.points_of_interest_content_area_textedit.setText(imports[:])
+            # self.points_of_interest_content_area_textedit.setText("\n")
+        imports.close()
 
     #########################################################################################
     # Plugin Management Tab Functions

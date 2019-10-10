@@ -1,11 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import UiView
+from PyQt5 import QtWidgets, QtGui
 
 
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from PyQt5.QtWidgets import QListWidgetItem
+
 from radare2_scripts import radare_commands_interface
 
 class UiMain(UiView.Ui_BEAT):
@@ -146,10 +149,10 @@ class UiMain(UiView.Ui_BEAT):
     def read_and_display_all_imports(self):
         print("They dont pay me")
         imports = open("imports.txt", "r")
-        for lines in imports:
+        for line in imports.read().split("\n"):
             # print(imports.readline())
-            importss = imports.read().split("\n")
-            #self.points_of_interest_content_area_textedit.setText(imports[:])
+            item = QListWidgetItem(line)
+            self.detailed_points_of_interest_listWidget.addItem(item)
             # self.points_of_interest_content_area_textedit.setText("\n")
         imports.close()
 

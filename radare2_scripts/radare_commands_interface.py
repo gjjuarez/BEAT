@@ -46,3 +46,7 @@ def extract_all():
             #print(var)
     except:
         print("THey dont pay me enough")
+
+
+def display_POI_in_points_of_interest():
+    print("This is very stressful")

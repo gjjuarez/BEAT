@@ -155,6 +155,24 @@ class UiMain(UiView.Ui_BEAT):
             self.detailed_points_of_interest_listWidget.addItem(item)
             # self.points_of_interest_content_area_textedit.setText("\n")
         imports.close()
+        self.display_POI_in_left_column()
+
+    def display_POI_in_left_column(self):
+        print("This is very stressful")
+        imports = open("imports.txt", "r")
+
+        # Start at the index 2 to the end get each line
+        for line in imports.read().split("\n")[2:]:
+            # Separate by spaces and then get the last word
+            line = line.split(" ")[-1]
+            item = QListWidgetItem(line)
+
+            # Don't know if we need this following line
+            #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.points_of_interest_list_widget.addItem(item)
+        imports.close()
 
     #########################################################################################
     # Plugin Management Tab Functions

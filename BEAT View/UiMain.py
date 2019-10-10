@@ -69,10 +69,8 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Analysis Run Tab Listeners
         '''
-        self.static_run_button.clicked.connect(radare_commands_interface.run_static_analysis)
-        # self.static_run_button.clicked.connect(radare_commands_interface.extract_strings)
-        self.static_run_button.clicked.connect(radare_commands_interface.extract_all)
-        self.static_run_button.clicked.connect(self.read_and_display_all_imports)
+
+        self.static_run_button.clicked.connect(self.display_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         #self.tabWidget.addTab(EmbTerminal(), "EmbTerminal")
@@ -143,10 +141,23 @@ class UiMain(UiView.Ui_BEAT):
         self.ui = Ui_Figure11CommentView()
         self.ui.setupUi(self.window)
         self.window.show()
+
+    def display_POI(self):
+        radare_commands_interface.run_static_analysis()
+        radare_commands_interface.extract_all()
+        #Check What box is check
+        # Switch Cases to see what method is called
+        display_value = str(self.type_dropdown.currentText())
+
+        if display_value =="Function Call":
+            self.read_and_display_all_function()
+        elif display_value ==  "Strings":
+            print("")
+
     '''
     Opens imports text file and displays it on detailed POI view
     '''
-    def read_and_display_all_imports(self):
+    def read_and_display_all_function(self):
         print("They dont pay me")
         imports = open("imports.txt", "r")
         for line in imports.read().split("\n"):
@@ -155,9 +166,9 @@ class UiMain(UiView.Ui_BEAT):
             self.detailed_points_of_interest_listWidget.addItem(item)
             # self.points_of_interest_content_area_textedit.setText("\n")
         imports.close()
-        self.display_POI_in_left_column()
+        self.display_functions_in_left_column()
 
-    def display_POI_in_left_column(self):
+    def display_functions_in_left_column(self):
         print("This is very stressful")
         imports = open("imports.txt", "r")
 

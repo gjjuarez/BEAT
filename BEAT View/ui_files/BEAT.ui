@@ -4150,7 +4150,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QListWidget" name="listWidget">
+     <widget class="QListWidget" name="detailed_points_of_interest_listWidget">
       <property name="geometry">
        <rect>
         <x>15</x>

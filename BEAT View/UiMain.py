@@ -1,8 +1,7 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
 
 import UiView
-from PyQt5 import QtWidgets, QtGui
-
+from PyQt5 import QtWidgets
 
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView

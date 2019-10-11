@@ -72,7 +72,7 @@ class UiMain(UiView.Ui_BEAT):
         self.static_run_button.clicked.connect(self.display_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
-        #self.tabWidget.addTab(EmbTerminal(), "EmbTerminal")
+
 
         self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
 
@@ -110,6 +110,10 @@ class UiMain(UiView.Ui_BEAT):
     #########################################################################################
     # Analysis Tab Functions
     #########################################################################################
+    
+
+
+
     '''
     Enables Run and Stop buttons for dynamic analysis
     '''

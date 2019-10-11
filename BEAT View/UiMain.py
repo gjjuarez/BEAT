@@ -148,31 +148,58 @@ class UiMain(UiView.Ui_BEAT):
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
 
-        if display_value =="Function Call":
-            self.read_and_display_all_function()
-        elif display_value ==  "Strings":
-            print("")
+        if display_value == "Imports":
+            self.read_and_display_all_imports()
+        elif display_value == "Strings":
+            self.read_and_display_all_strings()
+        elif display_value == "Function Call":
+            self.read_and_display_all_functions()
+        elif display_value == "Variables":
+            self.read_and_display_all_variables()
 
     '''
     Opens imports text file and displays it on detailed POI view
     '''
-    def read_and_display_all_function(self):
+    def read_and_display_all_imports(self):
+        self.detailed_points_of_interest_listWidget.clear()
         print("They dont pay me")
         imports = open("imports.txt", "r")
         for line in imports.read().split("\n"):
-            # print(imports.readline())
             item = QListWidgetItem(line)
             self.detailed_points_of_interest_listWidget.addItem(item)
-            # self.points_of_interest_content_area_textedit.setText("\n")
         imports.close()
-        self.display_functions_in_left_column()
+        self.display_imports_in_left_column()
 
-    def display_functions_in_left_column(self):
+    def display_imports_in_left_column(self):
+        self.points_of_interest_list_widget.clear()
         print("This is very stressful")
         imports = open("imports.txt", "r")
 
         # Start at the index 2 to the end get each line
-        for line in imports.read().split("\n")[2:]:
+        for line in imports.read().split("\n")[2:-1]:
+            # Separate by spaces and then get the last word
+            line = line.split(" ")[-1]
+            item = QListWidgetItem(line)
+            self.points_of_interest_list_widget.addItem(item)
+        imports.close()
+
+    def read_and_display_all_functions(self):
+        self.detailed_points_of_interest_listWidget.clear()
+        print("They dont pay me")
+        functions = open("functions.txt", "r")
+        for line in functions.read().split("\n"):
+            item = QListWidgetItem(line)
+            self.detailed_points_of_interest_listWidget.addItem(item)
+        functions.close()
+        self.display_functions_in_left_column()
+
+    def display_functions_in_left_column(self):
+        self.points_of_interest_list_widget.clear()
+        print("This is very stressful")
+        functions = open("functions.txt", "r")
+
+        # Start at the index 2 to the end get each line
+        for line in functions.read().split("\n")[:-1]:
             # Separate by spaces and then get the last word
             line = line.split(" ")[-1]
             item = QListWidgetItem(line)
@@ -182,7 +209,66 @@ class UiMain(UiView.Ui_BEAT):
 
             item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
-        imports.close()
+        functions.close()
+
+    def read_and_display_all_strings(self):
+        self.detailed_points_of_interest_listWidget.clear()
+        print("They dont pay me")
+        strings = open("strings.txt", "r")
+        for line in strings.read().split("\n"):
+            item = QListWidgetItem(line)
+            self.detailed_points_of_interest_listWidget.addItem(item)
+        strings.close()
+        #No method for this yet
+        self.display_strings_in_left_column()
+
+    def display_strings_in_left_column(self):
+        self.points_of_interest_list_widget.clear()
+        print("This is very stressful")
+        strings = open("strings.txt", "r")
+
+        # Start at the index 2 to the end get each line
+        for line in strings.read().split("\n")[2:-1]:
+            # Separate by spaces and then get the last word
+            line = line.split(" ", 9)[-1]
+            item = QListWidgetItem(line)
+
+            # Don't know if we need this following line
+            #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.points_of_interest_list_widget.addItem(item)
+        strings.close()
+
+    def read_and_display_all_variables(self):
+        self.detailed_points_of_interest_listWidget.clear()
+        print("They dont pay me")
+        variables = open("variables.txt", "r")
+        for line in variables.read().split("\n"):
+            item = QListWidgetItem(line)
+            self.detailed_points_of_interest_listWidget.addItem(item)
+        variables.close()
+        # No method for this yet
+        self.display_variables_in_left_column()
+
+    def display_variables_in_left_column(self):
+        self.points_of_interest_list_widget.clear()
+        print("This is very stressful")
+        variables = open("variables.txt", "r")
+
+        # Start at the index 2 to the end get each line
+        for line in variables.read().split("\n")[:-1]:
+            # Separate by spaces and then get the last word
+            #line = line.split(" ", 1)[-1]
+            line = line.split(" ")[1]
+            item = QListWidgetItem(line)
+
+            # Don't know if we need this following line
+            #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.points_of_interest_list_widget.addItem(item)
+        variables.close()
 
     #########################################################################################
     # Plugin Management Tab Functions

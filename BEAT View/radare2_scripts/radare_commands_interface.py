@@ -32,6 +32,8 @@ def extract_all():
         rlocal.cmd("afl > functions.txt")
         rlocal.cmd("iz > strings.txt")
         rlocal.cmd("ii > imports.txt")
+        rlocal.cmd("s main")
+        rlocal.cmd("afvd > variables.txt")
 
 
 

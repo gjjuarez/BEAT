@@ -8,7 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from Terminal import EmbTerminalLinux
 
 class Ui_BEAT(object):
     def setupUi(self, BEAT):
@@ -1404,9 +1404,18 @@ class Ui_BEAT(object):
         self.detailed_points_of_interest_view_lineedit.setAlignment(QtCore.Qt.AlignCenter)
         self.detailed_points_of_interest_view_lineedit.setReadOnly(True)
         self.detailed_points_of_interest_view_lineedit.setObjectName("detailed_points_of_interest_view_lineedit")
+        
+        ####################################################
+        #Terminal Widget
+        ####################################################
         self.terminal_widget_2 = QtWidgets.QWidget(self.detailed_point_of_interest_view_groupbox)
         self.terminal_widget_2.setGeometry(QtCore.QRect(10, 306, 571, 101))
         self.terminal_widget_2.setObjectName("terminal_widget_2")
+
+
+        #self.terminal_widget_2.setupUi(EmbTerminalLinux)
+
+
         self.detailed_points_of_interest_listWidget = QtWidgets.QListWidget(self.detailed_point_of_interest_view_groupbox)
         self.detailed_points_of_interest_listWidget.setGeometry(QtCore.QRect(15, 41, 561, 261))
         self.detailed_points_of_interest_listWidget.setObjectName("detailed_points_of_interest_listWidget")

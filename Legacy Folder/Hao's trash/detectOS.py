@@ -1,4 +1,18 @@
 import platform
+import sys
+from PyQt5 import QtCore, QtWidgets
+
+class EmbTerminal(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super(EmbTerminal, self).__init__(parent)
+        self.process = QtCore.QProcess(self)
+        self.terminal = QtWidgets.QWidget(self)
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.addWidget(self.terminal)
+        # Works also with urxvt:
+        self.process.start('urxvt',['-embed', str(int(self.winId()))])
+        self.setFixedSize(640, 480)
+
 
 current_OS = platform.system()
 

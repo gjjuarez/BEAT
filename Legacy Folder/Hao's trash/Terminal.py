@@ -13,7 +13,6 @@ class EmbTerminalLinux(QtWidgets.QWidget):
         self.process.start('urxvt',['-embed', str(int(self.winId()))])
         self.setFixedSize(640, 480)
 
-
 class mainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)

@@ -1411,7 +1411,9 @@ class Ui_BEAT(object):
         self.terminal_widget_2 = QtWidgets.QWidget(self.detailed_point_of_interest_view_groupbox)
         self.terminal_widget_2.setGeometry(QtCore.QRect(10, 306, 571, 101))
         self.terminal_widget_2.setObjectName("terminal_widget_2")
-        self.terminal_widget_2.setupUi(EmbTerminalLinux)
+
+
+        #self.terminal_widget_2.setupUi(EmbTerminalLinux)
 
 
         self.detailed_points_of_interest_listWidget = QtWidgets.QListWidget(self.detailed_point_of_interest_view_groupbox)

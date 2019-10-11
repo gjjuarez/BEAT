@@ -9,6 +9,7 @@ from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from PyQt5.QtWidgets import QListWidgetItem
 
 from radare2_scripts import radare_commands_interface
+from PyQt5 import QtGui
 
 class UiMain(UiView.Ui_BEAT):
     def setupUi(self, BEAT):
@@ -33,7 +34,7 @@ class UiMain(UiView.Ui_BEAT):
         self.save_project_button.clicked.connect(self.save_project)
         #calls browse_path if file_browse_button is clicked
         self.file_browse_button.clicked.connect(self.browse_path)
-        
+
         '''
         Analysis Tab Listeners 
         '''
@@ -68,8 +69,11 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Analysis Run Tab Listeners
         '''
-
+        #calls display_POI which checks what POI is being analized
         self.static_run_button.clicked.connect(self.display_POI)
+        #searches POI in the left column
+        self.points_of_interest_search_button.clicked.connect(self.search_POI)
+        self.points_of_interest_line_edit.returnPressed.connect(self.search_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         #self.tabWidget.addTab(EmbTerminal(), "EmbTerminal")
@@ -91,7 +95,7 @@ class UiMain(UiView.Ui_BEAT):
     '''
     def remove_project(self):
         listItems = self.project_list.selectedItems()
-        if not listItems: return        
+        if not listItems: return
         for item in listItems:
            self.project_list.takeItem(self.project_list.row(item))
     '''
@@ -127,21 +131,23 @@ class UiMain(UiView.Ui_BEAT):
     '''
     Opens Ui_Figure10OutputFieldView
     '''
-    def output_field(self): 
+    def output_field(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Figure10OutputFieldView()
-        self.ui.setupUi(self.window) 
+        self.ui.setupUi(self.window)
         self.window.show()
     '''
     Opens Ui_Figure11CommentView
     '''
-    def comment_view(self): 
+    def comment_view(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Figure11CommentView()
         self.ui.setupUi(self.window)
         self.window.show()
 
     def display_POI(self):
+        self.detailed_points_of_interest_listWidget.clear()
+        self.points_of_interest_list_widget.clear()
         radare_commands_interface.run_static_analysis()
         radare_commands_interface.extract_all()
         #Check What box is check
@@ -156,13 +162,16 @@ class UiMain(UiView.Ui_BEAT):
             self.read_and_display_all_functions()
         elif display_value == "Variables":
             self.read_and_display_all_variables()
+        elif display_value == "All":
+            self.read_and_display_all_imports()
+            self.read_and_display_all_strings()
+            self.read_and_display_all_functions()
+            self.read_and_display_all_variables()
 
     '''
     Opens imports text file and displays it on detailed POI view
     '''
     def read_and_display_all_imports(self):
-        self.detailed_points_of_interest_listWidget.clear()
-        print("They dont pay me")
         imports = open("imports.txt", "r")
         for line in imports.read().split("\n"):
             item = QListWidgetItem(line)
@@ -171,8 +180,6 @@ class UiMain(UiView.Ui_BEAT):
         self.display_imports_in_left_column()
 
     def display_imports_in_left_column(self):
-        self.points_of_interest_list_widget.clear()
-        print("This is very stressful")
         imports = open("imports.txt", "r")
 
         # Start at the index 2 to the end get each line
@@ -184,8 +191,6 @@ class UiMain(UiView.Ui_BEAT):
         imports.close()
 
     def read_and_display_all_functions(self):
-        self.detailed_points_of_interest_listWidget.clear()
-        print("They dont pay me")
         functions = open("functions.txt", "r")
         for line in functions.read().split("\n"):
             item = QListWidgetItem(line)
@@ -194,8 +199,6 @@ class UiMain(UiView.Ui_BEAT):
         self.display_functions_in_left_column()
 
     def display_functions_in_left_column(self):
-        self.points_of_interest_list_widget.clear()
-        print("This is very stressful")
         functions = open("functions.txt", "r")
 
         # Start at the index 2 to the end get each line
@@ -212,19 +215,14 @@ class UiMain(UiView.Ui_BEAT):
         functions.close()
 
     def read_and_display_all_strings(self):
-        self.detailed_points_of_interest_listWidget.clear()
-        print("They dont pay me")
         strings = open("strings.txt", "r")
         for line in strings.read().split("\n"):
             item = QListWidgetItem(line)
             self.detailed_points_of_interest_listWidget.addItem(item)
         strings.close()
-        #No method for this yet
         self.display_strings_in_left_column()
 
     def display_strings_in_left_column(self):
-        self.points_of_interest_list_widget.clear()
-        print("This is very stressful")
         strings = open("strings.txt", "r")
 
         # Start at the index 2 to the end get each line
@@ -241,8 +239,6 @@ class UiMain(UiView.Ui_BEAT):
         strings.close()
 
     def read_and_display_all_variables(self):
-        self.detailed_points_of_interest_listWidget.clear()
-        print("They dont pay me")
         variables = open("variables.txt", "r")
         for line in variables.read().split("\n"):
             item = QListWidgetItem(line)
@@ -252,8 +248,6 @@ class UiMain(UiView.Ui_BEAT):
         self.display_variables_in_left_column()
 
     def display_variables_in_left_column(self):
-        self.points_of_interest_list_widget.clear()
-        print("This is very stressful")
         variables = open("variables.txt", "r")
 
         # Start at the index 2 to the end get each line
@@ -270,6 +264,14 @@ class UiMain(UiView.Ui_BEAT):
             self.points_of_interest_list_widget.addItem(item)
         variables.close()
 
+    def search_POI(self):
+        for i in range(self.points_of_interest_list_widget.count()):
+            self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+        display_value = str(self.points_of_interest_line_edit.text())
+        search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
+        if len(search_result) > 0:
+            for item in search_result:
+                item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
     #########################################################################################
     # Plugin Management Tab Functions
     #########################################################################################
@@ -284,7 +286,7 @@ class UiMain(UiView.Ui_BEAT):
     '''
     def remove_plugin(self):
         listItems = self.plugin_view_plugin_listwidget.selectedItems()
-        if not listItems: return        
+        if not listItems: return
         for item in listItems:
            self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
     '''

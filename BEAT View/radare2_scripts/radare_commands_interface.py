@@ -47,8 +47,8 @@ def extract_all():
         #for var in rlocal.cmd("afvd").split("\n"):
             #print(var)
     except:
-        print("THey dont pay me enough")
+        print("Test")
 
 
 def display_POI_in_points_of_interest():
-    print("This is very stressful")
+    print("Test")

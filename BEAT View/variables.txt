@@ -1,0 +1,15 @@
+arg argv = 
+arg argc = 0x00000000 0x00010102464c457f   .ELF.... @rax 0 loc.imp._ITM_deregisterTMCloneTable R X 'jg 0x47'
+var var_68h = 0x00178068 = -1
+var var_54h = 0x00178054 = -1
+var var_5ch = 0x0017805c = -1
+var var_34h = 0x00178034 = -1
+var var_30h = 0x00178030 = -1
+var var_38h = 0x00178038 = -1
+var var_44h = 0x00178044 = -1
+var var_1ch = 0x0017801c = -1
+var var_18h = 0x00178018 = -1
+var var_28h = 0x00178028 = -1
+var var_24h = 0x00178024 = -1
+var var_10h = 0x00178010 = -1
+var var_8h = 0x00178008 = -1

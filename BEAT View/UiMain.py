@@ -286,13 +286,28 @@ class UiMain(UiView.Ui_BEAT):
         variables.close()
 
     def search_POI(self):
+        # clear background in left column
         for i in range(self.points_of_interest_list_widget.count()):
             self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+        # clear background for detailed view
+        for i in range(self.detailed_points_of_interest_listWidget.count()):
+            self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+
         display_value = str(self.points_of_interest_line_edit.text())
+        # don't search if empty string
+        if display_value == "":
+            return
+        # highlights search in left column
         search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
         if len(search_result) > 0:
             for item in search_result:
                 item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+        # highlights search in detailed view
+        search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
+        if len(search_result) > 0:
+            for item in search_result:
+                item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+
     #########################################################################################
     # Plugin Management Tab Functions
     #########################################################################################

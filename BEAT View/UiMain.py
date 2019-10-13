@@ -270,6 +270,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def display_variables_in_left_column(self):
         variables = open("variables.txt", "r")
+        variables.readline()  # skip the title
 
         # Start at the index 2 to the end get each line
         for line in variables.read().split("\n")[:-1]:

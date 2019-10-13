@@ -13,7 +13,7 @@ def run_static_analysis():
     try:
         rlocal.cmd("aaa")  # analyze file
     except:
-        print("")
+        print("Error running static analysis")
 
 
 def extract_strings():
@@ -22,8 +22,24 @@ def extract_strings():
         for string in rlocal.cmd("iz").split("\n"):
             print(string)
     except:
-        print("")
+        print("Error extracting strings")
 
+def extract_vars_from_functions(filename):
+    varFileName = "variables.txt"
+    try:
+        with open(varFileName, 'w') as vf:
+            vf.write("[Variables]\n")
+    except IOError:
+        print("Error printing variable title")
+    try:
+        with open(filename) as f:
+            with open(varFileName, 'a') as varf:
+                for func in f.read().split("\n"):
+                    print(func.split()[0])
+                    rlocal.cmd("s " + func.split()[0])  # move to each functions offset
+                    varf.write(rlocal.cmd("afvd"))
+    except IOError:
+        print("Error extracting variables")
 
 def extract_all():
     print("")
@@ -32,22 +48,11 @@ def extract_all():
         rlocal.cmd("afl > functions.txt")
         rlocal.cmd("iz > strings.txt")
         rlocal.cmd("ii > imports.txt")
-        rlocal.cmd("s main")
-        rlocal.cmd("afvd > variables.txt")
-
-
-
-        #for string in rlocal.cmd("iz").split("\n"):
-            #print(string)
-
-        #for imp in rlocal.cmdj("iij"):
-            #print(imp)
-
-        #rlocal.cmd("s main")
-        #for var in rlocal.cmd("afvd").split("\n"):
-            #print(var)
+        # rlocal.cmd("s main")
+        extract_vars_from_functions("functions.txt")
+        # rlocal.cmd("afvd > variables.txt")
     except:
-        print("Test")
+        print("Error extracting all POI")
 
 
 def display_POI_in_points_of_interest():

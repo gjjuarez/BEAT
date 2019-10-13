@@ -29,9 +29,6 @@ def extract_vars_from_functions(filename):
     try:
         with open(varFileName, 'w') as vf:
             vf.write("[Variables]\n")
-    except IOError:
-        print("Error printing variable title")
-    try:
         with open(filename) as f:
             with open(varFileName, 'a') as varf:
                 for func in f.read().split("\n"):

@@ -12,6 +12,9 @@ from radare2_scripts import radare_commands_interface
 from PyQt5 import QtGui
 
 class UiMain(UiView.Ui_BEAT):
+    global staticIsRun
+    staticIsRun = False
+
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
         print("hi")
@@ -46,6 +49,7 @@ class UiMain(UiView.Ui_BEAT):
         self.comment_button.clicked.connect(self.comment_view)
         #calls output_field after output_field_button is clicked
         self.output_field_button.clicked.connect(self.output_field)
+        self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
 
         '''
         Plugin Management Tab Listeners
@@ -70,7 +74,7 @@ class UiMain(UiView.Ui_BEAT):
         Analysis Run Tab Listeners
         '''
         #calls display_POI which checks what POI is being analized
-        self.static_run_button.clicked.connect(self.display_POI)
+        self.static_run_button.clicked.connect(self.analyze_and_display_POI)
         #searches POI in the left column
         self.points_of_interest_search_button.clicked.connect(self.search_POI)
         self.points_of_interest_line_edit.returnPressed.connect(self.search_POI)
@@ -149,15 +153,28 @@ class UiMain(UiView.Ui_BEAT):
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def display_POI(self):
+    def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
         radare_commands_interface.run_static_analysis()
         radare_commands_interface.extract_all()
-        #Check What box is check
+        global staticIsRun
+        staticIsRun = True
+        # Check What box is check
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
+        self.display_POI(display_value)
 
+    def change_displayed_POI(self):
+        global staticIsRun
+        if not staticIsRun:
+            return
+        self.detailed_points_of_interest_listWidget.clear()
+        self.points_of_interest_list_widget.clear()
+        display_value = str(self.type_dropdown.currentText())
+        self.display_POI(display_value)
+
+    def display_POI(self, display_value):
         if display_value == "Imports":
             self.read_and_display_all_imports()
         elif display_value == "Strings":
@@ -306,7 +323,6 @@ class UiMain(UiView.Ui_BEAT):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
-  
 
 if __name__ == "__main__":
     import sys

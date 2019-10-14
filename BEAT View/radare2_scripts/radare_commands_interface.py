@@ -8,8 +8,7 @@ rlocal = None
 
 def run_static_analysis():
     global rlocal
-    rlocal = r2pipe.open("/bin/ping")
-    #rlocal = r2pipe.open("/bin/ping")  # Open ping in Radare2 in debug mode
+    rlocal = r2pipe.open("/bin/ping", flags=['-d'])  # open radare2 in debug mode
     try:
         rlocal.cmd("aaa")  # analyze file
     except:
@@ -51,6 +50,12 @@ def extract_all():
     except:
         print("Error extracting all POI")
 
+def set_breakpoint_at_function(func_name):
+    try:
+        rlocal.cmd("db " + func_name)
+        print("Breakpoint successfully set at: " + func_name)
+    except:
+        print("Error setting breakpoint at: " + func_name)
 
 def display_POI_in_points_of_interest():
     print("Test")

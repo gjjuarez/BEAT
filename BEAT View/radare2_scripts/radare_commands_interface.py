@@ -8,14 +8,17 @@ rlocal = None
 
 def run_static_analysis():
     global rlocal
-    rlocal = r2pipe.open("/bin/ping", flags=['-d'])  # open radare2 in debug mode
     try:
+        rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
         rlocal.cmd("aaa")  # analyze file
+        rlocal.cmd("s main")
     except:
+        rlocal.cmd("exit")
         print("Error running static analysis")
 
 def extract_vars_from_functions(filename):
     varFileName = "variables.txt"
+    currentAddr = rlocal.cmd("s")  # dont lose original position
     try:
         with open(varFileName, 'w') as vf:
             vf.write("[Variables]\n")
@@ -27,6 +30,7 @@ def extract_vars_from_functions(filename):
                     varf.write(rlocal.cmd("afvd"))
     except IOError:
         print("Error extracting variables")
+    rlocal.cmd("s " + currentAddr)
 
 def extract_all():
     print("")
@@ -64,7 +68,7 @@ def run_dynamic_and_update():
     try:
         rlocal.cmd("dc")
         extract_strings()
-        extract_vars_from_functions()
+        extract_vars_from_functions("functions.txt")
     except:
         print("Error running dynamic")
 

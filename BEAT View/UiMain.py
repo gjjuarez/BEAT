@@ -368,4 +368,4 @@ if __name__ == "__main__":
     ui.setupUi(BEAT)
     BEAT.show()
     sys.exit(app.exec_())
-    # radare_commands_interface.exit_radare()
+

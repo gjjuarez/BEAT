@@ -86,5 +86,19 @@ def remove_breakpoint_at_function(func_name):
     except:
         print("Error removing breakpoint at: " + func_name)
 
+def get_all_breakpoints():
+    global rlocal
+    bp = []
+    try:
+        bpInfo = rlocal.cmd("db")
+        for bpLine in bpInfo.split("\n"):
+            bpName = bpLine.split()[10]  # get the name of breakpoint
+            bpName = str(bpName[6:len(bpName)-1])  # remove name= from name
+            bp.append(bpName)
+            print("Debug breakpoint name: " + bpName)
+    except:
+        print("Error getting all breakpoints")
+    return bp
+
 def display_POI_in_points_of_interest():
     print("Test")

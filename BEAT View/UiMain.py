@@ -240,6 +240,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def display_functions_in_left_column(self):
         functions = open("functions.txt", "r")
+        breakPoints = radare_commands_interface.get_all_breakpoints()
 
         # Start at the index 2 to the end get each line
         for line in functions.read().split("\n")[:-1]:
@@ -248,9 +249,11 @@ class UiMain(UiView.Ui_BEAT):
             item = QListWidgetItem(line)
 
             # Don't know if we need this following line
-            #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
-
-            item.setCheckState(QtCore.Qt.Unchecked)
+            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            if line in breakPoints:
+                item.setCheckState(QtCore.Qt.Checked)
+            else:
+                item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
         functions.close()
 

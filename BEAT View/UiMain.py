@@ -7,6 +7,7 @@ from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from PyQt5.QtWidgets import QListWidgetItem
+from Terminal import EmbTerminalLinux
 
 from radare2_scripts import radare_commands_interface
 from PyQt5 import QtGui
@@ -22,6 +23,9 @@ class UiMain(UiView.Ui_BEAT):
         self.dynamic_stop_button.setDisabled(True)
 
         #QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.tabWidget.addTab(EmbTerminalLinux(), "EmbTerminal")
+
 
         #########################################################################################
         # Project Tab Functions

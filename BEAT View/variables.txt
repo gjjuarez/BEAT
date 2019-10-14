@@ -1,3 +1,90 @@
+[Variables]
+arg arg3 =   : rdx : 0x00000000
+arg arg4 =   : rcx : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg1 = 
+arg arg4 =   : rcx : 0x00000000
+arg arg7 =   : xmm0 : 0x00000000
+var var_4a8h = 0x001784a8 = -1
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg4 =   : rcx : 0x00000000
+arg arg6 =   : r9 : 0x00000000
+arg arg5 =   : r8 : 0x00000000
+var var_1ch = 0x0017801c = -1
+arg arg_60h = 0x00178060 = -1
+var var_8h = 0x00178008 = -1
+arg arg_68h = 0x00178068 = -1
+arg arg_70h = 0x00178070 = -1
+var var_10h = 0x00178010 = -1
+arg arg3 =   : rdx : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg4 =   : rcx : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+var var_8h = 0x00178008 = -1
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg4 =   : rcx : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+var var_1118h = 0x00179118 = -1
+var var_40h = 0x00178040 = -1
+var var_50h = 0x00178050 = -1
+var var_2ch = 0x0017802c = -1
+var var_30h = 0x00178030 = -1
+var var_18h = 0x00178018 = -1
+var var_44h = 0x00178044 = -1
+var var_46h = 0x00178046 = -1
+var var_90h = 0x00178090 = -1
+var var_10h = 0x00178010 = -1
+var var_110h = 0x00178110 = -1
+var var_8h = 0x00178008 = -1
+var var_38h = 0x00178038 = -1
+var var_60h = 0x00178060 = -1
+var var_58h = 0x00178058 = -1
+var var_68h = 0x00178068 = -1
+var var_70h = 0x00178070 = -1
+var var_78h = 0x00178078 = -1
+var var_20h = 0x00178020 = -1
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+arg arg4 =   : rcx : 0x00000000
+arg arg7 =   : xmm0 : 0x00000000
+var var_70h = 0x00177f90 = -1
+var var_38h = 0x00177fc8 = -1
+var var_74h = 0x00177f8c = -1
+var var_68h = 0x00177f98 = -1
+var var_60h = 0x00177fa0 = -1
+var var_50h = 0x00177fb0 = -1
+var var_88h = 0x00177f78 = -1
+var var_8ch = 0x00177f74 = -1
+var var_90h = 0x00177f70 = -1
+var var_94h = 0x00177f6c = -1
+var var_18h = 0x00178018 = -1
+var var_14h = 0x00178014 = -1
+var var_10h = 0x00178010 = -1
+arg arg3 =   : rdx : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg1 = 
+arg arg4 =   : rcx : 0x00000000
+arg arg7 =   : xmm0 : 0x00000000
+var var_4a8h = 0x001784a8 = -1
+arg arg5 =   : r8 : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+arg arg4 =   : rcx : 0x00000000
 arg argv = 
 arg argc = 0x00000000 0x00010102464c457f   .ELF.... @rax 0 loc.imp._ITM_deregisterTMCloneTable R X 'jg 0x47'
 var var_68h = 0x00178068 = -1
@@ -12,4 +99,107 @@ var var_18h = 0x00178018 = -1
 var var_28h = 0x00178028 = -1
 var var_24h = 0x00178024 = -1
 var var_10h = 0x00178010 = -1
+var var_8h = 0x00178008 = -1
+arg arg1 =   : rdi : 0x00000000
+arg n =   : rsi : 0x00000000
+var var_828h = 0x00178828 = -1
+var var_8h = 0x00178008 = -1
+var var_20h = 0x00178020 = -1
+var var_4h = 0x00178004 = -1
+var var_10h = 0x00178010 = -1
+var var_420h = 0x00178420 = -1
+var var_430h = 0x00178430 = -1
+var var_14h = 0x00178014 = -1
+var var_18h = 0x00178018 = -1
+var var_428h = 0x00178428 = -1
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+var var_2eh = 0x0017802e = -1
+var var_48h = 0x00178048 = -1
+var var_30h = 0x00178030 = -1
+var var_8h = 0x00178008 = -1
+var var_2fh = 0x0017802f = -1
+var var_18h = 0x00178018 = -1
+var var_10h = 0x00178010 = -1
+var var_20h = 0x00178020 = -1
+var var_3eh = 0x0017803e = -1
+var var_32h = 0x00178032 = -1
+var var_3ah = 0x0017803a = -1
+var var_34h = 0x00178034 = -1
+arg arg4 =   : rcx : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+var var_18h = 0x00178018 = -1
+var var_2h = 0x00178002 = -1
+var var_ah = 0x0017800a = -1
+var var_eh = 0x0017800e = -1
+var var_4h = 0x00178004 = -1
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+var var_48h = 0x00178048 = -1
+var var_30h = 0x00178030 = -1
+var var_8h = 0x00178008 = -1
+var var_2fh = 0x0017802f = -1
+var var_18h = 0x00178018 = -1
+var var_10h = 0x00178010 = -1
+var var_2eh = 0x0017802e = -1
+var var_20h = 0x00178020 = -1
+var var_3eh = 0x0017803e = -1
+var var_32h = 0x00178032 = -1
+var var_3ah = 0x0017803a = -1
+var var_34h = 0x00178034 = -1
+arg arg1 =   : rdi : 0x00000000
+var var_28h = 0x00178028 = -1
+var var_8h = 0x00178008 = -1
+var var_10h = 0x00178010 = -1
+var var_18h = 0x00178018 = -1
+var var_18h = 0x00178018 = -1
+var var_8h = 0x00178008 = -1
+var var_8h = 0x00178008 = -1
+var var_4h = 0x00178004 = -1
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+var var_18h = 0x00178018 = -1
+var var_ch = 0x0017800c = -1
+var var_14h = 0x00178014 = -1
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg3 =   : rdx : 0x00000000
+var var_48h = 0x00178048 = -1
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+var var_8h = 0x00178008 = -1
+var var_4h = 0x00178004 = -1
+arg arg1 =   : rdi : 0x00000000
+var var_d8h = 0x001780d8 = -1
+var var_ch = 0x0017800c = -1
+var var_20h = 0x00178020 = -1
+var var_10h = 0x00178010 = -1
+var var_18h = 0x00178018 = -1
+var var_40h = 0x00178040 = -1
+var var_c8h = 0x001780c8 = -1
+var var_28h = 0x00178028 = -1
+var var_30h = 0x00178030 = -1
+var var_38h = 0x00178038 = -1
+var var_22h = 0x00178022 = -1
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+var var_68h = 0x00178068 = -1
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+var var_418h = 0x00178418 = -1
+var var_ch = 0x0017800c = -1
+var var_10h = 0x00178010 = -1
+arg arg2 =   : rsi : 0x00000000
+arg arg1 =   : rdi : 0x00000000
+var var_428h = 0x00178428 = -1
+var var_20h = 0x00178020 = -1
+var var_18h = 0x00178018 = -1
+var var_10h = 0x00178010 = -1
+var var_ch = 0x0017800c = -1
+arg arg1 =   : rdi : 0x00000000
+var var_8h = 0x00178008 = -1
+arg arg1 =   : rdi : 0x00000000
+arg arg2 =   : rsi : 0x00000000
+arg arg7 =   : xmm0 : 0x00000000
+var var_18h = 0x00178018 = -1
 var var_8h = 0x00178008 = -1

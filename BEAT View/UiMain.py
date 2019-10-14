@@ -49,7 +49,7 @@ class UiMain(UiView.Ui_BEAT):
         self.comment_button.clicked.connect(self.comment_view)
         #calls output_field after output_field_button is clicked
         self.output_field_button.clicked.connect(self.output_field)
-        self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
+
 
         '''
         Plugin Management Tab Listeners
@@ -73,14 +73,19 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Analysis Run Tab Listeners
         '''
-        #calls display_POI which checks what POI is being analized
+        # run static analysis and check which POI to display
         self.static_run_button.clicked.connect(self.analyze_and_display_POI)
-        #searches POI in the left column
+        # searches POI in the left column
         self.points_of_interest_search_button.clicked.connect(self.search_POI)
         self.points_of_interest_line_edit.returnPressed.connect(self.search_POI)
+        # listens to changes in POI dropdown
+        self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
+        # sets breakpoints on currently checked items
+        self.points_of_interest_list_widget.itemChanged.connect(self.set_breakpoint)
+        # runs dynamic analysis on breakpoints
+        self.dynamic_run_button.clicked.connect(self.run_dynamic_and_update)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
-
 
         self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
 
@@ -153,6 +158,9 @@ class UiMain(UiView.Ui_BEAT):
         self.ui.setupUi(self.window)
         self.window.show()
 
+    '''
+    Runs analysis and displayss results
+    '''
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
@@ -184,10 +192,28 @@ class UiMain(UiView.Ui_BEAT):
         elif display_value == "Variables":
             self.read_and_display_all_variables()
         elif display_value == "All":
-            self.read_and_display_all_imports()
-            self.read_and_display_all_strings()
             self.read_and_display_all_functions()
             self.read_and_display_all_variables()
+            self.read_and_display_all_imports()
+            self.read_and_display_all_strings()
+
+    def set_breakpoint(self, item):
+        print("Setting breakpoint")
+        if item.checkState() == 2:  # if item is checked
+            radare_commands_interface.set_breakpoint_at_function(item.text())
+
+
+    def run_dynamic_and_update(self):
+        try:
+            with open("functions.txt", 'r') as file:
+                pass
+        except IOError:
+            print("Error reading variables for dynamic")
+        # radare_commands_interface.run_dynamic_analysis()
+
+    '''
+    Runs analysis and displays results
+    '''
 
     '''
     Opens imports text file and displays it on detailed POI view
@@ -253,9 +279,9 @@ class UiMain(UiView.Ui_BEAT):
             item = QListWidgetItem(line)
 
             # Don't know if we need this following line
-            #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
 
-            item.setCheckState(QtCore.Qt.Unchecked)
+            # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
         strings.close()
 
@@ -282,7 +308,7 @@ class UiMain(UiView.Ui_BEAT):
             # Don't know if we need this following line
             #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
 
-            item.setCheckState(QtCore.Qt.Unchecked)
+            # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
         variables.close()
 

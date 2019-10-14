@@ -57,5 +57,12 @@ def set_breakpoint_at_function(func_name):
     except:
         print("Error setting breakpoint at: " + func_name)
 
+def remove_breakpoint_at_function(func_name):
+    try:
+        rlocal.cmd("db- " + func_name)
+        print("Breakpoint successfully removed at: " + func_name)
+    except:
+        print("Error removing breakpoint at: " + func_name)
+
 def display_POI_in_points_of_interest():
     print("Test")

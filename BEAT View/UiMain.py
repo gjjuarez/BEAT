@@ -201,6 +201,8 @@ class UiMain(UiView.Ui_BEAT):
         print("Setting breakpoint")
         if item.checkState() == 2:  # if item is checked
             radare_commands_interface.set_breakpoint_at_function(item.text())
+        else:  # item is unchecked
+            radare_commands_interface.remove_breakpoint_at_function(item.text())
 
 
     def run_dynamic_and_update(self):

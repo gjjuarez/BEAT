@@ -14,6 +14,7 @@ def run_static_analysis():
         rlocal.cmd("aaa")  # analyze file
     except:
         print("Error running static analysis")
+    extract_all()
 
 
 def extract_strings():
@@ -54,3 +55,6 @@ def extract_all():
 
 def display_POI_in_points_of_interest():
     print("Test")
+
+if __name__ == "__main__":
+    run_static_analysis()

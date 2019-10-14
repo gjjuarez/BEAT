@@ -24,8 +24,11 @@ class UiMain(UiView.Ui_BEAT):
 
         #QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.tabWidget.addTab(EmbTerminalLinux(), "EmbTerminal")
-
+        #self.tabWidget.addTab(EmbTerminalLinux(), "EmbTerminal")
+        self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
+        #self.terminal.setGeometry(QtCore.QRect(5, 310, 580, 90))
+        self.terminal.setGeometry(QtCore.QRect(5, 310, 580, 90))
+        self.terminal.setObjectName("Terminal")
 
         #########################################################################################
         # Project Tab Functions
@@ -160,8 +163,8 @@ class UiMain(UiView.Ui_BEAT):
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        radare_commands_interface.run_static_analysis()
-        radare_commands_interface.extract_all()
+        #radare_commands_interface.run_static_analysis()
+        #radare_commands_interface.extract_all()
         global staticIsRun
         staticIsRun = True
         # Check What box is check

@@ -11,7 +11,7 @@ class SandboxProcess(QtCore.QProcess):
         output, error = sprocess.communicate()
         print(output)
         #f = ("t.txt", "w+")
-        #f.write(output)
+        #f.write(str(output) + "\n")
         #f.close()
 
 
@@ -24,9 +24,9 @@ class EmbTerminalLinux(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.terminal)
         # Works also with urxvt:
-        self.process.start('urxvt',['-embed', str(int(self.winId())), '-e', 'tmux'])
+        self.process.start('xterm',['-into', str(int(self.winId())), '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py'])
         x = self.process.processId()
-        self.setFixedSize(640, 480)
+        #self.setFixedSize(640, 480)
 
 
 class mainWindow(QtWidgets.QMainWindow):

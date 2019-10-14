@@ -83,7 +83,7 @@ class UiMain(UiView.Ui_BEAT):
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.set_breakpoint)
         # runs dynamic analysis on breakpoints
-        self.dynamic_run_button.clicked.connect(self.run_dynamic_and_update)
+        self.dynamic_run_button.clicked.connect(radare_commands_interface.run_dynamic_and_update)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
 
@@ -203,15 +203,6 @@ class UiMain(UiView.Ui_BEAT):
             radare_commands_interface.set_breakpoint_at_function(item.text())
         else:  # item is unchecked
             radare_commands_interface.remove_breakpoint_at_function(item.text())
-
-
-    def run_dynamic_and_update(self):
-        try:
-            with open("functions.txt", 'r') as file:
-                pass
-        except IOError:
-            print("Error reading variables for dynamic")
-        # radare_commands_interface.run_dynamic_analysis()
 
     '''
     Runs analysis and displays results
@@ -377,3 +368,4 @@ if __name__ == "__main__":
     ui.setupUi(BEAT)
     BEAT.show()
     sys.exit(app.exec_())
+    # radare_commands_interface.exit_radare()

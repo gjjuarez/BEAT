@@ -14,15 +14,6 @@ def run_static_analysis():
     except:
         print("Error running static analysis")
 
-
-def extract_strings():
-    global rlocal
-    try:
-        for string in rlocal.cmd("iz").split("\n"):
-            print(string)
-    except:
-        print("Error extracting strings")
-
 def extract_vars_from_functions(filename):
     varFileName = "variables.txt"
     try:
@@ -41,14 +32,41 @@ def extract_all():
     print("")
     global rlocal
     try:
-        rlocal.cmd("afl > functions.txt")
-        rlocal.cmd("iz > strings.txt")
-        rlocal.cmd("ii > imports.txt")
-        # rlocal.cmd("s main")
+        extract_functions()
+        extract_strings()
+        extract_imports()
         extract_vars_from_functions("functions.txt")
-        # rlocal.cmd("afvd > variables.txt")
     except:
         print("Error extracting all POI")
+
+def extract_functions():
+    global rlocal
+    try:
+        rlocal.cmd("afl > functions.txt")
+    except:
+        print("Error extracting functions")
+
+def extract_strings():
+    global rlocal
+    try:
+        rlocal.cmd("iz > strings.txt")
+    except:
+        print("Error extracting string")
+
+def extract_imports():
+    global rlocal
+    try:
+        rlocal.cmd("ii > imports.txt")
+    except:
+        print("Error extracting string")
+
+def run_dynamic_and_update():
+    try:
+        rlocal.cmd("dc")
+        extract_strings()
+        extract_vars_from_functions()
+    except:
+        print("Error running dynamic")
 
 def set_breakpoint_at_function(func_name):
     try:

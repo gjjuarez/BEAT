@@ -25,9 +25,16 @@ class EmbTerminalLinux(QtWidgets.QWidget):
         layout.addWidget(self.terminal)
         # Works also with urxvt:
 
-    def begin(self):
-        self.process.start('xterm',[ '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py'])
+    def begin_static(self):
+        self.process.start('xterm',[ '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py', 'static'])
+        self.process.waitForFinished();
 
+    def begin_dynamic(self):
+        self.process.start('xterm',[ '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py', 'dynamic'])
+        self.process.waitForFinished();
+
+    def kill_process(self):
+        self.process.kill()
 
 class mainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):

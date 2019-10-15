@@ -235,9 +235,10 @@ class UiMain(UiView.Ui_BEAT):
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        radare_commands_interface.run_static_analysis()
+        #radare_commands_interface.run_static_analysis()
+        #self.terminal.begin()
         #self.stacked.setCurrentWidget(self.terminal)
-        self.terminal.begin()
+        self.terminal.begin_static()
         global staticIsRun
         staticIsRun = True
         # Check What box is check  
@@ -278,8 +279,20 @@ class UiMain(UiView.Ui_BEAT):
             radare_commands_interface.remove_breakpoint_at_function(item.text())
 
     def run_dynamic_then_display(self):
-        radare_commands_interface.run_dynamic_and_update()
+        # radare_commands_interface.run_dynamic_and_update()
+        self.dynamic_run_button.setDisabled(True)
+        self.dynamic_stop_button.setDisabled(False)
+        print("Running dynamic analysis!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        
+        self.terminal.kill_process()
+        self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
+        self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
+        self.terminal.setObjectName("Terminal")
+        self.terminal.begin_dynamic()
+        print("Done with dynamic analysis!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         self.change_displayed_POI()  # updates ui
+        self.dynamic_run_button.setDisabled(False)
+        self.dynamic_stop_button.setDisabled(True)
 
     '''
     Runs analysis and displays results

@@ -25,6 +25,27 @@ def run_static_analysis():
         pass  # fail quietly, almost always gives error when reading
     extract_all()
 
+def run_dynamic_analysis():
+    global rlocal
+    import pymongo
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient['projectsdb']
+    mycol = mydb['current']
+    for x in mycol.find():
+        path = x["path"]
+    rlocal = r2pipe.open(path, flags=['-d'])
+    try:
+        #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
+        rlocal.cmd("aaa")  # analyze file
+        rlocal.cmd("s main")
+    except:
+        rlocal.cmd("exit")
+        pass  # fail quietly, almost always gives error when reading
+    extract_all()
+    run_dynamic_and_update()
+
+
+
 def extract_vars_from_functions(filename):
     varFileName = "variables.txt"
     currentAddr = rlocal.cmd("s")  # dont lose original position
@@ -55,6 +76,7 @@ def extract_all():
         extract_vars_from_functions("functions.txt")
     except:
         print("Error extracting all POI")
+    rlocal.cmd("exit")
 
 def extract_functions():
     global rlocal
@@ -117,5 +139,11 @@ def display_POI_in_points_of_interest():
     print("Test")
 
 if __name__ == "__main__":
-    pass
-    # run_static_analysis()
+    #pass
+    import sys
+    if(sys.argv[1] == 'static'):
+        print("running static....")
+        run_static_analysis()
+    if(sys.argv[1] == 'dynamic'):
+        run_dynamic_analysis()
+

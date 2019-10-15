@@ -1,259 +1,259 @@
 [Strings]
 Num Paddr      Vaddr      Len Size Section  Type  String
-000 0x0000b288 0x0000b288 286 287 (.rodata) ascii Usage: ping [-aAbBdDfhLnOqrRUvV64] [-c count] [-i interval] [-I interface]\n            [-m mark] [-M pmtudisc_option] [-l preload] [-p pattern] [-Q tos]\n            [-s packetsize] [-S sndbuf] [-t ttl] [-T timestamp_option]\n            [-w deadline] [-W timeout] [hop1 ...] destination\n
-001 0x0000b3a8 0x0000b3a8  46  47 (.rodata) ascii socktype == SOCK_DGRAM || socktype == SOCK_RAW
-002 0x0000b3d8 0x0000b3d8  43  44 (.rodata) ascii ping: socket: %s, attempting raw socket...\n
-003 0x0000b408 0x0000b408  41  42 (.rodata) ascii WARNING: failed to install socket filter\n
-004 0x0000b438 0x0000b438  35  36 (.rodata) ascii Warning: error setting QOS sockopts
-005 0x0000b460 0x0000b460  81  82 (.rodata) ascii Do you want to ping broadcast? Then -b. If not, check your local firewall rules.\n
-006 0x0000b4b8 0x0000b4b8  35  36 (.rodata) ascii WARNING: pinging broadcast address\n
-007 0x0000b4e0 0x0000b4e0  46  47 (.rodata) ascii ping: broadcast ping with too short interval.\n
-008 0x0000b510 0x0000b510  40  41 (.rodata) ascii ping: broadcast ping does not fragment.\n
-009 0x0000b540 0x0000b540  32  33 (.rodata) ascii WARNING: setsockopt(ICMP_FILTER)
-010 0x0000b568 0x0000b568  49  50 (.rodata) ascii WARNING: your kernel is veeery old. No problems.\n
-011 0x0000b5a0 0x0000b5a0  31  32 (.rodata) ascii WARNING: setsockopt(IP_RECVTTL)
-012 0x0000b5c0 0x0000b5c0  31  32 (.rodata) ascii WARNING: setsockopt(IP_RETOPTS)
-013 0x0000b5e0 0x0000b5e0  38  39 (.rodata) ascii ping: can't disable multicast loopback
-014 0x0000b608 0x0000b608  38  39 (.rodata) ascii ping: can't set multicast time-to-live
-015 0x0000b630 0x0000b630  36  37 (.rodata) ascii ping: can't set unicast time-to-live
-016 0x0000b658 0x0000b658  50  51 (.rodata) ascii Error: packet size %d is too large. Maximum is %d\n
-017 0x0000b690 0x0000b690  73  74 (.rodata) ascii ping: Warning: source address might be selected on device other than %s.\n
-018 0x0000b6e0 0x0000b6e0  48  49 (.rodata) ascii ping: Only one -4 or -6 option may be specified\n
-019 0x0000b718 0x0000b718  33  34 (.rodata) ascii Only one of -T or -R may be used\n
-020 0x0000b740 0x0000b740  41  42 (.rodata) ascii ping: bad number of packets to transmit.\n
-021 0x0000b770 0x0000b770  32  33 (.rodata) ascii ping: invalid source address %s\n
-022 0x0000b798 0x0000b798  41  42 (.rodata) ascii ping: bad preload value, should be 1..%d\n
-023 0x0000b7c8 0x0000b7c8  38  39 (.rodata) ascii ping: cannot set preload to value > 3\n
-024 0x0000b7f0 0x0000b7f0  57  58 (.rodata) ascii ping: wrong value for -M: do, dont, want are valid ones.\n
-025 0x0000b830 0x0000b830  60  61 (.rodata) ascii ping: the decimal value of TOS bits must be 0-254 (or zero)\n
-026 0x0000b870 0x0000b870  39  40 (.rodata) ascii ping: illegal negative packet size %d.\n
-027 0x0000b898 0x0000b898  32  33 (.rodata) ascii ping: packet size too large: %d\n
-028 0x0000b8c0 0x0000b8c0  52  53 (.rodata) ascii h?4bRT:6F:N:aABc:dDfi:I:l:Lm:M:nOp:qQ:rs:S:t:UvVw:W:
-029 0x0000b8f8 0x0000b8f8  34  35 (.rodata) ascii ping: unknown protocol family: %d\n
-030 0x0000b920 0x0000b920  64  65 (.rodata) ascii Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src      Dst Data
-031 0x0000b968 0x0000b968  32  33 (.rodata) ascii Destination Protocol Unreachable
-032 0x0000b990 0x0000b990  34  35 (.rodata) ascii Frag needed and DF set (mtu = %u)\n
-033 0x0000b9b8 0x0000b9b8  47  48 (.rodata) ascii Destination Net Unreachable for Type of Service
-034 0x0000b9e8 0x0000b9e8  48  49 (.rodata) ascii Destination Host Unreachable for Type of Service
-035 0x0000ba20 0x0000ba20  31  32 (.rodata) ascii Dest Unreachable, Bad Code: %d\n
-036 0x0000ba40 0x0000ba40  36  37 (.rodata) ascii Redirect Type of Service and Network
-037 0x0000ba68 0x0000ba68  33  34 (.rodata) ascii Redirect Type of Service and Host
-038 0x0000ba90 0x0000ba90  32  33 (.rodata) ascii Parameter problem: pointer = %u\n
-039 0x0000bab8 0x0000bab8  44  45 (.rodata) ascii ping: local error: Message too long, mtu=%u\n
-040 0x0000bae8 0x0000bae8  33  34 (.rodata) ascii \rWARNING: setsockopt(ICMP_FILTER)
-041 0x0000bb10 0x0000bb10  42  43 (.rodata) ascii ping: packet too short (%d bytes) from %s\n
-042 0x0000bb3b 0x0000bb3b   6   7 (.rodata) ascii ping.c
-043 0x0000bb42 0x0000bb42  14  15 (.rodata) ascii sock->fd == -1
-044 0x0000bb51 0x0000bb51  17  18 (.rodata) ascii ping: socket: %s\n
-045 0x0000bb63 0x0000bb63  12  13 (.rodata) ascii  icmp_seq=%u
-046 0x0000bb70 0x0000bb70  21  22 (.rodata) ascii ping: setsockopt: %s\n
-047 0x0000bb86 0x0000bb86  13  14 (.rodata) ascii ping: %s: %s\n
-048 0x0000bb94 0x0000bb94  23  24 (.rodata) ascii ping: unknown iface %s\n
-049 0x0000bbac 0x0000bbac  21  22 (.rodata) ascii ping: IP_MULTICAST_IF
-050 0x0000bbc2 0x0000bbc2  21  22 (.rodata) ascii ping: SO_BINDTODEVICE
-051 0x0000bbd8 0x0000bbd8   7   8 (.rodata) ascii connect
-052 0x0000bbe0 0x0000bbe0  11  12 (.rodata) ascii getsockname
-053 0x0000bbec 0x0000bbec  21  22 (.rodata) ascii gatifaddrs() failed.\n
-054 0x0000bc02 0x0000bc02  21  22 (.rodata) ascii ping: IP_MTU_DISCOVER
-055 0x0000bc18 0x0000bc18   4   5 (.rodata) ascii bind
-056 0x0000bc1d 0x0000bc1d  18  19 (.rodata) ascii ping: record route
-057 0x0000bc30 0x0000bc30  15  16 (.rodata) ascii ping: ts option
-058 0x0000bc40 0x0000bc40  28  29 (.rodata) ascii ping: can't set broadcasting
-059 0x0000bc5d 0x0000bc5d  21  22 (.rodata) ascii ping: out of memory.\n
-060 0x0000bc73 0x0000bc73  13  14 (.rodata) ascii PING %s (%s) 
-061 0x0000bc81 0x0000bc81  12  13 (.rodata) ascii from %s %s: 
-062 0x0000bc8e 0x0000bc8e  22  23 (.rodata) ascii %d(%d) bytes of data.\n
-063 0x0000bca5 0x0000bca5   6   7 (.rodata) ascii tsonly
-064 0x0000bcac 0x0000bcac   9  10 (.rodata) ascii tsandaddr
-065 0x0000bcb6 0x0000bcb6   9  10 (.rodata) ascii tsprespec
-066 0x0000bcc0 0x0000bcc0  23  24 (.rodata) ascii Invalid timestamp type\n
-067 0x0000bcd8 0x0000bcd8  26  27 (.rodata) ascii ping: Invalid flowinfo %s\n
-068 0x0000bcf3 0x0000bcf3  26  27 (.rodata) ascii ping: bad timing interval\n
-069 0x0000bd0e 0x0000bd0e  20  21 (.rodata) ascii ping: out of memory\n
-070 0x0000bd23 0x0000bd23  24  25 (.rodata) ascii mark cannot be negative\n
-071 0x0000bd3c 0x0000bd3c   4   5 (.rodata) ascii dont
-072 0x0000bd41 0x0000bd41   4   5 (.rodata) ascii want
-073 0x0000bd46 0x0000bd46  29  30 (.rodata) ascii ping: "%s" bad value for TOS\n
-074 0x0000bd64 0x0000bd64  24  25 (.rodata) ascii ping: Invalid tclass %s\n
-075 0x0000bd7d 0x0000bd7d  24  25 (.rodata) ascii ping: bad sndbuf value.\n
-076 0x0000bd96 0x0000bd96  26  27 (.rodata) ascii ping: ttl %u out of range\n
-077 0x0000bdb1 0x0000bdb1   9  10 (.rodata) ascii s20161105
-078 0x0000bdbb 0x0000bdbb  25  26 (.rodata) ascii ping utility, iputils-%s\n
-079 0x0000bdd5 0x0000bdd5  21  22 (.rodata) ascii ping: bad wait time.\n
-080 0x0000bdeb 0x0000bdeb  23  24 (.rodata) ascii ping: bad linger time.\n
-081 0x0000be03 0x0000be03   7   8 (.rodata) ascii %s (%s)
-082 0x0000be0b 0x0000be0b   4   5 (.rodata) ascii \nNOP
-083 0x0000be10 0x0000be10   8   9 (.rodata) ascii \n%cSRR: 
-084 0x0000be19 0x0000be19   8   9 (.rodata) ascii \t0.0.0.0
-085 0x0000be26 0x0000be26  13  14 (.rodata) ascii \t(same route)
-086 0x0000be34 0x0000be34   5   6 (.rodata) ascii \nRR: 
-087 0x0000be3a 0x0000be3a   5   6 (.rodata) ascii \nTS: 
-088 0x0000be40 0x0000be40  26  27 (.rodata) ascii \t%ld absolute not-standard
-089 0x0000be5b 0x0000be5b  17  18 (.rodata) ascii \t%ld not-standard
-090 0x0000be6d 0x0000be6d  13  14 (.rodata) ascii \t%ld absolute
-091 0x0000be7b 0x0000be7b   4   5 (.rodata) ascii \t%ld
-092 0x0000be80 0x0000be80  20  21 (.rodata) ascii Unrecorded hops: %d\n
-093 0x0000be95 0x0000be95  18  19 (.rodata) ascii \nunknown option %x
-094 0x0000bea8 0x0000bea8  25  26 (.rodata) ascii  %1x  %1x  %02x %04x %04x
-095 0x0000bec2 0x0000bec2  11  12 (.rodata) ascii    %1x %04x
-096 0x0000bece 0x0000bece  17  18 (.rodata) ascii   %02x  %02x %04x
-097 0x0000bee0 0x0000bee0   4   5 (.rodata) ascii  %s 
-098 0x0000bee5 0x0000bee5  10  11 (.rodata) ascii Echo Reply
-099 0x0000bef0 0x0000bef0  27  28 (.rodata) ascii Destination Net Unreachable
-100 0x0000bf0c 0x0000bf0c  28  29 (.rodata) ascii Destination Host Unreachable
-101 0x0000bf29 0x0000bf29  28  29 (.rodata) ascii Destination Port Unreachable
-102 0x0000bf46 0x0000bf46  19  20 (.rodata) ascii Source Route Failed
-103 0x0000bf5a 0x0000bf5a  23  24 (.rodata) ascii Destination Net Unknown
-104 0x0000bf72 0x0000bf72  24  25 (.rodata) ascii Destination Host Unknown
-105 0x0000bf8b 0x0000bf8b  20  21 (.rodata) ascii Source Host Isolated
-106 0x0000bfa0 0x0000bfa0  26  27 (.rodata) ascii Destination Net Prohibited
-107 0x0000bfbb 0x0000bfbb  27  28 (.rodata) ascii Destination Host Prohibited
-108 0x0000bfd7 0x0000bfd7  15  16 (.rodata) ascii Packet filtered
-109 0x0000bfe7 0x0000bfe7  20  21 (.rodata) ascii Precedence Violation
-110 0x0000bffc 0x0000bffc  17  18 (.rodata) ascii Precedence Cutoff
-111 0x0000c00e 0x0000c00e  13  14 (.rodata) ascii Source Quench
-112 0x0000c01c 0x0000c01c  16  17 (.rodata) ascii Redirect Network
-113 0x0000c02d 0x0000c02d  13  14 (.rodata) ascii Redirect Host
-114 0x0000c03b 0x0000c03b  22  23 (.rodata) ascii Redirect, Bad Code: %d
-115 0x0000c052 0x0000c052  18  19 (.rodata) ascii (New nexthop: %s)\n
-116 0x0000c065 0x0000c065  12  13 (.rodata) ascii Echo Request
-117 0x0000c072 0x0000c072  21  22 (.rodata) ascii Time to live exceeded
-118 0x0000c088 0x0000c088  29  30 (.rodata) ascii Frag reassembly time exceeded
-119 0x0000c0a6 0x0000c0a6  28  29 (.rodata) ascii Time exceeded, Bad Code: %d\n
-120 0x0000c0c3 0x0000c0c3   9  10 (.rodata) ascii Timestamp
-121 0x0000c0cd 0x0000c0cd  15  16 (.rodata) ascii Timestamp Reply
-122 0x0000c0dd 0x0000c0dd  19  20 (.rodata) ascii Information Request
-123 0x0000c0f1 0x0000c0f1  17  18 (.rodata) ascii Information Reply
-124 0x0000c103 0x0000c103  20  21 (.rodata) ascii Address Mask Request
-125 0x0000c118 0x0000c118  18  19 (.rodata) ascii Address Mask Reply
-126 0x0000c12b 0x0000c12b  18  19 (.rodata) ascii Bad ICMP type: %d\n
-127 0x0000c13e 0x0000c13e  22  23 (.rodata) ascii ping: local error: %s\n
-128 0x0000c158 0x0000c158  20  21 (.rodata) ascii From %s icmp_seq=%u 
-129 0x0000c16d 0x0000c16d  21  22 (.rodata) ascii From %s: icmp_seq=%u 
-130 0x0000c183 0x0000c183  14  15 (.rodata) ascii (BAD CHECKSUM)
-131 0x0000c199 0x0000c199  10  11 (.rodata) ascii %lu.%06lu 
-132 0x0000c1a4 0x0000c1a4   9  10 (.rodata) ascii From %s: 
-133 0x0000c390 0x0000c390  13  14 (.rodata) ascii create_socket
-134 0x0000c3bb 0x0000c3bb   5   6 (.rodata) ascii RMb@A
-135 0x0000c3c7 0x0000c3c7  13  14 (.rodata) ascii @[%lu.%06lu] 
-136 0x0000c3d5 0x0000c3d5  18  19 (.rodata) ascii ping: cap_get_proc
-137 0x0000c3e8 0x0000c3e8  14  15 (.rodata) ascii ping: cap_init
-138 0x0000c3f7 0x0000c3f7  18  19 (.rodata) ascii ping: cap_set_proc
-139 0x0000c40a 0x0000c40a  11  12 (.rodata) ascii ping: prctl
-140 0x0000c416 0x0000c416   6   7 (.rodata) ascii setuid
-141 0x0000c41d 0x0000c41d   4   5 (.rodata) ascii %02x
-142 0x0000c422 0x0000c422  11  12 (.rodata) ascii PATTERN: 0x
-143 0x0000c430 0x0000c430  13  14 (.rodata) ascii ping: sendmsg
-144 0x0000c445 0x0000c445  17  18 (.rodata) ascii %d bytes from %s:
-145 0x0000c457 0x0000c457   7   8 (.rodata) ascii  ttl=%d
-146 0x0000c45f 0x0000c45f  12  13 (.rodata) ascii  time=%ld ms
-147 0x0000c46c 0x0000c46c  18  19 (.rodata) ascii  time=%ld.%01ld ms
-148 0x0000c47f 0x0000c47f  18  19 (.rodata) ascii  time=%ld.%02ld ms
-149 0x0000c492 0x0000c492  18  19 (.rodata) ascii  time=%ld.%03ld ms
-150 0x0000c4a5 0x0000c4a5   7   8 (.rodata) ascii  (DUP!)
-151 0x0000c4ad 0x0000c4ad  16  17 (.rodata) ascii  (BAD CHECKSUM!)
-152 0x0000c4be 0x0000c4be   5   6 (.rodata) ascii \n#%d\t
-153 0x0000c4c8 0x0000c4c8  27  28 (.rodata) ascii --- %s ping statistics ---\n
-154 0x0000c4e4 0x0000c4e4  25  26 (.rodata) ascii %ld packets transmitted, 
-155 0x0000c4fe 0x0000c4fe  12  13 (.rodata) ascii %ld received
-156 0x0000c50b 0x0000c50b  17  18 (.rodata) ascii , +%ld duplicates
-157 0x0000c51d 0x0000c51d  16  17 (.rodata) ascii , +%ld corrupted
-158 0x0000c52e 0x0000c52e  13  14 (.rodata) ascii , +%ld errors
-159 0x0000c53c 0x0000c53c  18  19 (.rodata) ascii , %d%% packet loss
-160 0x0000c54f 0x0000c54f  12  13 (.rodata) ascii , time %ldms
-161 0x0000c55c 0x0000c55c   9  10 (.rodata) ascii %spipe %d
-162 0x0000c566 0x0000c566  29  30 (.rodata) ascii %sipg/ewma %d.%03d/%d.%03d ms
-163 0x0000c584 0x0000c584  27  28 (.rodata) ascii \r%ld/%ld packets, %d%% loss
-164 0x0000c5a0 0x0000c5a0  13  14 (.rodata) ascii ping: recvmsg
-165 0x0000c5b0 0x0000c5b0  48  49 (.rodata) ascii ping: patterns must be specified as hex digits.\n
-166 0x0000c5e8 0x0000c5e8  48  49 (.rodata) ascii %2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x
-167 0x0000c620 0x0000c620  31  32 (.rodata) ascii no answer yet for icmp_seq=%lu\n
-168 0x0000c640 0x0000c640  57  58 (.rodata) ascii WARNING: probably, rcvbuf is not enough to hold preload.\n
-169 0x0000c680 0x0000c680  62  63 (.rodata) ascii ping: cannot flood; minimal interval allowed for user is %dms\n
-170 0x0000c6c0 0x0000c6c0  38  39 (.rodata) ascii ping: illegal preload and/or interval\n
-171 0x0000c6e8 0x0000c6e8  61  62 (.rodata) ascii Warning: no SO_TIMESTAMP support, falling back to SIOCGSTAMP\n
-172 0x0000c728 0x0000c728  31  32 (.rodata) ascii Warning: Failed to set mark %d\n
-173 0x0000c748 0x0000c748  64  65 (.rodata) ascii Warning: time of day goes back (%ldus), taking countermeasures.\n
-174 0x0000c790 0x0000c790  48  49 (.rodata) ascii \nwrong data byte #%d should be 0x%x but was 0x%x
-175 0x0000c7c8 0x0000c7c8  65  66 (.rodata) ascii rtt min/avg/max/mdev = %ld.%03ld/%lu.%03ld/%ld.%03ld/%ld.%03ld ms
-176 0x0000c810 0x0000c810  61  62 (.rodata) ascii , min/avg/ewma/max = %ld.%03ld/%lu.%03ld/%d.%03d/%ld.%03ld ms
-177 0x0000c850 0x0000c850 227 228 (.rodata) ascii ping6 -N suboptions\n\tHelp:\n\t\thelp\n\tQuery:\n\t\tname,\n\t\tipv6,ipv6-all,ipv6-compatible,ipv6-linklocal,ipv6-sitelocal,ipv6-global,\n\t\tipv4,ipv4-all,\n\tSubject:\n\t\tsubject-ipv6=addr,subject-ipv4=addr,subject-name=name,subject-fqdn=name,\n
-178 0x0000c938 0x0000c938  30  31 (.rodata) ascii Beyond scope of source address
-179 0x0000c958 0x0000c958  34  35 (.rodata) ascii ping: packet too short (%d bytes)\n
-180 0x0000c980 0x0000c980  33  34 (.rodata) ascii  unexpeced error in inet_ntop(%s)
-181 0x0000c9a8 0x0000c9a8  30  31 (.rodata) ascii ping6: IDN encoding error: %s\n
-182 0x0000c9c8 0x0000c9c8  38  39 (.rodata) ascii ping6: Inappropriate subject name: %s\n
-183 0x0000c9f0 0x0000c9f0  43  44 (.rodata) ascii ping6: dn_comp() returned too long result.\n
-184 0x0000ca20 0x0000ca20 311 312 (.rodata) ascii Usage: %s [-aAbBdDfhLnOqrRUvV] [-c count] [-i interval] [-I interface]\n             [-l preload] [-m mark] [-M pmtudisc_option]\n             [-N nodeinfo_option] [-p pattern] [-Q tclass] [-s packetsize]\n             [-S sndbuf] [-t ttl] [-T timestamp_option] [-w deadline]\n             [-W timeout] destination\n
-185 0x0000cb58 0x0000cb58  48  49 (.rodata) ascii ping6: Source routing is deprecated by RFC5095.\n
-186 0x0000cb90 0x0000cb90  34  35 (.rodata) ascii scope discrepancy among the nodes\n
-187 0x0000cbb8 0x0000cbb8  74  75 (.rodata) ascii ping6: Warning: source address might be selected on device other than %s.\n
-188 0x0000cc08 0x0000cc08  46  47 (.rodata) ascii ping: multicast ping with too short interval.\n
-189 0x0000cc38 0x0000cc38  40  41 (.rodata) ascii ping: multicast ping does not fragment.\n
-190 0x0000cc68 0x0000cc68  50  51 (.rodata) ascii setsockopt(RAW_CHECKSUM) failed - try to continue.
-191 0x0000cca0 0x0000cca0  32  33 (.rodata) ascii can't disable multicast loopback
-192 0x0000ccc8 0x0000ccc8  25  26 (.rodata) ascii Destination unreachable: 
-193 0x0000cce2 0x0000cce2   8   9 (.rodata) ascii No route
-194 0x0000cceb 0x0000cceb  27  28 (.rodata) ascii Administratively prohibited
-195 0x0000cd07 0x0000cd07  19  20 (.rodata) ascii Address unreachable
-196 0x0000cd1b 0x0000cd1b  16  17 (.rodata) ascii Port unreachable
-197 0x0000cd2c 0x0000cd2c  15  16 (.rodata) ascii Unknown code %d
-198 0x0000cd3c 0x0000cd3c  22  23 (.rodata) ascii Packet too big: mtu=%u
-199 0x0000cd53 0x0000cd53   9  10 (.rodata) ascii , code=%d
-200 0x0000cd5d 0x0000cd5d  15  16 (.rodata) ascii Time exceeded: 
-201 0x0000cd6d 0x0000cd6d   9  10 (.rodata) ascii Hop limit
-202 0x0000cd77 0x0000cd77  23  24 (.rodata) ascii Defragmentation failure
-203 0x0000cd8f 0x0000cd8f  19  20 (.rodata) ascii Parameter problem: 
-204 0x0000cda3 0x0000cda3  19  20 (.rodata) ascii Wrong header field 
-205 0x0000cdb7 0x0000cdb7  15  16 (.rodata) ascii Unknown header 
-206 0x0000cdc7 0x0000cdc7  15  16 (.rodata) ascii Unknown option 
-207 0x0000cdd7 0x0000cdd7   8   9 (.rodata) ascii code %d 
-208 0x0000cde0 0x0000cde0   5   6 (.rodata) ascii at %u
-209 0x0000cde6 0x0000cde6  12  13 (.rodata) ascii Echo request
-210 0x0000cdf3 0x0000cdf3  10  11 (.rodata) ascii Echo reply
-211 0x0000cdfe 0x0000cdfe   9  10 (.rodata) ascii MLD Query
-212 0x0000ce08 0x0000ce08  10  11 (.rodata) ascii MLD Report
-213 0x0000ce13 0x0000ce13  13  14 (.rodata) ascii MLD Reduction
-214 0x0000ce21 0x0000ce21  21  22 (.rodata) ascii unknown icmp type: %u
-215 0x0000ce37 0x0000ce37  24  25 (.rodata) ascii  parse error (truncated)
-216 0x0000ce50 0x0000ce50  24  25 (.rodata) ascii  parse error (too short)
-217 0x0000ce6d 0x0000ce6d  14  15 (.rodata) ascii Qtype conflict
-218 0x0000ce7c 0x0000ce7c  21  22 (.rodata) ascii Subject type conflict
-219 0x0000ce94 0x0000ce94  27  28 (.rodata) ascii ping6: IDN support failed.\n
-220 0x0000ceb0 0x0000ceb0  28  29 (.rodata) ascii ping6: too long scope name.\n
-221 0x0000cecd 0x0000cecd  22  23 (.rodata) ascii ping6: out of memory.\n
-222 0x0000cee4 0x0000cee4  29  30 (.rodata) ascii ff02::2:%02x%02x:%02x%02x%s%s
-223 0x0000cf02 0x0000cf02  14  15 (.rodata) ascii ping6: %s: %s\n
-224 0x0000cf11 0x0000cf11   5   6 (.rodata) ascii \%03o
-225 0x0000cf17 0x0000cf17  22  23 (.rodata) ascii  unknown qtype(0x%02x)
-226 0x0000cf2e 0x0000cf2e   8   9 (.rodata) ascii  refused
-227 0x0000cf37 0x0000cf37   8   9 (.rodata) ascii  unknown
-228 0x0000cf40 0x0000cf40  19  20 (.rodata) ascii  unknown code(%02x)
-229 0x0000cf54 0x0000cf54   9  10 (.rodata) ascii ; seq=%u;
-230 0x0000cf5e 0x0000cf5e   7   8 (.rodata) ascii ping -6
-231 0x0000cf66 0x0000cf66   5   6 (.rodata) ascii ping6
-232 0x0000cf6c 0x0000cf6c  27  28 (.rodata) ascii setsockopt(SO_BINDTODEVICE)
-233 0x0000cf88 0x0000cf88  10  11 (.rodata) ascii getifaddrs
-234 0x0000cf93 0x0000cf93  23  24 (.rodata) ascii ping: IPV6_MTU_DISCOVER
-235 0x0000cfab 0x0000cfab  22  23 (.rodata) ascii ping: bind icmp socket
-236 0x0000cfc2 0x0000cfc2  24  25 (.rodata) ascii setsockopt(ICMP6_FILTER)
-237 0x0000cfdb 0x0000cfdb  29  30 (.rodata) ascii can't set multicast hop limit
-238 0x0000cff9 0x0000cff9  27  28 (.rodata) ascii can't set unicast hop limit
-239 0x0000d015 0x0000d015  23  24 (.rodata) ascii can't receive hop limit
-240 0x0000d02d 0x0000d02d  23  24 (.rodata) ascii setsockopt(IPV6_TCLASS)
-241 0x0000d045 0x0000d045  19  20 (.rodata) ascii can't set flowlabel
-242 0x0000d059 0x0000d059  19  20 (.rodata) ascii can't send flowinfo
-243 0x0000d06d 0x0000d06d  12  13 (.rodata) ascii PING %s(%s) 
-244 0x0000d07a 0x0000d07a  15  16 (.rodata) ascii , flow 0x%05x, 
-245 0x0000d08a 0x0000d08a  14  15 (.rodata) ascii %d data bytes\n
-246 0x0000d099 0x0000d099   8   9 (.rodata) ascii ipv6-all
-247 0x0000d0a2 0x0000d0a2  15  16 (.rodata) ascii ipv6-compatible
-248 0x0000d0b2 0x0000d0b2  14  15 (.rodata) ascii ipv6-linklocal
-249 0x0000d0c1 0x0000d0c1  14  15 (.rodata) ascii ipv6-sitelocal
-250 0x0000d0d0 0x0000d0d0  11  12 (.rodata) ascii ipv6-global
-251 0x0000d0dc 0x0000d0dc   8   9 (.rodata) ascii ipv4-all
-252 0x0000d0e5 0x0000d0e5  12  13 (.rodata) ascii subject-ipv6
-253 0x0000d0f2 0x0000d0f2  12  13 (.rodata) ascii subject-ipv4
-254 0x0000d0ff 0x0000d0ff  12  13 (.rodata) ascii subject-name
-255 0x0000d10c 0x0000d10c  12  13 (.rodata) ascii subject-fqdn
-256 0x0000d119 0x0000d119   4   5 (.rodata) ascii help
+000 0x0000b288 0x55d20591e288 286 287 (.rodata) ascii Usage: ping [-aAbBdDfhLnOqrRUvV64] [-c count] [-i interval] [-I interface]\n            [-m mark] [-M pmtudisc_option] [-l preload] [-p pattern] [-Q tos]\n            [-s packetsize] [-S sndbuf] [-t ttl] [-T timestamp_option]\n            [-w deadline] [-W timeout] [hop1 ...] destination\n
+001 0x0000b3a8 0x55d20591e3a8  46  47 (.rodata) ascii socktype == SOCK_DGRAM || socktype == SOCK_RAW
+002 0x0000b3d8 0x55d20591e3d8  43  44 (.rodata) ascii ping: socket: %s, attempting raw socket...\n
+003 0x0000b408 0x55d20591e408  41  42 (.rodata) ascii WARNING: failed to install socket filter\n
+004 0x0000b438 0x55d20591e438  35  36 (.rodata) ascii Warning: error setting QOS sockopts
+005 0x0000b460 0x55d20591e460  81  82 (.rodata) ascii Do you want to ping broadcast? Then -b. If not, check your local firewall rules.\n
+006 0x0000b4b8 0x55d20591e4b8  35  36 (.rodata) ascii WARNING: pinging broadcast address\n
+007 0x0000b4e0 0x55d20591e4e0  46  47 (.rodata) ascii ping: broadcast ping with too short interval.\n
+008 0x0000b510 0x55d20591e510  40  41 (.rodata) ascii ping: broadcast ping does not fragment.\n
+009 0x0000b540 0x55d20591e540  32  33 (.rodata) ascii WARNING: setsockopt(ICMP_FILTER)
+010 0x0000b568 0x55d20591e568  49  50 (.rodata) ascii WARNING: your kernel is veeery old. No problems.\n
+011 0x0000b5a0 0x55d20591e5a0  31  32 (.rodata) ascii WARNING: setsockopt(IP_RECVTTL)
+012 0x0000b5c0 0x55d20591e5c0  31  32 (.rodata) ascii WARNING: setsockopt(IP_RETOPTS)
+013 0x0000b5e0 0x55d20591e5e0  38  39 (.rodata) ascii ping: can't disable multicast loopback
+014 0x0000b608 0x55d20591e608  38  39 (.rodata) ascii ping: can't set multicast time-to-live
+015 0x0000b630 0x55d20591e630  36  37 (.rodata) ascii ping: can't set unicast time-to-live
+016 0x0000b658 0x55d20591e658  50  51 (.rodata) ascii Error: packet size %d is too large. Maximum is %d\n
+017 0x0000b690 0x55d20591e690  73  74 (.rodata) ascii ping: Warning: source address might be selected on device other than %s.\n
+018 0x0000b6e0 0x55d20591e6e0  48  49 (.rodata) ascii ping: Only one -4 or -6 option may be specified\n
+019 0x0000b718 0x55d20591e718  33  34 (.rodata) ascii Only one of -T or -R may be used\n
+020 0x0000b740 0x55d20591e740  41  42 (.rodata) ascii ping: bad number of packets to transmit.\n
+021 0x0000b770 0x55d20591e770  32  33 (.rodata) ascii ping: invalid source address %s\n
+022 0x0000b798 0x55d20591e798  41  42 (.rodata) ascii ping: bad preload value, should be 1..%d\n
+023 0x0000b7c8 0x55d20591e7c8  38  39 (.rodata) ascii ping: cannot set preload to value > 3\n
+024 0x0000b7f0 0x55d20591e7f0  57  58 (.rodata) ascii ping: wrong value for -M: do, dont, want are valid ones.\n
+025 0x0000b830 0x55d20591e830  60  61 (.rodata) ascii ping: the decimal value of TOS bits must be 0-254 (or zero)\n
+026 0x0000b870 0x55d20591e870  39  40 (.rodata) ascii ping: illegal negative packet size %d.\n
+027 0x0000b898 0x55d20591e898  32  33 (.rodata) ascii ping: packet size too large: %d\n
+028 0x0000b8c0 0x55d20591e8c0  52  53 (.rodata) ascii h?4bRT:6F:N:aABc:dDfi:I:l:Lm:M:nOp:qQ:rs:S:t:UvVw:W:
+029 0x0000b8f8 0x55d20591e8f8  34  35 (.rodata) ascii ping: unknown protocol family: %d\n
+030 0x0000b920 0x55d20591e920  64  65 (.rodata) ascii Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src      Dst Data
+031 0x0000b968 0x55d20591e968  32  33 (.rodata) ascii Destination Protocol Unreachable
+032 0x0000b990 0x55d20591e990  34  35 (.rodata) ascii Frag needed and DF set (mtu = %u)\n
+033 0x0000b9b8 0x55d20591e9b8  47  48 (.rodata) ascii Destination Net Unreachable for Type of Service
+034 0x0000b9e8 0x55d20591e9e8  48  49 (.rodata) ascii Destination Host Unreachable for Type of Service
+035 0x0000ba20 0x55d20591ea20  31  32 (.rodata) ascii Dest Unreachable, Bad Code: %d\n
+036 0x0000ba40 0x55d20591ea40  36  37 (.rodata) ascii Redirect Type of Service and Network
+037 0x0000ba68 0x55d20591ea68  33  34 (.rodata) ascii Redirect Type of Service and Host
+038 0x0000ba90 0x55d20591ea90  32  33 (.rodata) ascii Parameter problem: pointer = %u\n
+039 0x0000bab8 0x55d20591eab8  44  45 (.rodata) ascii ping: local error: Message too long, mtu=%u\n
+040 0x0000bae8 0x55d20591eae8  33  34 (.rodata) ascii \rWARNING: setsockopt(ICMP_FILTER)
+041 0x0000bb10 0x55d20591eb10  42  43 (.rodata) ascii ping: packet too short (%d bytes) from %s\n
+042 0x0000bb3b 0x55d20591eb3b   6   7 (.rodata) ascii ping.c
+043 0x0000bb42 0x55d20591eb42  14  15 (.rodata) ascii sock->fd == -1
+044 0x0000bb51 0x55d20591eb51  17  18 (.rodata) ascii ping: socket: %s\n
+045 0x0000bb63 0x55d20591eb63  12  13 (.rodata) ascii  icmp_seq=%u
+046 0x0000bb70 0x55d20591eb70  21  22 (.rodata) ascii ping: setsockopt: %s\n
+047 0x0000bb86 0x55d20591eb86  13  14 (.rodata) ascii ping: %s: %s\n
+048 0x0000bb94 0x55d20591eb94  23  24 (.rodata) ascii ping: unknown iface %s\n
+049 0x0000bbac 0x55d20591ebac  21  22 (.rodata) ascii ping: IP_MULTICAST_IF
+050 0x0000bbc2 0x55d20591ebc2  21  22 (.rodata) ascii ping: SO_BINDTODEVICE
+051 0x0000bbd8 0x55d20591ebd8   7   8 (.rodata) ascii connect
+052 0x0000bbe0 0x55d20591ebe0  11  12 (.rodata) ascii getsockname
+053 0x0000bbec 0x55d20591ebec  21  22 (.rodata) ascii gatifaddrs() failed.\n
+054 0x0000bc02 0x55d20591ec02  21  22 (.rodata) ascii ping: IP_MTU_DISCOVER
+055 0x0000bc18 0x55d20591ec18   4   5 (.rodata) ascii bind
+056 0x0000bc1d 0x55d20591ec1d  18  19 (.rodata) ascii ping: record route
+057 0x0000bc30 0x55d20591ec30  15  16 (.rodata) ascii ping: ts option
+058 0x0000bc40 0x55d20591ec40  28  29 (.rodata) ascii ping: can't set broadcasting
+059 0x0000bc5d 0x55d20591ec5d  21  22 (.rodata) ascii ping: out of memory.\n
+060 0x0000bc73 0x55d20591ec73  13  14 (.rodata) ascii PING %s (%s) 
+061 0x0000bc81 0x55d20591ec81  12  13 (.rodata) ascii from %s %s: 
+062 0x0000bc8e 0x55d20591ec8e  22  23 (.rodata) ascii %d(%d) bytes of data.\n
+063 0x0000bca5 0x55d20591eca5   6   7 (.rodata) ascii tsonly
+064 0x0000bcac 0x55d20591ecac   9  10 (.rodata) ascii tsandaddr
+065 0x0000bcb6 0x55d20591ecb6   9  10 (.rodata) ascii tsprespec
+066 0x0000bcc0 0x55d20591ecc0  23  24 (.rodata) ascii Invalid timestamp type\n
+067 0x0000bcd8 0x55d20591ecd8  26  27 (.rodata) ascii ping: Invalid flowinfo %s\n
+068 0x0000bcf3 0x55d20591ecf3  26  27 (.rodata) ascii ping: bad timing interval\n
+069 0x0000bd0e 0x55d20591ed0e  20  21 (.rodata) ascii ping: out of memory\n
+070 0x0000bd23 0x55d20591ed23  24  25 (.rodata) ascii mark cannot be negative\n
+071 0x0000bd3c 0x55d20591ed3c   4   5 (.rodata) ascii dont
+072 0x0000bd41 0x55d20591ed41   4   5 (.rodata) ascii want
+073 0x0000bd46 0x55d20591ed46  29  30 (.rodata) ascii ping: "%s" bad value for TOS\n
+074 0x0000bd64 0x55d20591ed64  24  25 (.rodata) ascii ping: Invalid tclass %s\n
+075 0x0000bd7d 0x55d20591ed7d  24  25 (.rodata) ascii ping: bad sndbuf value.\n
+076 0x0000bd96 0x55d20591ed96  26  27 (.rodata) ascii ping: ttl %u out of range\n
+077 0x0000bdb1 0x55d20591edb1   9  10 (.rodata) ascii s20161105
+078 0x0000bdbb 0x55d20591edbb  25  26 (.rodata) ascii ping utility, iputils-%s\n
+079 0x0000bdd5 0x55d20591edd5  21  22 (.rodata) ascii ping: bad wait time.\n
+080 0x0000bdeb 0x55d20591edeb  23  24 (.rodata) ascii ping: bad linger time.\n
+081 0x0000be03 0x55d20591ee03   7   8 (.rodata) ascii %s (%s)
+082 0x0000be0b 0x55d20591ee0b   4   5 (.rodata) ascii \nNOP
+083 0x0000be10 0x55d20591ee10   8   9 (.rodata) ascii \n%cSRR: 
+084 0x0000be19 0x55d20591ee19   8   9 (.rodata) ascii \t0.0.0.0
+085 0x0000be26 0x55d20591ee26  13  14 (.rodata) ascii \t(same route)
+086 0x0000be34 0x55d20591ee34   5   6 (.rodata) ascii \nRR: 
+087 0x0000be3a 0x55d20591ee3a   5   6 (.rodata) ascii \nTS: 
+088 0x0000be40 0x55d20591ee40  26  27 (.rodata) ascii \t%ld absolute not-standard
+089 0x0000be5b 0x55d20591ee5b  17  18 (.rodata) ascii \t%ld not-standard
+090 0x0000be6d 0x55d20591ee6d  13  14 (.rodata) ascii \t%ld absolute
+091 0x0000be7b 0x55d20591ee7b   4   5 (.rodata) ascii \t%ld
+092 0x0000be80 0x55d20591ee80  20  21 (.rodata) ascii Unrecorded hops: %d\n
+093 0x0000be95 0x55d20591ee95  18  19 (.rodata) ascii \nunknown option %x
+094 0x0000bea8 0x55d20591eea8  25  26 (.rodata) ascii  %1x  %1x  %02x %04x %04x
+095 0x0000bec2 0x55d20591eec2  11  12 (.rodata) ascii    %1x %04x
+096 0x0000bece 0x55d20591eece  17  18 (.rodata) ascii   %02x  %02x %04x
+097 0x0000bee0 0x55d20591eee0   4   5 (.rodata) ascii  %s 
+098 0x0000bee5 0x55d20591eee5  10  11 (.rodata) ascii Echo Reply
+099 0x0000bef0 0x55d20591eef0  27  28 (.rodata) ascii Destination Net Unreachable
+100 0x0000bf0c 0x55d20591ef0c  28  29 (.rodata) ascii Destination Host Unreachable
+101 0x0000bf29 0x55d20591ef29  28  29 (.rodata) ascii Destination Port Unreachable
+102 0x0000bf46 0x55d20591ef46  19  20 (.rodata) ascii Source Route Failed
+103 0x0000bf5a 0x55d20591ef5a  23  24 (.rodata) ascii Destination Net Unknown
+104 0x0000bf72 0x55d20591ef72  24  25 (.rodata) ascii Destination Host Unknown
+105 0x0000bf8b 0x55d20591ef8b  20  21 (.rodata) ascii Source Host Isolated
+106 0x0000bfa0 0x55d20591efa0  26  27 (.rodata) ascii Destination Net Prohibited
+107 0x0000bfbb 0x55d20591efbb  27  28 (.rodata) ascii Destination Host Prohibited
+108 0x0000bfd7 0x55d20591efd7  15  16 (.rodata) ascii Packet filtered
+109 0x0000bfe7 0x55d20591efe7  20  21 (.rodata) ascii Precedence Violation
+110 0x0000bffc 0x55d20591effc  17  18 (.rodata) ascii Precedence Cutoff
+111 0x0000c00e 0x55d20591f00e  13  14 (.rodata) ascii Source Quench
+112 0x0000c01c 0x55d20591f01c  16  17 (.rodata) ascii Redirect Network
+113 0x0000c02d 0x55d20591f02d  13  14 (.rodata) ascii Redirect Host
+114 0x0000c03b 0x55d20591f03b  22  23 (.rodata) ascii Redirect, Bad Code: %d
+115 0x0000c052 0x55d20591f052  18  19 (.rodata) ascii (New nexthop: %s)\n
+116 0x0000c065 0x55d20591f065  12  13 (.rodata) ascii Echo Request
+117 0x0000c072 0x55d20591f072  21  22 (.rodata) ascii Time to live exceeded
+118 0x0000c088 0x55d20591f088  29  30 (.rodata) ascii Frag reassembly time exceeded
+119 0x0000c0a6 0x55d20591f0a6  28  29 (.rodata) ascii Time exceeded, Bad Code: %d\n
+120 0x0000c0c3 0x55d20591f0c3   9  10 (.rodata) ascii Timestamp
+121 0x0000c0cd 0x55d20591f0cd  15  16 (.rodata) ascii Timestamp Reply
+122 0x0000c0dd 0x55d20591f0dd  19  20 (.rodata) ascii Information Request
+123 0x0000c0f1 0x55d20591f0f1  17  18 (.rodata) ascii Information Reply
+124 0x0000c103 0x55d20591f103  20  21 (.rodata) ascii Address Mask Request
+125 0x0000c118 0x55d20591f118  18  19 (.rodata) ascii Address Mask Reply
+126 0x0000c12b 0x55d20591f12b  18  19 (.rodata) ascii Bad ICMP type: %d\n
+127 0x0000c13e 0x55d20591f13e  22  23 (.rodata) ascii ping: local error: %s\n
+128 0x0000c158 0x55d20591f158  20  21 (.rodata) ascii From %s icmp_seq=%u 
+129 0x0000c16d 0x55d20591f16d  21  22 (.rodata) ascii From %s: icmp_seq=%u 
+130 0x0000c183 0x55d20591f183  14  15 (.rodata) ascii (BAD CHECKSUM)
+131 0x0000c199 0x55d20591f199  10  11 (.rodata) ascii %lu.%06lu 
+132 0x0000c1a4 0x55d20591f1a4   9  10 (.rodata) ascii From %s: 
+133 0x0000c390 0x55d20591f390  13  14 (.rodata) ascii create_socket
+134 0x0000c3bb 0x55d20591f3bb   5   6 (.rodata) ascii RMb@A
+135 0x0000c3c7 0x55d20591f3c7  13  14 (.rodata) ascii @[%lu.%06lu] 
+136 0x0000c3d5 0x55d20591f3d5  18  19 (.rodata) ascii ping: cap_get_proc
+137 0x0000c3e8 0x55d20591f3e8  14  15 (.rodata) ascii ping: cap_init
+138 0x0000c3f7 0x55d20591f3f7  18  19 (.rodata) ascii ping: cap_set_proc
+139 0x0000c40a 0x55d20591f40a  11  12 (.rodata) ascii ping: prctl
+140 0x0000c416 0x55d20591f416   6   7 (.rodata) ascii setuid
+141 0x0000c41d 0x55d20591f41d   4   5 (.rodata) ascii %02x
+142 0x0000c422 0x55d20591f422  11  12 (.rodata) ascii PATTERN: 0x
+143 0x0000c430 0x55d20591f430  13  14 (.rodata) ascii ping: sendmsg
+144 0x0000c445 0x55d20591f445  17  18 (.rodata) ascii %d bytes from %s:
+145 0x0000c457 0x55d20591f457   7   8 (.rodata) ascii  ttl=%d
+146 0x0000c45f 0x55d20591f45f  12  13 (.rodata) ascii  time=%ld ms
+147 0x0000c46c 0x55d20591f46c  18  19 (.rodata) ascii  time=%ld.%01ld ms
+148 0x0000c47f 0x55d20591f47f  18  19 (.rodata) ascii  time=%ld.%02ld ms
+149 0x0000c492 0x55d20591f492  18  19 (.rodata) ascii  time=%ld.%03ld ms
+150 0x0000c4a5 0x55d20591f4a5   7   8 (.rodata) ascii  (DUP!)
+151 0x0000c4ad 0x55d20591f4ad  16  17 (.rodata) ascii  (BAD CHECKSUM!)
+152 0x0000c4be 0x55d20591f4be   5   6 (.rodata) ascii \n#%d\t
+153 0x0000c4c8 0x55d20591f4c8  27  28 (.rodata) ascii --- %s ping statistics ---\n
+154 0x0000c4e4 0x55d20591f4e4  25  26 (.rodata) ascii %ld packets transmitted, 
+155 0x0000c4fe 0x55d20591f4fe  12  13 (.rodata) ascii %ld received
+156 0x0000c50b 0x55d20591f50b  17  18 (.rodata) ascii , +%ld duplicates
+157 0x0000c51d 0x55d20591f51d  16  17 (.rodata) ascii , +%ld corrupted
+158 0x0000c52e 0x55d20591f52e  13  14 (.rodata) ascii , +%ld errors
+159 0x0000c53c 0x55d20591f53c  18  19 (.rodata) ascii , %d%% packet loss
+160 0x0000c54f 0x55d20591f54f  12  13 (.rodata) ascii , time %ldms
+161 0x0000c55c 0x55d20591f55c   9  10 (.rodata) ascii %spipe %d
+162 0x0000c566 0x55d20591f566  29  30 (.rodata) ascii %sipg/ewma %d.%03d/%d.%03d ms
+163 0x0000c584 0x55d20591f584  27  28 (.rodata) ascii \r%ld/%ld packets, %d%% loss
+164 0x0000c5a0 0x55d20591f5a0  13  14 (.rodata) ascii ping: recvmsg
+165 0x0000c5b0 0x55d20591f5b0  48  49 (.rodata) ascii ping: patterns must be specified as hex digits.\n
+166 0x0000c5e8 0x55d20591f5e8  48  49 (.rodata) ascii %2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x
+167 0x0000c620 0x55d20591f620  31  32 (.rodata) ascii no answer yet for icmp_seq=%lu\n
+168 0x0000c640 0x55d20591f640  57  58 (.rodata) ascii WARNING: probably, rcvbuf is not enough to hold preload.\n
+169 0x0000c680 0x55d20591f680  62  63 (.rodata) ascii ping: cannot flood; minimal interval allowed for user is %dms\n
+170 0x0000c6c0 0x55d20591f6c0  38  39 (.rodata) ascii ping: illegal preload and/or interval\n
+171 0x0000c6e8 0x55d20591f6e8  61  62 (.rodata) ascii Warning: no SO_TIMESTAMP support, falling back to SIOCGSTAMP\n
+172 0x0000c728 0x55d20591f728  31  32 (.rodata) ascii Warning: Failed to set mark %d\n
+173 0x0000c748 0x55d20591f748  64  65 (.rodata) ascii Warning: time of day goes back (%ldus), taking countermeasures.\n
+174 0x0000c790 0x55d20591f790  48  49 (.rodata) ascii \nwrong data byte #%d should be 0x%x but was 0x%x
+175 0x0000c7c8 0x55d20591f7c8  65  66 (.rodata) ascii rtt min/avg/max/mdev = %ld.%03ld/%lu.%03ld/%ld.%03ld/%ld.%03ld ms
+176 0x0000c810 0x55d20591f810  61  62 (.rodata) ascii , min/avg/ewma/max = %ld.%03ld/%lu.%03ld/%d.%03d/%ld.%03ld ms
+177 0x0000c850 0x55d20591f850 227 228 (.rodata) ascii ping6 -N suboptions\n\tHelp:\n\t\thelp\n\tQuery:\n\t\tname,\n\t\tipv6,ipv6-all,ipv6-compatible,ipv6-linklocal,ipv6-sitelocal,ipv6-global,\n\t\tipv4,ipv4-all,\n\tSubject:\n\t\tsubject-ipv6=addr,subject-ipv4=addr,subject-name=name,subject-fqdn=name,\n
+178 0x0000c938 0x55d20591f938  30  31 (.rodata) ascii Beyond scope of source address
+179 0x0000c958 0x55d20591f958  34  35 (.rodata) ascii ping: packet too short (%d bytes)\n
+180 0x0000c980 0x55d20591f980  33  34 (.rodata) ascii  unexpeced error in inet_ntop(%s)
+181 0x0000c9a8 0x55d20591f9a8  30  31 (.rodata) ascii ping6: IDN encoding error: %s\n
+182 0x0000c9c8 0x55d20591f9c8  38  39 (.rodata) ascii ping6: Inappropriate subject name: %s\n
+183 0x0000c9f0 0x55d20591f9f0  43  44 (.rodata) ascii ping6: dn_comp() returned too long result.\n
+184 0x0000ca20 0x55d20591fa20 311 312 (.rodata) ascii Usage: %s [-aAbBdDfhLnOqrRUvV] [-c count] [-i interval] [-I interface]\n             [-l preload] [-m mark] [-M pmtudisc_option]\n             [-N nodeinfo_option] [-p pattern] [-Q tclass] [-s packetsize]\n             [-S sndbuf] [-t ttl] [-T timestamp_option] [-w deadline]\n             [-W timeout] destination\n
+185 0x0000cb58 0x55d20591fb58  48  49 (.rodata) ascii ping6: Source routing is deprecated by RFC5095.\n
+186 0x0000cb90 0x55d20591fb90  34  35 (.rodata) ascii scope discrepancy among the nodes\n
+187 0x0000cbb8 0x55d20591fbb8  74  75 (.rodata) ascii ping6: Warning: source address might be selected on device other than %s.\n
+188 0x0000cc08 0x55d20591fc08  46  47 (.rodata) ascii ping: multicast ping with too short interval.\n
+189 0x0000cc38 0x55d20591fc38  40  41 (.rodata) ascii ping: multicast ping does not fragment.\n
+190 0x0000cc68 0x55d20591fc68  50  51 (.rodata) ascii setsockopt(RAW_CHECKSUM) failed - try to continue.
+191 0x0000cca0 0x55d20591fca0  32  33 (.rodata) ascii can't disable multicast loopback
+192 0x0000ccc8 0x55d20591fcc8  25  26 (.rodata) ascii Destination unreachable: 
+193 0x0000cce2 0x55d20591fce2   8   9 (.rodata) ascii No route
+194 0x0000cceb 0x55d20591fceb  27  28 (.rodata) ascii Administratively prohibited
+195 0x0000cd07 0x55d20591fd07  19  20 (.rodata) ascii Address unreachable
+196 0x0000cd1b 0x55d20591fd1b  16  17 (.rodata) ascii Port unreachable
+197 0x0000cd2c 0x55d20591fd2c  15  16 (.rodata) ascii Unknown code %d
+198 0x0000cd3c 0x55d20591fd3c  22  23 (.rodata) ascii Packet too big: mtu=%u
+199 0x0000cd53 0x55d20591fd53   9  10 (.rodata) ascii , code=%d
+200 0x0000cd5d 0x55d20591fd5d  15  16 (.rodata) ascii Time exceeded: 
+201 0x0000cd6d 0x55d20591fd6d   9  10 (.rodata) ascii Hop limit
+202 0x0000cd77 0x55d20591fd77  23  24 (.rodata) ascii Defragmentation failure
+203 0x0000cd8f 0x55d20591fd8f  19  20 (.rodata) ascii Parameter problem: 
+204 0x0000cda3 0x55d20591fda3  19  20 (.rodata) ascii Wrong header field 
+205 0x0000cdb7 0x55d20591fdb7  15  16 (.rodata) ascii Unknown header 
+206 0x0000cdc7 0x55d20591fdc7  15  16 (.rodata) ascii Unknown option 
+207 0x0000cdd7 0x55d20591fdd7   8   9 (.rodata) ascii code %d 
+208 0x0000cde0 0x55d20591fde0   5   6 (.rodata) ascii at %u
+209 0x0000cde6 0x55d20591fde6  12  13 (.rodata) ascii Echo request
+210 0x0000cdf3 0x55d20591fdf3  10  11 (.rodata) ascii Echo reply
+211 0x0000cdfe 0x55d20591fdfe   9  10 (.rodata) ascii MLD Query
+212 0x0000ce08 0x55d20591fe08  10  11 (.rodata) ascii MLD Report
+213 0x0000ce13 0x55d20591fe13  13  14 (.rodata) ascii MLD Reduction
+214 0x0000ce21 0x55d20591fe21  21  22 (.rodata) ascii unknown icmp type: %u
+215 0x0000ce37 0x55d20591fe37  24  25 (.rodata) ascii  parse error (truncated)
+216 0x0000ce50 0x55d20591fe50  24  25 (.rodata) ascii  parse error (too short)
+217 0x0000ce6d 0x55d20591fe6d  14  15 (.rodata) ascii Qtype conflict
+218 0x0000ce7c 0x55d20591fe7c  21  22 (.rodata) ascii Subject type conflict
+219 0x0000ce94 0x55d20591fe94  27  28 (.rodata) ascii ping6: IDN support failed.\n
+220 0x0000ceb0 0x55d20591feb0  28  29 (.rodata) ascii ping6: too long scope name.\n
+221 0x0000cecd 0x55d20591fecd  22  23 (.rodata) ascii ping6: out of memory.\n
+222 0x0000cee4 0x55d20591fee4  29  30 (.rodata) ascii ff02::2:%02x%02x:%02x%02x%s%s
+223 0x0000cf02 0x55d20591ff02  14  15 (.rodata) ascii ping6: %s: %s\n
+224 0x0000cf11 0x55d20591ff11   5   6 (.rodata) ascii \%03o
+225 0x0000cf17 0x55d20591ff17  22  23 (.rodata) ascii  unknown qtype(0x%02x)
+226 0x0000cf2e 0x55d20591ff2e   8   9 (.rodata) ascii  refused
+227 0x0000cf37 0x55d20591ff37   8   9 (.rodata) ascii  unknown
+228 0x0000cf40 0x55d20591ff40  19  20 (.rodata) ascii  unknown code(%02x)
+229 0x0000cf54 0x55d20591ff54   9  10 (.rodata) ascii ; seq=%u;
+230 0x0000cf5e 0x55d20591ff5e   7   8 (.rodata) ascii ping -6
+231 0x0000cf66 0x55d20591ff66   5   6 (.rodata) ascii ping6
+232 0x0000cf6c 0x55d20591ff6c  27  28 (.rodata) ascii setsockopt(SO_BINDTODEVICE)
+233 0x0000cf88 0x55d20591ff88  10  11 (.rodata) ascii getifaddrs
+234 0x0000cf93 0x55d20591ff93  23  24 (.rodata) ascii ping: IPV6_MTU_DISCOVER
+235 0x0000cfab 0x55d20591ffab  22  23 (.rodata) ascii ping: bind icmp socket
+236 0x0000cfc2 0x55d20591ffc2  24  25 (.rodata) ascii setsockopt(ICMP6_FILTER)
+237 0x0000cfdb 0x55d20591ffdb  29  30 (.rodata) ascii can't set multicast hop limit
+238 0x0000cff9 0x55d20591fff9  27  28 (.rodata) ascii can't set unicast hop limit
+239 0x0000d015 0x55d205920015  23  24 (.rodata) ascii can't receive hop limit
+240 0x0000d02d 0x55d20592002d  23  24 (.rodata) ascii setsockopt(IPV6_TCLASS)
+241 0x0000d045 0x55d205920045  19  20 (.rodata) ascii can't set flowlabel
+242 0x0000d059 0x55d205920059  19  20 (.rodata) ascii can't send flowinfo
+243 0x0000d06d 0x55d20592006d  12  13 (.rodata) ascii PING %s(%s) 
+244 0x0000d07a 0x55d20592007a  15  16 (.rodata) ascii , flow 0x%05x, 
+245 0x0000d08a 0x55d20592008a  14  15 (.rodata) ascii %d data bytes\n
+246 0x0000d099 0x55d205920099   8   9 (.rodata) ascii ipv6-all
+247 0x0000d0a2 0x55d2059200a2  15  16 (.rodata) ascii ipv6-compatible
+248 0x0000d0b2 0x55d2059200b2  14  15 (.rodata) ascii ipv6-linklocal
+249 0x0000d0c1 0x55d2059200c1  14  15 (.rodata) ascii ipv6-sitelocal
+250 0x0000d0d0 0x55d2059200d0  11  12 (.rodata) ascii ipv6-global
+251 0x0000d0dc 0x55d2059200dc   8   9 (.rodata) ascii ipv4-all
+252 0x0000d0e5 0x55d2059200e5  12  13 (.rodata) ascii subject-ipv6
+253 0x0000d0f2 0x55d2059200f2  12  13 (.rodata) ascii subject-ipv4
+254 0x0000d0ff 0x55d2059200ff  12  13 (.rodata) ascii subject-name
+255 0x0000d10c 0x55d20592010c  12  13 (.rodata) ascii subject-fqdn
+256 0x0000d119 0x55d205920119   4   5 (.rodata) ascii help

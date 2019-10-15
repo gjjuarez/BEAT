@@ -24,9 +24,9 @@ class EmbTerminalLinux(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.terminal)
         # Works also with urxvt:
-        self.process.start('xterm',['-into', str(int(self.winId())), '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py'])
-        x = self.process.processId()
-        #self.setFixedSize(640, 480)
+
+    def begin(self):
+        self.process.start('xterm',[ '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py'])
 
 
 class mainWindow(QtWidgets.QMainWindow):

@@ -8,7 +8,14 @@ rlocal = None
 
 def run_static_analysis():
     global rlocal
-    rlocal = r2pipe.open("/bin/ping")
+    import pymongo
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient['projectsdb']
+    mycol = mydb['current']
+    path = ""
+    for x in mycol.find():
+        path = x["path"]
+    rlocal = r2pipe.open(path)
     #rlocal = r2pipe.open("/bin/ping")  # Open ping in Radare2 in debug mode
     try:
         rlocal.cmd("aaa")  # analyze file

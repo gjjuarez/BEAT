@@ -3178,9 +3178,12 @@
         <bold>false</bold>
        </font>
       </property>
+      <property name="currentText">
+       <string>All</string>
+      </property>
       <item>
        <property name="text">
-        <string>Type</string>
+        <string>All</string>
        </property>
       </item>
       <item>
@@ -3195,7 +3198,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Data Strucure</string>
+        <string>Imports</string>
        </property>
       </item>
      </widget>

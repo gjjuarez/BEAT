@@ -15,15 +15,14 @@ def run_static_analysis():
     path = ""
     for x in mycol.find():
         path = x["path"]
-    rlocal = r2pipe.open(path)
-    #rlocal = r2pipe.open("/bin/ping")  # Open ping in Radare2 in debug mode
+    rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
     try:
         #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
         rlocal.cmd("aaa")  # analyze file
         rlocal.cmd("s main")
     except:
         rlocal.cmd("exit")
-        print("Error running static analysis")
+        pass  # fail quietly, almost always gives error when reading
     extract_all()
 
 def extract_vars_from_functions(filename):
@@ -37,7 +36,11 @@ def extract_vars_from_functions(filename):
                 for func in f.read().split("\n"):
                     print(func.split()[0])
                     rlocal.cmd("s " + func.split()[0])  # move to each functions offset
-                    varf.write(rlocal.cmd("afvd"))
+                    functionVars = rlocal.cmd("afvd")
+                    if functionVars != "":
+                        varf.write(functionVars)
+                        varf.write("ENDFUNCTION\n")
+
     except IOError:
         print("Error extracting variables")
     rlocal.cmd("s " + currentAddr)
@@ -114,4 +117,5 @@ def display_POI_in_points_of_interest():
     print("Test")
 
 if __name__ == "__main__":
-    run_static_analysis()
+    pass
+    # run_static_analysis()

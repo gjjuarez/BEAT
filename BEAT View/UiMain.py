@@ -93,8 +93,8 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.set_breakpoint)
-        # runs dynamic analysis on breakpoints
-        self.dynamic_run_button.clicked.connect(radare_commands_interface.run_dynamic_and_update)
+        # runs dynamic analysis on breakpoints then updates ui
+        self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
 
@@ -235,6 +235,7 @@ class UiMain(UiView.Ui_BEAT):
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
+        radare_commands_interface.run_static_analysis()
         #self.stacked.setCurrentWidget(self.terminal)
         self.terminal.begin()
         global staticIsRun
@@ -264,7 +265,8 @@ class UiMain(UiView.Ui_BEAT):
             self.read_and_display_all_variables()
         elif display_value == "All":
             self.read_and_display_all_functions()
-            self.read_and_display_all_variables()
+            # variables displayed with functions instead
+            # self.read_and_display_all_variables()
             self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
@@ -274,6 +276,10 @@ class UiMain(UiView.Ui_BEAT):
             radare_commands_interface.set_breakpoint_at_function(item.text())
         else:  # item is unchecked
             radare_commands_interface.remove_breakpoint_at_function(item.text())
+
+    def run_dynamic_then_display(self):
+        radare_commands_interface.run_dynamic_and_update()
+        self.change_displayed_POI()  # updates ui
 
     '''
     Runs analysis and displays results
@@ -303,16 +309,47 @@ class UiMain(UiView.Ui_BEAT):
 
     def read_and_display_all_functions(self):
         functions = open("functions.txt", "r")
+
+        varIndex = 1  # keep track of where to read in variables file, skip title
         for line in functions.read().split("\n"):
             item = QListWidgetItem(line)
             self.detailed_points_of_interest_listWidget.addItem(item)
+            # display all variables related to current function
+            varIndex = self.read_and_display_variables_with_functions(varIndex)
+
         functions.close()
         self.display_functions_in_left_column()
+
+    def read_and_display_variables_with_functions(self, index):
+        with open("variables.txt", "r") as file:
+            # display all variables related to current function
+            for varline in file.read().split("\n")[index:]:
+                index = index + 1
+                if "ENDFUNCTION" in varline:
+                    break
+                print("detailed view")
+                varItem = QListWidgetItem("   " + varline)
+                self.detailed_points_of_interest_listWidget.addItem(varItem)
+        return index
+
+    def read_and_display_variables_with_functions_left_column(self, index):
+        with open("variables.txt", "r") as file:
+            # display all variables related to current function
+            for varline in file.read().split("\n")[index:]:
+                index = index + 1
+                if "ENDFUNCTION" in varline or varline == "":
+                    break
+                print("detail view: " + varline)
+                varline = varline.split(" ")[1]
+                varItem = QListWidgetItem("   " + varline)
+                self.points_of_interest_list_widget.addItem(varItem)
+        return index
 
     def display_functions_in_left_column(self):
         functions = open("functions.txt", "r")
         breakPoints = radare_commands_interface.get_all_breakpoints()
 
+        varIndex = 1  # keep track of where to read in variables file, skip title
         # Start at the index 2 to the end get each line
         for line in functions.read().split("\n")[:-1]:
             # Separate by spaces and then get the last word
@@ -326,6 +363,10 @@ class UiMain(UiView.Ui_BEAT):
             else:
                 item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
+
+            # display all variables related to current function
+            varIndex = self.read_and_display_variables_with_functions_left_column(varIndex)
+
         functions.close()
 
     def read_and_display_all_strings(self):

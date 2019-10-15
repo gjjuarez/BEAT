@@ -14,7 +14,7 @@ class Ui_BEAT(object):
     def setupUi(self, BEAT):
         BEAT.setObjectName("BEAT")
 
-        #BEAT.resize(934, 557)
+        BEAT.resize(934, 557)
         self.tabWidget = QtWidgets.QTabWidget(BEAT)
         self.tabWidget.setGeometry(QtCore.QRect(0, 0, 931, 571))
         self.tabWidget.setAccessibleName("")

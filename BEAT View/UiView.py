@@ -8,7 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Terminal import EmbTerminalLinux
+
 
 class Ui_BEAT(object):
     def setupUi(self, BEAT):
@@ -274,24 +274,6 @@ class Ui_BEAT(object):
         self.project_list.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked|QtWidgets.QAbstractItemView.EditKeyPressed)
         self.project_list.setResizeMode(QtWidgets.QListView.Adjust)
         self.project_list.setObjectName("project_list")
-        item = QtWidgets.QListWidgetItem()
-        self.project_list.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.project_list.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setItalic(False)
-        font.setUnderline(False)
-        font.setWeight(50)
-        item.setFont(font)
-        brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
-        brush.setStyle(QtCore.Qt.NoBrush)
-        item.setBackground(brush)
-        brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
-        brush.setStyle(QtCore.Qt.NoBrush)
-        item.setForeground(brush)
-        self.project_list.addItem(item)
         self.gridLayout.addWidget(self.project_list, 2, 0, 1, 2)
         self.project_view_lineedit = QtWidgets.QLineEdit(self.project_view_groupbox)
         palette = QtGui.QPalette()
@@ -1069,11 +1051,6 @@ class Ui_BEAT(object):
         self.type_dropdown.addItem("")
         self.type_dropdown.addItem("")
         self.type_dropdown.addItem("")
-        self.type_dropdown.addItem("")
-        self.type_dropdown.addItem("")
-        self.type_dropdown.addItem("")
-        self.type_dropdown.addItem("")
-        self.type_dropdown.addItem("")
         self.dynamic_analysis_label = QtWidgets.QLabel(self.top_groupbox)
         self.dynamic_analysis_label.setGeometry(QtCore.QRect(336, 40, 101, 20))
         font = QtGui.QFont()
@@ -1377,7 +1354,30 @@ class Ui_BEAT(object):
         self.points_of_interest_list_widget.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked|QtWidgets.QAbstractItemView.EditKeyPressed)
         self.points_of_interest_list_widget.setResizeMode(QtWidgets.QListView.Adjust)
         self.points_of_interest_list_widget.setObjectName("points_of_interest_list_widget")
-
+        self.point_of_interest_A_checkbox = QtWidgets.QCheckBox(self.points_of_interest_view_groupbox)
+        self.point_of_interest_A_checkbox.setGeometry(QtCore.QRect(20, 80, 201, 20))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.point_of_interest_A_checkbox.setFont(font)
+        self.point_of_interest_A_checkbox.setObjectName("point_of_interest_A_checkbox")
+        self.point_of_interest_B_checkbox = QtWidgets.QCheckBox(self.points_of_interest_view_groupbox)
+        self.point_of_interest_B_checkbox.setGeometry(QtCore.QRect(20, 100, 201, 20))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.point_of_interest_B_checkbox.setFont(font)
+        self.point_of_interest_B_checkbox.setObjectName("point_of_interest_B_checkbox")
+        self.point_of_interest_C_checkbox = QtWidgets.QCheckBox(self.points_of_interest_view_groupbox)
+        self.point_of_interest_C_checkbox.setGeometry(QtCore.QRect(20, 120, 201, 20))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.point_of_interest_C_checkbox.setFont(font)
+        self.point_of_interest_C_checkbox.setObjectName("point_of_interest_C_checkbox")
+        self.point_of_interest_X_checkbox = QtWidgets.QCheckBox(self.points_of_interest_view_groupbox)
+        self.point_of_interest_X_checkbox.setGeometry(QtCore.QRect(20, 140, 201, 20))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.point_of_interest_X_checkbox.setFont(font)
+        self.point_of_interest_X_checkbox.setObjectName("point_of_interest_X_checkbox")
         self.detailed_point_of_interest_view_groupbox = QtWidgets.QGroupBox(self.Analysis)
         self.detailed_point_of_interest_view_groupbox.setGeometry(QtCore.QRect(330, 120, 591, 411))
         self.detailed_point_of_interest_view_groupbox.setTitle("")
@@ -1404,18 +1404,9 @@ class Ui_BEAT(object):
         self.detailed_points_of_interest_view_lineedit.setAlignment(QtCore.Qt.AlignCenter)
         self.detailed_points_of_interest_view_lineedit.setReadOnly(True)
         self.detailed_points_of_interest_view_lineedit.setObjectName("detailed_points_of_interest_view_lineedit")
-        
-        ####################################################
-        #Terminal Widget
-        ####################################################
         self.terminal_widget_2 = QtWidgets.QWidget(self.detailed_point_of_interest_view_groupbox)
         self.terminal_widget_2.setGeometry(QtCore.QRect(10, 306, 571, 101))
         self.terminal_widget_2.setObjectName("terminal_widget_2")
-
-
-        #self.terminal_widget_2.setupUi(EmbTerminalLinux)
-
-
         self.detailed_points_of_interest_listWidget = QtWidgets.QListWidget(self.detailed_point_of_interest_view_groupbox)
         self.detailed_points_of_interest_listWidget.setGeometry(QtCore.QRect(15, 41, 561, 261))
         self.detailed_points_of_interest_listWidget.setObjectName("detailed_points_of_interest_listWidget")
@@ -2910,7 +2901,7 @@ class Ui_BEAT(object):
         self.tabWidget.addTab(self.Documentation, "")
 
         self.retranslateUi(BEAT)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(BEAT)
 
     def retranslateUi(self, BEAT):
@@ -2919,15 +2910,6 @@ class Ui_BEAT(object):
         BEAT.setTitle(_translate("BEAT", "BEAT"))
         self.project_search_lineedit.setPlaceholderText(_translate("BEAT", "Project"))
         self.project_view_search_button.setText(_translate("BEAT", "Search"))
-        __sortingEnabled = self.project_list.isSortingEnabled()
-        self.project_list.setSortingEnabled(False)
-        item = self.project_list.item(0)
-        item.setText(_translate("BEAT", "Project 1"))
-        item = self.project_list.item(1)
-        item.setText(_translate("BEAT", "Project 2"))
-        item = self.project_list.item(2)
-        item.setText(_translate("BEAT", "Project 3"))
-        self.project_list.setSortingEnabled(__sortingEnabled)
         self.project_view_lineedit.setText(_translate("BEAT", "Project View"))
         self.new_project_button.setText(_translate("BEAT", "New"))
         self.detailed_project_view_lineedit.setText(_translate("BEAT", "Detailed Project View"))
@@ -3009,14 +2991,9 @@ class Ui_BEAT(object):
         self.static_run_button.setText(_translate("BEAT", "Run"))
         self.point_of_interest_type_label.setText(_translate("BEAT", "Point of Interest Type"))
         self.type_dropdown.setItemText(0, _translate("BEAT", "Type"))
-        self.type_dropdown.setItemText(1, _translate("BEAT", "All"))
-        self.type_dropdown.setItemText(2, _translate("BEAT", "Imports"))
-        self.type_dropdown.setItemText(3, _translate("BEAT", "Strings"))
-        self.type_dropdown.setItemText(4, _translate("BEAT", "Function Call"))
-        self.type_dropdown.setItemText(5, _translate("BEAT", "Variables"))
-        self.type_dropdown.setItemText(6, _translate("BEAT", "Data Structure"))
-        self.type_dropdown.setItemText(7, _translate("BEAT", "DLLs"))
-        self.type_dropdown.setItemText(8, _translate("BEAT", "Protocols"))
+        self.type_dropdown.setItemText(1, _translate("BEAT", "Strings"))
+        self.type_dropdown.setItemText(2, _translate("BEAT", "Function Call"))
+        self.type_dropdown.setItemText(3, _translate("BEAT", "Data Strucure"))
         self.dynamic_analysis_label.setText(_translate("BEAT", "Dynamic Analysis"))
         self.dynamic_run_button.setText(_translate("BEAT", "Run"))
         self.dynamic_stop_button.setText(_translate("BEAT", "Stop"))
@@ -3026,7 +3003,10 @@ class Ui_BEAT(object):
         self.points_of_interest_view_lineedit.setText(_translate("BEAT", "Points of Interest View"))
         self.points_of_interest_line_edit.setPlaceholderText(_translate("BEAT", "Points of Interest"))
         self.points_of_interest_search_button.setText(_translate("BEAT", "Search"))
-        
+        self.point_of_interest_A_checkbox.setText(_translate("BEAT", "Point of Interest A"))
+        self.point_of_interest_B_checkbox.setText(_translate("BEAT", "Point of Interest B"))
+        self.point_of_interest_C_checkbox.setText(_translate("BEAT", "Point of Interest C"))
+        self.point_of_interest_X_checkbox.setText(_translate("BEAT", "Point of Interest X"))
         self.detailed_points_of_interest_view_lineedit.setText(_translate("BEAT", "Detailed Points of Interest View"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Analysis), _translate("BEAT", "Analysis"))
         self.plugin_view_lineedit.setText(_translate("BEAT", "Plugin View"))
@@ -3057,7 +3037,7 @@ class Ui_BEAT(object):
         self.plugin_description_textedit.setHtml(_translate("BEAT", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8pt;\"><br /></p></body></html>"))
         self.points_of_interest_label.setText(_translate("BEAT", "Points of Interest"))
         self.default_output_field_label.setText(_translate("BEAT", "Default Output Field"))
@@ -3082,8 +3062,8 @@ class Ui_BEAT(object):
         self.point_of_interest_content_area_textedit.setHtml(_translate("BEAT", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'DejaVu Sans\'; font-size:12pt;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.point_of_interest_content_area_textedit.setPlaceholderText(_translate("BEAT", "Point of Interest Content Area"))
         self.detailed_point_of_interest_view_plugin_label.setText(_translate("BEAT", "Plugin"))
         self.detailed_point_of_interest_view_type_dropdown.setItemText(0, _translate("BEAT", "Type"))
@@ -3102,8 +3082,8 @@ class Ui_BEAT(object):
         self.document_content_area_textedit.setHtml(_translate("BEAT", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'DejaVu Sans\'; font-size:12pt;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.document_content_area_textedit.setPlaceholderText(_translate("BEAT", "Document Content Area"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Documentation), _translate("BEAT", "Documentation"))
 

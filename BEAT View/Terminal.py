@@ -1,17 +1,33 @@
 import sys
 from PyQt5 import QtCore, QtWidgets
 
+class SandboxProcess(QtCore.QProcess):
+    def setupChildProcess(self):
+        # Drop all privileges in the child process, and enter
+        # a chroot jail.
+        bashCommand = "tty"
+        import subprocess
+        sprocess = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        output, error = sprocess.communicate()
+        print(output)
+        #f = ("t.txt", "w+")
+        #f.write(str(output) + "\n")
+        #f.close()
+
+
 
 class EmbTerminalLinux(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(EmbTerminalLinux, self).__init__(parent)
-        self.process = QtCore.QProcess(self)
+        self.process = SandboxProcess(self)
         self.terminal = QtWidgets.QWidget(self)
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.terminal)
         # Works also with urxvt:
-        self.process.start('urxvt',['-embed', str(int(self.winId()))])
-        self.setFixedSize(640, 480)
+
+    def begin(self):
+        self.process.start('xterm',[ '-hold', '-e', 'python', 'radare2_scripts/radare_commands_interface.py'])
+
 
 class mainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):

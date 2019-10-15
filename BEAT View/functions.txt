@@ -1,136 +1,48 @@
-0x00003c80    1 42           entry0
-0x0000b494    1 9            sym._fini
-0x000029c0    3 23           sym._init
-0x000029f0    1 6            sym.imp.nettle_md5_update
-0x00002a00    1 6            sym.imp.inet_ntop
-0x00002a10    1 6            sym.imp.sigprocmask
-0x00002a20    1 6            sym.imp.__snprintf_chk
-0x00002a30    1 6            sym.imp.free
-0x00002a40    1 6            sym.imp.putchar
-0x00002a50    1 6            sym.imp.abort
-0x00002a60    1 6            sym.imp.__errno_location
-0x00002a70    1 6            sym.imp.strncpy
-0x00002a80    1 6            sym.imp.strncmp
-0x00002a90    1 6            sym.imp.sendmsg
-0x00002aa0    1 6            sym.imp.puts
-0x00002ab0    1 6            sym.imp.isatty
-0x00002ac0    1 6            sym.imp.sigaction
-0x00002ad0    1 6            sym.imp.strtod
-0x00002ae0    1 6            sym.imp.setsockopt
-0x00002af0    1 6            sym.imp.write
-0x00002b00    1 6            sym.imp.getpid
-0x00002b10    1 6            sym.imp.inet_ntoa
-0x00002b20    1 6            sym.imp.strlen
-0x00002b30    1 6            sym.imp.__stack_chk_fail
-0x00002b40    1 6            sym.imp.getuid
-0x00002b50    1 6            sym.imp.setbuf
-0x00002b60    1 6            sym.imp.__dn_comp
-0x00002b70    1 6            sym.imp.strchr
-0x00002b80    1 6            sym.imp._IO_putc
-0x00002b90    1 6            sym.imp.stringprep_locale_to_utf8
-0x00002ba0    1 6            sym.imp.snprintf
-0x00002bb0    1 6            sym.imp.gai_strerror
-0x00002bc0    1 6            sym.imp.gettimeofday
-0x00002bd0    1 6            sym.imp.__assert_fail
-0x00002be0    1 6            sym.imp.geteuid
-0x00002bf0    1 6            sym.imp.ioctl
-0x00002c00    1 6            sym.imp.sendto
-0x00002c10    1 6            sym.imp.close
-0x00002c20    1 6            sym.imp.getnameinfo
-0x00002c30    1 6            sym.imp.idna_to_ascii_8z
-0x00002c40    1 6            sym.imp.fputc
-0x00002c50    1 6            sym.imp.sched_yield
-0x00002c60    1 6            sym.imp.memchr
-0x00002c70    1 6            sym.imp.cap_get_flag
-0x00000000    6 459  -> 485  loc.imp._ITM_deregisterTMCloneTable
-0x00002c80    1 6            sym.imp.memcmp
-0x00002c90    1 6            sym.imp.getsockopt
-0x00002ca0    1 6            sym.imp._setjmp
-0x00002cb0    1 6            sym.imp.cap_set_proc
-0x00002cc0    1 6            sym.imp.strcmp
-0x00002cd0    1 6            sym.imp.__memcpy_chk
-0x00002ce0    1 6            sym.imp.sigemptyset
-0x00002cf0    1 6            sym.imp.if_nametoindex
-0x00002d00    1 6            sym.imp.strtol
-0x00002d10    1 6            sym.imp.memcpy
-0x00002d20    1 6            sym.imp.prctl
-0x00002d30    1 6            sym.imp.inet_pton
-0x00002d40    1 6            sym.imp.cap_init
-0x00002d50    1 6            sym.imp.inet_aton
-0x00002d60    1 6            sym.imp.malloc
-0x00002d70    1 6            sym.imp.fflush
-0x00002d80    1 6            sym.imp.cap_get_proc
-0x00002d90    1 6            sym.imp.getifaddrs
-0x00002da0    1 6            sym.imp.sscanf
-0x00002db0    1 6            sym.imp.nettle_md5_init
-0x00002dc0    1 6            sym.imp.idna_strerror
-0x00002dd0    1 6            sym.imp.setitimer
-0x00002de0    1 6            sym.imp.recvmsg
-0x00002df0    1 6            sym.imp.setlocale
-0x00002e00    1 6            sym.imp.__printf_chk
-0x00002e10    1 6            sym.imp.freeifaddrs
-0x00002e20    1 6            sym.imp.poll
-0x00002e30    1 6            sym.imp.bind
-0x00002e40    1 6            sym.imp.__longjmp_chk
-0x00002e50    1 6            sym.imp.__dn_expand
-0x00002e60    1 6            sym.imp.perror
-0x00002e70    1 6            sym.imp.getopt
-0x00002e80    1 6            sym.imp.cap_free
-0x00002e90    1 6            sym.imp.getsockname
-0x00002ea0    1 6            sym.imp.strtoul
-0x00002eb0    1 6            sym.imp.cap_set_flag
-0x00002ec0    1 6            sym.imp.exit
-0x00002ed0    1 6            sym.imp.connect
-0x00002ee0    1 6            sym.imp.fwrite
-0x00002ef0    1 6            sym.imp.__fprintf_chk
-0x00002f00    1 6            sym.imp.setuid
-0x00002f10    1 6            sym.imp.getaddrinfo
-0x00002f20    1 6            sym.imp.strdup
-0x00002f30    1 6            sym.imp.strerror
-0x00002f40    1 6            sym.imp.__ctype_tolower_loc
-0x00002f50    1 6            sym.imp.__ctype_b_loc
-0x00002f60    1 6            sym.imp.freeaddrinfo
-0x00002f70    1 6            sym.imp.nettle_md5_digest
-0x00002f80    1 6            sym.imp.__sprintf_chk
-0x00002f90    1 6            sym.imp.socket
-0x00003d80    5 154  -> 67   entry.init0
-0x00003d40    5 58   -> 51   entry.fini0
-0x00003cb0    4 50   -> 40   fcn.00003cb0
-0x000047e3  138 1974 -> 3400 fcn.000047e3
-0x00008970    3 27           fcn.00008970
-0x00005800   35 627  -> 558  int.00005800
-0x00007910   87 1785 -> 1686 fcn.00007910
-0x000083e0    6 397  -> 387  fcn.000083e0
-0x000089c0   41 920  -> 787  fcn.000089c0
-0x00008ec0    4 54           fcn.00008ec0
-0x00009510    5 59           fcn.00009510
-0x0000a520    1 130          fcn.0000a520
-0x0000a4c0    3 93   -> 83   fcn.0000a4c0
-0x0000d4bd    1 15           fcn.0000d4bd
-0x00002fb0    1 55           fcn.00002fb0
-0x00006af0    3 50           fcn.00006af0
-0x00008010   35 976  -> 974  fcn.00008010
-0x00008990    1 43           fcn.00008990
-0x00009ec0    1 43           fcn.00009ec0
-0x0000a700    1 60           fcn.0000a700
-0x00003d90    1 43           fcn.00003d90
-0x0000a390   12 153  -> 146  fcn.0000a390
-0x00008570   62 1014 -> 968  fcn.00008570
-0x0000a740  141 3293 -> 3272 fcn.0000a740
-0x000041f0  143 3497 -> 3483 fcn.000041f0
-0x00003dd0   23 416          fcn.00003dd0
-0x00002ff0   39 3149 -> 863  main
-0x00004fa0   13 455  -> 444  fcn.00004fa0
-0x00005170   57 1435 -> 1363 fcn.00005170
-0x000066b0   10 268  -> 257  fcn.000066b0
-0x000067c0    3 84           fcn.000067c0
-0x00006820   18 485  -> 472  fcn.00006820
-0x00006a10   11 218          fcn.00006a10
-0x00006b30   19 494  -> 486  fcn.00006b30
-0x00007330    8 244  -> 234  fcn.00007330
-0x00007430   39 1244 -> 1200 fcn.00007430
-0x00008d80   11 318  -> 308  fcn.00008d80
-0x00009300   20 426  -> 416  fcn.00009300
-0x00009bc0   24 535  -> 521  fcn.00009bc0
-0x0000a430    8 141  -> 134  fcn.0000a430
-0x00006d60   83 1473 -> 1407 fcn.00006d60
+0x000039c0    1 42           entry0
+0x0000b274    1 9            sym._fini
+0x00002a08    3 23           sym._init
+0x00002d50  207 10576 -> 4679 main
+0x00003ac0    8 180  -> 99   entry.init0
+0x00003a80    5 50           entry.fini0
+0x000039f0    4 50   -> 44   fcn.000039f0
+0x00000121    1 8            fcn.00000121
+0x00004a54    1 12           fcn.00004a54
+0x000065e0   18 485  -> 472  fcn.000065e0
+0x000068f0   19 487          fcn.000068f0
+0x0000a1e0    8 149  -> 138  fcn.0000a1e0
+0x0000a110   22 357  -> 333  fcn.0000a110
+0x00003b50    1 53           fcn.00003b50
+0x0000a4c0    1 60           fcn.0000a4c0
+0x000067d0   11 218          fcn.000067d0
+0x00003b90   25 429          fcn.00003b90
+0x0000a500  140 3325 -> 3301 fcn.0000a500
+0x00003fe0  142 3659 -> 3648 fcn.00003fe0
+0x00002d10    1 55           fcn.00002d10
+0x000070d0    8 236  -> 231  fcn.000070d0
+0x000071c0   37 1214 -> 1169 fcn.000071c0
+0x00008330   61 991  -> 980  fcn.00008330
+0x00004e30   14 475  -> 465  fcn.00004e30
+0x00005560   57 1599 -> 1518 fcn.00005560
+0x00008710    3 41   -> 31   fcn.00008710
+0x00003af0    8 96   -> 90   fcn.00003af0
+0x00006b00    6 1429 -> 100  fcn.00006b00
+0x00005650   35 627  -> 586  fcn.00005650
+0x000056a0    2 27           case.0x2e34.76
+0x00007680   88 1844 -> 1751 fcn.00007680
+0x00005010   56 1359 -> 1279 fcn.00005010
+0x00006580    3 84           fcn.00006580
+0x00006b20   81 1446 -> 1377 fcn.00006b20
+0x00006470   10 268  -> 257  fcn.00006470
+0x00007dc0   34 984  -> 978  fcn.00007dc0
+0x000081a0    6 399  -> 393  fcn.000081a0
+0x00008770   41 915  -> 787  fcn.00008770
+0x00008b30   10 303  -> 291  fcn.00008b30
+0x00008c60    4 57           fcn.00008c60
+0x000092a0    5 66   -> 59   fcn.000092a0
+0x00009070   21 461  -> 449  fcn.00009070
+0x00009980   24 536  -> 531  fcn.00009980
+0x00009c80    1 43           fcn.00009c80
+0x00008740    1 43           fcn.00008740
+0x0000a2e0    1 130          fcn.0000a2e0
+0x0000a280    3 93   -> 90   fcn.0000a280
+0x000068b0    3 50           fcn.000068b0

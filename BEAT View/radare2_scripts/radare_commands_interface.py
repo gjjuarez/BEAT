@@ -8,13 +8,23 @@ rlocal = None
 
 def run_static_analysis():
     global rlocal
+    import pymongo
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient['projectsdb']
+    mycol = mydb['current']
+    path = ""
+    for x in mycol.find():
+        path = x["path"]
+    rlocal = r2pipe.open(path)
+    #rlocal = r2pipe.open("/bin/ping")  # Open ping in Radare2 in debug mode
     try:
-        rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
+        #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
         rlocal.cmd("aaa")  # analyze file
         rlocal.cmd("s main")
     except:
         rlocal.cmd("exit")
         print("Error running static analysis")
+    extract_all()
 
 def extract_vars_from_functions(filename):
     varFileName = "variables.txt"
@@ -102,3 +112,6 @@ def get_all_breakpoints():
 
 def display_POI_in_points_of_interest():
     print("Test")
+
+if __name__ == "__main__":
+    run_static_analysis()

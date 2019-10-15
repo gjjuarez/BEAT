@@ -7,6 +7,7 @@ from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from PyQt5.QtWidgets import QListWidgetItem
+from Terminal import EmbTerminalLinux
 
 from radare2_scripts import radare_commands_interface
 from PyQt5 import QtGui
@@ -21,7 +22,17 @@ class UiMain(UiView.Ui_BEAT):
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
 
+        self.fill_projects()
+
         #QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        #self.tabWidget.addTab(EmbTerminalLinux(), "EmbTerminal")
+        self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
+        self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
+        self.terminal.setObjectName("Terminal")
+
+        self.stacked = QtWidgets.QStackedWidget()
+        self.stacked.addWidget(self.terminal)
 
         #########################################################################################
         # Project Tab Functions
@@ -29,7 +40,7 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Project Tab Listeners
         '''
-        #calls new_project if new_project_button is clicked
+        #calls new_project if new_project_bsutton is clicked
         self.new_project_button.clicked.connect(self.new_project)
         #calls remove_project if delete_project_button is clicked
         self.delete_project_button.clicked.connect(self.remove_project)
@@ -88,17 +99,48 @@ class UiMain(UiView.Ui_BEAT):
         QtCore.QMetaObject.connectSlotsByName(BEAT)
 
         self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
+        self.project_list.itemClicked.connect(self.project_selected)
 
     #########################################################################################
     # Project Tab Functions
     #########################################################################################
+    def project_selected(self):
+        import pymongo
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient['projectsdb']
+        mycol = mydb['project']
+        to_find = self.project_list.currentItem().text()
+        name = ""
+        desc = ""
+        path = ""
+        for x in mycol.find():
+
+            if(x["name"] == to_find):
+                name = x["name"]
+                desc = x["desc"]
+                path = x["path"]
+                object_id = x["_id"]
+        self.project_name_text.setText(name)
+        self.project_desc_text.setText(desc)
+        self.file_path_lineedit.setText(path)
+        
+        mycol = mydb['current']
+        mycol.drop()
+        mydict = {"name": name, "desc": desc, "path": path}
+        x = mycol.insert_one(mydict)
+        print()
+
+
 
     '''
     Shows the Detailed Project View after the New button is clicked in Project
     '''
     def new_project(self):
-        self.detailed_project_view_groupbox.show()
-        self.label.show()
+        #self.detailed_project_view_groupbox.show()
+        #self.label.show()
+        self.project_name_text.setText("")
+        self.project_desc_text.setText("")
+        self.file_path_lineedit.setText("")
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
@@ -107,12 +149,41 @@ class UiMain(UiView.Ui_BEAT):
         if not listItems: return
         for item in listItems:
            self.project_list.takeItem(self.project_list.row(item))
+    def fill_projects(self):
+        import pymongo
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient['projectsdb']
+        mycol = mydb['project']
+        for x in mycol.find():
+            print(x)
+            self.project_list.addItem(str(x["name"]))
+
     '''
     Adds a project name to the projdynamic_runect list within Project
     '''
     def save_project(self):
-        temp = self.project_name_text.text()
-        self.project_list.addItem(temp)
+
+        name = self.project_name_text.text()
+        desc = self.project_desc_text.text()
+        path = self.file_path_lineedit.text()
+
+        import pymongo
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient['projectsdb']
+        mycol = mydb['project']
+        mydict = {"name": name, "desc": desc, "path": path}
+
+        x = mycol.insert_one(mydict)
+
+        #self.update_projects()
+        #self.project_list.addItem(temp)
+
+    #def update_projects(self):
+        self.project_list.clear()
+        for x in mycol.find():
+            print(x)
+            self.project_list.addItem(str(x["name"]))
+
     '''
     Opens the file browser and writes the selected file's filepath in file_path_lineedit 
     '''
@@ -164,11 +235,11 @@ class UiMain(UiView.Ui_BEAT):
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        radare_commands_interface.run_static_analysis()
-        radare_commands_interface.extract_all()
+        #self.stacked.setCurrentWidget(self.terminal)
+        self.terminal.begin()
         global staticIsRun
         staticIsRun = True
-        # Check What box is check
+        # Check What box is check  
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
         self.display_POI(display_value)

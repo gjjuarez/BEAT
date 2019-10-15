@@ -490,7 +490,15 @@ class UiMain(UiView.Ui_BEAT):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+
     BEAT = QtWidgets.QGroupBox()
+    '''
+    #Figure available geometry out.
+    screen = app.primaryScreen()
+    size = screen.size()
+    rect = screen.availableGeometry()
+    BEAT.resize(size.width(), size.height())
+    '''
     ui = UiMain()
 
     ui.setupUi(BEAT)

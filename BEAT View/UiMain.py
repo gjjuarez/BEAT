@@ -18,21 +18,23 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-        print("hi")
+        #BEA
+
+        # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
 
+        # Fill the Project list from mongo
         self.fill_projects()
 
-        #QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-        #self.tabWidget.addTab(EmbTerminalLinux(), "EmbTerminal")
         self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
         self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
         self.terminal.setObjectName("Terminal")
 
         self.stacked = QtWidgets.QStackedWidget()
         self.stacked.addWidget(self.terminal)
+
+        self.setCurrentProject()
 
         #########################################################################################
         # Project Tab Functions
@@ -48,6 +50,7 @@ class UiMain(UiView.Ui_BEAT):
         self.save_project_button.clicked.connect(self.save_project)
         #calls browse_path if file_browse_button is clicked
         self.file_browse_button.clicked.connect(self.browse_path)
+        #self.delete_project_button.connect(self.delete_current_project)
 
         '''
         Analysis Tab Listeners 
@@ -121,34 +124,87 @@ class UiMain(UiView.Ui_BEAT):
                 path = x["path"]
                 object_id = x["_id"]
         self.project_name_text.setText(name)
+        self.project_name_text.setReadOnly(True)
+
         self.project_desc_text.setText(desc)
+        self.project_desc_text.setReadOnly(True)
+
         self.file_path_lineedit.setText(path)
+        self.file_path_lineedit.setReadOnly(True)
         
+        BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
         mycol = mydb['current']
         mycol.drop()
         mydict = {"name": name, "desc": desc, "path": path}
         x = mycol.insert_one(mydict)
-        print()
+        self.save_project_button.setDisabled(True)
 
 
 
+    def setCurrentProject(self):
+        import pymongo
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient['projectsdb']
+        mycol = mydb['current']
+        path = ""
+        name = ""
+        desc = ""
+        for x in mycol.find():
+            path = x["path"]
+            desc = x["desc"]
+            name = x["name"]
+
+        if name == "":
+            BEAT.setWindowTitle("BEAT")
+        else:
+            BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
+        self.project_name_text.setText(name)
+        self.project_name_text.setReadOnly(True)
+
+        self.project_desc_text.setText(desc)
+        self.project_desc_text.setReadOnly(True)
+
+        self.file_path_lineedit.setText(path)
+        self.file_path_lineedit.setReadOnly(True)
+        self.save_project_button.setDisabled(True)
+        self.file_browse_button.setDisabled(True)
     '''
     Shows the Detailed Project View after the New button is clicked in Project
     '''
     def new_project(self):
         #self.detailed_project_view_groupbox.show()
         #self.label.show()
+
         self.project_name_text.setText("")
+        self.project_name_text.setReadOnly(False)
+
         self.project_desc_text.setText("")
+        self.project_desc_text.setReadOnly(False)
+
         self.file_path_lineedit.setText("")
+        self.file_path_lineedit.setReadOnly(False)
+        self.save_project_button.setDisabled(False)
+
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
     def remove_project(self):
-        listItems = self.project_list.selectedItems()
-        if not listItems: return
-        for item in listItems:
-           self.project_list.takeItem(self.project_list.row(item))
+        import pymongo
+        #from bson.objectid import ObjectId
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient['projectsdb']
+        mycol = mydb['current']
+        mycol.drop()
+        name = self.project_list.currentItem().text()
+
+        mycol = mydb['projects']
+        result = mycol.delete_one({'name': name})
+        self.project_list.clear()
+        self.fill_projects()
+        print("Done Removing Project")
+
+
+
     def fill_projects(self):
         import pymongo
         myclient = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -178,11 +234,12 @@ class UiMain(UiView.Ui_BEAT):
         #self.update_projects()
         #self.project_list.addItem(temp)
 
-    #def update_projects(self):
+        #def update_projects(self):
         self.project_list.clear()
         for x in mycol.find():
             print(x)
             self.project_list.addItem(str(x["name"]))
+        self.new_project()
 
     '''
     Opens the file browser and writes the selected file's filepath in file_path_lineedit 

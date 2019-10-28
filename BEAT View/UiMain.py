@@ -292,10 +292,10 @@ class UiMain(UiView.Ui_BEAT):
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        #radare_commands_interface.run_static_analysis()
+        radare_commands_interface.run_static_analysis()
         #self.terminal.begin()
         #self.stacked.setCurrentWidget(self.terminal)
-        self.terminal.begin_static()
+        # self.terminal.begin_static()
         global staticIsRun
         staticIsRun = True
         # Check What box is check  
@@ -378,16 +378,16 @@ class UiMain(UiView.Ui_BEAT):
         imports.close()
 
     def read_and_display_all_functions(self):
-        functions = open("functions.txt", "r")
+        # functions = open("functions.txt", "r")
+        functions = radare_commands_interface.read_functions()
 
-        varIndex = 1  # keep track of where to read in variables file, skip title
-        for line in functions.read().split("\n"):
-            item = QListWidgetItem(line)
+        for func in functions:
+            item = QListWidgetItem(func["name"] + "  " + func["address"])
             self.detailed_points_of_interest_listWidget.addItem(item)
             # display all variables related to current function
-            varIndex = self.read_and_display_variables_with_functions(varIndex)
+            # varIndex = self.read_and_display_variables_with_functions(varIndex)
 
-        functions.close()
+        # functions.close()
         self.display_functions_in_left_column()
 
     def read_and_display_variables_with_functions(self, index):
@@ -416,28 +416,21 @@ class UiMain(UiView.Ui_BEAT):
         return index
 
     def display_functions_in_left_column(self):
-        functions = open("functions.txt", "r")
-        breakPoints = radare_commands_interface.get_all_breakpoints()
+        # breakPoints = radare_commands_interface.get_all_breakpoints()
+        functions = radare_commands_interface.read_functions()
 
-        varIndex = 1  # keep track of where to read in variables file, skip title
         # Start at the index 2 to the end get each line
-        for line in functions.read().split("\n")[:-1]:
+        for func in functions:
             # Separate by spaces and then get the last word
-            line = line.split(" ")[-1]
-            item = QListWidgetItem(line)
+            item = QListWidgetItem(func["name"])
 
             # Don't know if we need this following line
             # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
-            if line in breakPoints:
-                item.setCheckState(QtCore.Qt.Checked)
-            else:
-                item.setCheckState(QtCore.Qt.Unchecked)
+            item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
 
             # display all variables related to current function
-            varIndex = self.read_and_display_variables_with_functions_left_column(varIndex)
-
-        functions.close()
+            # varIndex = self.read_and_display_variables_with_functions_left_column(varIndex)
 
     def read_and_display_all_strings(self):
         strings = open("strings.txt", "r")

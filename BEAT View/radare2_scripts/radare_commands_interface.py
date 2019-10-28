@@ -4,10 +4,13 @@ import r2pipe
 import pymongo
 rlocal = None
 functiontable = None
+functioncol = None
+mydb = None
 
 def run_static_analysis():
     global rlocal
     global functiontable
+    global mydb
     dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = dbclient['projectsdb']
     mycol = mydb['current']
@@ -20,8 +23,7 @@ def run_static_analysis():
         rlocal.cmd("s main")
     except:
         pass  # fail quietly, almost always gives error when reading
-
-    functiontable = mydb[str(mycol["name"]) + "functions"]
+    functiontable = str(mycol["name"])[:2] + "funcs"
     extract_all()
 
 def run_dynamic_analysis():
@@ -67,6 +69,17 @@ def extract_vars_from_functions(filename):
 def extract_all():
     print("")
     global rlocal
+    global mydb
+    global functioncol
+    global functiontable
+
+    dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = dbclient['poidb']
+    if functiontable not in mydb.collection_names():
+        mydb.create_collection(functiontable)
+
+    functioncol = mydb[functiontable]
+
     try:
         # TODO: filter the search somehow
         extract_functions()
@@ -75,11 +88,16 @@ def extract_all():
         # extract_vars_from_functions("functions.txt")
     except:
         print("Error extracting all POI")
-    rlocal.cmd("exit")
 
 def extract_functions():
     global rlocal
-    global functiontable
+    global mydb
+    global functioncol
+    mycol = mydb['current']
+    functioncol = mydb[functiontable]
+    dblist = mydb.list_collection_names()
+    print(dblist)
+
     funcs = rlocal.cmd("afl").split("\n")
     # go through every function and add to database
     for func in funcs:
@@ -87,16 +105,29 @@ def extract_functions():
             if func == "":
                 print("Empty line")
                 continue
-            print("Function: " + func)
+            # print("Function: " + func)
             attr = func.split()
-            print(attr)
+            # print(attr)
             funcAddr = attr[0]
             funcName = attr[len(attr) - 1]
             funcDict = {"name": funcName, "address": funcAddr}
-            print(funcDict)
-            functiontable.insert_one(funcDict)
+            # print(funcDict)
+            functioncol.insert_one(funcDict)
         except:
             pass
+    dblist = mydb.list_collection_names()
+    print(dblist)
+    print("Function data:")
+    for func in functioncol.find():
+        print(func)
+
+def read_functions():
+    global functioncol
+    functions = []
+    for func in functioncol.find():
+        functions.append(func)
+    # print(functions)
+    return functions
 
 
 def extract_strings():

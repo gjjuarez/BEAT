@@ -1,28 +1,27 @@
 #! /usr/bin/env python3
 
 import r2pipe
-import re
+import pymongo
 rlocal = None
-
-
+functiontable = None
 
 def run_static_analysis():
     global rlocal
-    import pymongo
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient['projectsdb']
+    global functiontable
+    dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = dbclient['projectsdb']
     mycol = mydb['current']
     path = ""
     for x in mycol.find():
         path = x["path"]
     rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
     try:
-        #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
         rlocal.cmd("aaa")  # analyze file
         rlocal.cmd("s main")
     except:
-        rlocal.cmd("exit")
         pass  # fail quietly, almost always gives error when reading
+
+    functiontable = mydb[str(mycol["name"]) + "functions"]
     extract_all()
 
 def run_dynamic_analysis():
@@ -37,7 +36,6 @@ def run_dynamic_analysis():
     try:
         #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
         rlocal.cmd("aaa")  # analyze file
-        rlocal.cmd("s main")
     except:
         rlocal.cmd("exit")
         pass  # fail quietly, almost always gives error when reading
@@ -70,20 +68,36 @@ def extract_all():
     print("")
     global rlocal
     try:
+        # TODO: filter the search somehow
         extract_functions()
-        extract_strings()
-        extract_imports()
-        extract_vars_from_functions("functions.txt")
+        # extract_strings()
+        # extract_imports()
+        # extract_vars_from_functions("functions.txt")
     except:
         print("Error extracting all POI")
     rlocal.cmd("exit")
 
 def extract_functions():
     global rlocal
-    try:
-        rlocal.cmd("afl > functions.txt")
-    except:
-        print("Error extracting functions")
+    global functiontable
+    funcs = rlocal.cmd("afl").split("\n")
+    # go through every function and add to database
+    for func in funcs:
+        try:
+            if func == "":
+                print("Empty line")
+                continue
+            print("Function: " + func)
+            attr = func.split()
+            print(attr)
+            funcAddr = attr[0]
+            funcName = attr[len(attr) - 1]
+            funcDict = {"name": funcName, "address": funcAddr}
+            print(funcDict)
+            functiontable.insert_one(funcDict)
+        except:
+            pass
+
 
 def extract_strings():
     global rlocal

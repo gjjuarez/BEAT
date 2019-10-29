@@ -1,22 +1,23 @@
 #! /usr/bin/env python3
 
+# database_operations.py version 1.1
 import pymongo
 from bson import ObjectId
 
 # Data will be stored in the following format on the mongo Database
 # database = project selected
 # collection = the POI selected (String, struct, etc.)
-# data = data related to the POI (type, size, etc.)
+# document = data related to the POI (type, size, etc.)
 
 # connect to database on a local machine
 connection = pymongo.MongoClient('localhost',27017)
 
 # create database
-current_database = 'temp' # change string ('temp') here to make a new database for each project***
+current_database = 'BEAT_Database' # change string ('temp') here to make a new database for each project***
 database = connection[current_database]
 
 # create a collection for each point of interest
-point_of_interest = 'placeholder' # change string ('placeholder') here to make a new collection for each point of interest***
+point_of_interest = 'POIs' # change string ('placeholder') here to make a new collection for each point of interest***
 collection = database[point_of_interest]
 #print("Database connected") #test line to check for proper connection
 
@@ -64,70 +65,83 @@ poi_type = "variable" # change "variable" to variable, string, library, function
 # edit the following variables with what was found in the static or dynamic analysis
 # values that can be stored by the mongo Database are string, integer, boolean, double, Min/Max keys, arrays, timestamp,
 # Object, Null, Symbol, Date, ObjectId, Binary data, javascript code and regular expressions
+POI_object_ID = "" #when object  Id is made grab it and store it as well? or into another DB?
 POI_name = "POI_Temp"
 POI_value = 3
-POI_type = "variable"
+POI_data_type = "variable"
 POI_size = 2
 POI_call_address = ""
 POI_destination_address = ""
-POI_section = ""
-POI_parameter_type_and_order = ""
+POI_parameter_type = ""
+POI_parameter_order = ""
+POI_parameter_value = ""
+POI_member_type = ""
+POI_member_order = ""
+POI_member_value = ""
 POI_return_type = ""
 POI_return_value = ""
-POI_destination_address = ""
-POI_python_translation_code = ""
-POI_field_name = ""
-POI_field_type = ""
+POI_binary_section = ""
+POI_section_Size = 0
+POI_section_value = ""
+POI_structure = ""
+POI_order_to_functions = ""
+
 
 # if/else statements to store the corresponding data tot he database
 if poi_type == "variable": #variable
-    data = {'Variable Name': POI_name}
-    insert_data(data)
-    data = {'Variable Value': POI_value}
-    insert_data(data)
-    data = {'Variable Type': POI_type}
-    insert_data(data)
-    data = {'Variable Size': POI_size}
-    insert_data(data)
-    data = {'Call From Address': POI_call_address}
-    insert_data(data)
+    document = collection.insert_many([{
+                'Variable Name': POI_name,
+                'Variable Value': POI_value,
+                'Variable Type': POI_data_type,
+                'Variable Size': POI_size,
+                'Bianry Section': POI_binary_section,
+                'Call From Address': POI_call_address}])
+
 elif poi_type == "string": #string
-    data = {'String Name': POI_name}
-    insert_data(data)
-    data = {'String Value': POI_value}
-    insert_data(data)
-    data = {'String Type': POI_type}
-    insert_data(data)
-    data = {'String Size': POI_size}
-    insert_data(data)
-    data = {'Call From Address': POI_call_address}
-    insert_data(data)
-    data = {'Destination Address': POI_destination_address}
-    insert_data(data)
-    data = {'Section': POI_section}
-    insert_data(data)
+    document = collection.insert_many([{
+                'String Name': POI_name,
+                'String Value': POI_value,
+                'String Type': POI_data_type,
+                'String Size': POI_size,
+                'Call From Address': POI_call_address,
+                'Destination Address': POI_destination_address,
+                'Section': POI_binary_section}])
+
 elif poi_type == "library": #library
-    data = {'Library Name': POI_name}
-    insert_data(data)
+    document = collection.insert_many([{
+                'Library Name': POI_name,
+                'Parameter Order': POI_parameter_order,
+                'Parameter Type': POI_parameter_type,
+                'Parameter Value': POI_parameter_value,
+                'Return Type': POI_return_type,
+                'Return Value': POI_return_value,
+                'Call From Address': POI_order_to_functions}])
+
 elif poi_type == "function": #function
-    data = {'Function Name': POI_name}
-    insert_data(data)
-    data = {'Function Value': POI_value}
-    insert_data(data)
-    data = {'Return Type': POI_return_type}
-    insert_data(data)
-    data = {'Return value': POI_return_value}
-    insert_data(data)
-    data = {'Call From Address': POI_call_address}
-    insert_data(data)
-    data = {'Destination Address': POI_destination_address}
-    insert_data(data)
-    data = {'Python Translation Code': POI_python_translation_code}
-    insert_data(data)
-elif poi_type == "packet": #pakect protocol
-    data = {'Protocol Name': POI_name}
-    insert_data(data)
-    data = {'Field Name': POI_field_name}
-    insert_data(data)
-    data = {'Field Type': POI_field_type}
-    insert_data(data)
+    document = collection.insert_many([{
+                'Function Name': POI_name,
+                'Function Value': POI_value,
+                'Return Type': POI_return_type,
+                'Return Value': POI_return_value,
+                'Call From Address': POI_call_address,
+                'Destination Address': POI_destination_address,
+                'Binary Section': POI_binary_section}])
+
+elif poi_type == "protocol": #pakect protocol
+    document = collection.insert_many([{
+                'Protocol Name': POI_name,
+                'Call From Address': POI_call_address,
+                'Structure': POI_structure,
+                'Section Size': POI_section_Size,
+                'Section Value': POI_section_value,
+                'Binary Section': POI_binary_section}])
+
+elif poi_type == "struct": #struct
+    document = collection.insert_many([{
+                'Struct Name': POI_name,
+                'Call From Address': POI_call_address,
+                'Structure': POI_structure,
+                'Member Order': POI_member_order,
+                'Member Type': POI_member_type,
+                'Member Value': POI_member_value,
+                'Binary Section': POI_binary_section}])

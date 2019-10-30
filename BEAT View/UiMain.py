@@ -170,6 +170,7 @@ class UiMain(UiView.Ui_BEAT):
     Fills projects list
     '''
     def fill_projects(self):
+        self.project_list.clear()
         self.project_list.addItems(data_manager.get_project_names())
 
     '''

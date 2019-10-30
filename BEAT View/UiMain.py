@@ -11,14 +11,16 @@ from Terminal import EmbTerminalLinux
 
 from radare2_scripts import radare_commands_interface
 from PyQt5 import QtGui
+import data_manager
 
 class UiMain(UiView.Ui_BEAT):
     global staticIsRun
     staticIsRun = False
 
+    valid_extensions = ["exe", "dll"]
+
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-        #BEA
 
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
@@ -108,56 +110,20 @@ class UiMain(UiView.Ui_BEAT):
     # Project Tab Functions
     #########################################################################################
     def project_selected(self):
-        import pymongo
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient['projectsdb']
-        mycol = mydb['project']
         to_find = self.project_list.currentItem().text()
-        name = ""
-        desc = ""
-        path = ""
-        for x in mycol.find():
-
-            if(x["name"] == to_find):
-                name = x["name"]
-                desc = x["desc"]
-                path = x["path"]
-                object_id = x["_id"]
-        self.project_name_text.setText(name)
-        self.project_name_text.setReadOnly(True)
-
-        self.project_desc_text.setText(desc)
-        self.project_desc_text.setReadOnly(True)
-
-        self.file_path_lineedit.setText(path)
-        self.file_path_lineedit.setReadOnly(True)
-        
-        BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
-        mycol = mydb['current']
-        mycol.drop()
-        mydict = {"name": name, "desc": desc, "path": path}
-        x = mycol.insert_one(mydict)
-        self.save_project_button.setDisabled(True)
-
-
+        name, desc, path = data_manager.get_project_from_name(to_find)
+        data_manager.update_current_project(name, desc, path)
+        self.setCurrentProject()
 
     def setCurrentProject(self):
-        import pymongo
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient['projectsdb']
-        mycol = mydb['current']
-        path = ""
-        name = ""
-        desc = ""
-        for x in mycol.find():
-            path = x["path"]
-            desc = x["desc"]
-            name = x["name"]
-
+        name, desc, path = data_manager.getCurrentProjectInfo()
+        
+        # If no project set...
         if name == "":
             BEAT.setWindowTitle("BEAT")
         else:
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
+
         self.project_name_text.setText(name)
         self.project_name_text.setReadOnly(True)
 
@@ -168,8 +134,9 @@ class UiMain(UiView.Ui_BEAT):
         self.file_path_lineedit.setReadOnly(True)
         self.save_project_button.setDisabled(True)
         self.file_browse_button.setDisabled(True)
+
     '''
-    Shows the Detailed Project View after the New button is clicked in Project
+    Sets settings for new project viewer
     '''
     def new_project(self):
         #self.detailed_project_view_groupbox.show()
@@ -183,7 +150,9 @@ class UiMain(UiView.Ui_BEAT):
 
         self.file_path_lineedit.setText("")
         self.file_path_lineedit.setReadOnly(False)
+
         self.save_project_button.setDisabled(False)
+        self.file_browse_button.setDisabled(False)
 
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
@@ -204,41 +173,23 @@ class UiMain(UiView.Ui_BEAT):
         print("Done Removing Project")
 
 
-
+    '''
+    Fills projects list
+    '''
     def fill_projects(self):
-        import pymongo
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient['projectsdb']
-        mycol = mydb['project']
-        for x in mycol.find():
-            print(x)
-            self.project_list.addItem(str(x["name"]))
+        self.project_list.addItems(data_manager.get_project_names())
 
     '''
     Adds a project name to the projdynamic_runect list within Project
     '''
     def save_project(self):
-
         name = self.project_name_text.text()
         desc = self.project_desc_text.text()
         path = self.file_path_lineedit.text()
 
-        import pymongo
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient['projectsdb']
-        mycol = mydb['project']
-        mydict = {"name": name, "desc": desc, "path": path}
+        data_manager.save_project(name,desc,path)
 
-        x = mycol.insert_one(mydict)
-
-        #self.update_projects()
-        #self.project_list.addItem(temp)
-
-        #def update_projects(self):
-        self.project_list.clear()
-        for x in mycol.find():
-            print(x)
-            self.project_list.addItem(str(x["name"]))
+        self.fill_projects()
         self.new_project()
 
     '''
@@ -251,9 +202,6 @@ class UiMain(UiView.Ui_BEAT):
     #########################################################################################
     # Analysis Tab Functions
     #########################################################################################
-    
-
-
 
     '''
     Enables Run and Stop buttons for dynamic analysis
@@ -349,14 +297,14 @@ class UiMain(UiView.Ui_BEAT):
         # radare_commands_interface.run_dynamic_and_update()
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(False)
-        print("Running dynamic analysis!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("Running dynamic analysis!")
         
         self.terminal.kill_process()
         self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
         self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
         self.terminal.setObjectName("Terminal")
         self.terminal.begin_dynamic()
-        print("Done with dynamic analysis!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("Done with dynamic analysis!")
         self.change_displayed_POI()  # updates ui
         self.dynamic_run_button.setDisabled(False)
         self.dynamic_stop_button.setDisabled(True)
@@ -550,18 +498,9 @@ class UiMain(UiView.Ui_BEAT):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-
     BEAT = QtWidgets.QGroupBox()
-    '''
-    #Figure available geometry out.
-    screen = app.primaryScreen()
-    size = screen.size()
-    rect = screen.availableGeometry()
-    BEAT.resize(size.width(), size.height())
-    '''
     ui = UiMain()
 
     ui.setupUi(BEAT)
     BEAT.show()
     sys.exit(app.exec_())
-

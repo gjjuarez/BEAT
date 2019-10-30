@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DockWidget</class>
- <widget class="QDockWidget" name="DockWidget">
+ <class>ArchitectureError</class>
+ <widget class="QDockWidget" name="ArchitectureError">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>954</height>
+    <width>688</width>
+    <height>230</height>
    </rect>
   </property>
   <property name="palette">
@@ -54,14 +54,14 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>220</y>
+      <x>0</x>
+      <y>-20</y>
       <width>691</width>
       <height>231</height>
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string/>
     </property>
     <widget class="QLineEdit" name="PluginView_4">
      <property name="geometry">

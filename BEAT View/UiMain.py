@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from ArchitectureError import Ui_ArchitectureError
 from PyQt5.QtWidgets import QListWidgetItem
 from Terminal import EmbTerminalLinux
 
@@ -162,7 +163,7 @@ class UiMain(UiView.Ui_BEAT):
         data_manager.delete_project_given_name(name)
         self.project_list.clear()
         self.fill_projects()
-        print("Done Removing Project")
+        print("Done Removing Project:", name)
 
 
     '''
@@ -178,7 +179,7 @@ class UiMain(UiView.Ui_BEAT):
         name = self.project_name_text.text()
         desc = self.project_desc_text.text()
         path = self.file_path_lineedit.text()
-
+        
         data_manager.save_project(name,desc,path)
 
         self.fill_projects()
@@ -189,7 +190,22 @@ class UiMain(UiView.Ui_BEAT):
     '''
     def browse_path(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
-        self.file_path_lineedit.setText(file_path)
+        binary_info = radare_commands_interface.parse_binary(file_path)
+        # print("arch:", binary_info['arch'])
+        if 'arch' in binary_info and binary_info['arch'] == 'x86':
+            self.file_path_lineedit.setText(file_path)
+            self.fill_binary_info(binary_info)
+        else:
+            self.window = QtWidgets.QMainWindow()
+            self.ui = Ui_ArchitectureError()
+            self.ui.setupUi(self.window)
+            self.window.show()
+
+
+    def fill_binary_info(self, bi):
+        self.binary_file_properties_value_listwidget.clear()
+        self.binary_file_properties_value_listwidget.addItems([bi['os'], bi['bintype'],bi['machine'], bi['class'], bi['bits'], bi['lang'],bi['canary'], bi['crypto'], bi['nx'], bi['pic'], bi['relocs'],bi['relro'],bi['stripped']])
+        print("Done filling binary info")
 
     #########################################################################################
     # Analysis Tab Functions

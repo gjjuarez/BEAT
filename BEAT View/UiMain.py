@@ -164,6 +164,7 @@ class UiMain(UiView.Ui_BEAT):
         self.project_list.clear()
         self.fill_projects()
         print("Done Removing Project:", name)
+        self.new_project()
 
 
     '''
@@ -501,5 +502,6 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
+    ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

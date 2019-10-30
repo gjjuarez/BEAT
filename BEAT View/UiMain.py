@@ -112,29 +112,32 @@ class UiMain(UiView.Ui_BEAT):
     #########################################################################################
     def project_selected(self):
         to_find = self.project_list.currentItem().text()
-        name, desc, path = data_manager.get_project_from_name(to_find)
-        data_manager.update_current_project(name, desc, path)
+        name, desc, path, bin_info = data_manager.get_project_from_name(to_find)
+        data_manager.update_current_project(name, desc, path, bin_info)
         self.setCurrentProject()
 
     def setCurrentProject(self):
-        name, desc, path = data_manager.getCurrentProjectInfo()
+        name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
         
         # If no project set...
         if name == "":
             BEAT.setWindowTitle("BEAT")
         else:
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
-
+        # fill name text
         self.project_name_text.setText(name)
         self.project_name_text.setReadOnly(True)
-
+        # fill description test
         self.project_desc_text.setText(desc)
         self.project_desc_text.setReadOnly(True)
-
+        # fill path text
         self.file_path_lineedit.setText(path)
         self.file_path_lineedit.setReadOnly(True)
+        # disable buttons
         self.save_project_button.setDisabled(True)
         self.file_browse_button.setDisabled(True)
+        # fill binary info
+        self.fill_binary_info(bin_info)
 
     '''
     Sets settings for new project viewer
@@ -181,32 +184,49 @@ class UiMain(UiView.Ui_BEAT):
         name = self.project_name_text.text()
         desc = self.project_desc_text.text()
         path = self.file_path_lineedit.text()
-        
-        data_manager.save_project(name,desc,path)
+        bin_info = self.check_binary_arch(path)
+        # check if the binary is correct architecture before saving
+        if bin_info == None:  # display error window
+            self.window = QtWidgets.QMainWindow()
+            self.ui = Ui_ArchitectureError()
+            self.ui.setupUi(self.window)
+            self.window.show()
+        else:
+            data_manager.save_project(name, desc, path, bin_info)
+            data_manager.update_current_project(name, desc, path, bin_info)
+            self.fill_projects()
+            self.setCurrentProject()
 
-        self.fill_projects()
-        self.new_project()
+    def check_binary_arch(self, path):
+        binary_info = radare_commands_interface.parse_binary(path)
+        if 'arch' in binary_info and binary_info['arch'] == 'x86':
+            self.file_path_lineedit.setText(path)
+            self.fill_binary_info(binary_info)
+            return binary_info
+        else:
+            return None
 
     '''
     Opens the file browser and writes the selected file's filepath in file_path_lineedit 
     '''
     def browse_path(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
-        binary_info = radare_commands_interface.parse_binary(file_path)
-        # print("arch:", binary_info['arch'])
-        if 'arch' in binary_info and binary_info['arch'] == 'x86':
-            self.file_path_lineedit.setText(file_path)
-            self.fill_binary_info(binary_info)
-        else:
-            self.window = QtWidgets.QMainWindow()
-            self.ui = Ui_ArchitectureError()
-            self.ui.setupUi(self.window)
-            self.window.show()
+        self.file_path_lineedit.setText(file_path)
 
 
     def fill_binary_info(self, bi):
         self.binary_file_properties_value_listwidget.clear()
-        self.binary_file_properties_value_listwidget.addItems([bi['os'], bi['bintype'],bi['machine'], bi['class'], bi['bits'], bi['lang'],bi['canary'], bi['crypto'], bi['nx'], bi['pic'], bi['relocs'],bi['relro'],bi['stripped']])
+        try:
+            self.binary_file_properties_value_listwidget.addItems([bi['os'], bi['bintype'],
+                                                                   bi['machine'], bi['class'],
+                                                                   bi['bits'], bi['lang'],
+                                                                   bi['canary'], bi['crypto'],
+                                                                   bi['nx'], bi['pic'],
+                                                                   bi['relocs'], bi['relro'],
+                                                                   bi['stripped']])
+        except KeyError:
+            print("Failed to add binary info")
+            return
         print("Done filling binary info")
 
     #########################################################################################

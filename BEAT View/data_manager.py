@@ -29,15 +29,21 @@ def get_project_names():
     projects = []
     for c in project_collection.find():
         projects.append(str(c["name"]))
-    return  projects
+    return projects
 
-def save_project(name, desc, path):
-    project_dict = {"name": name, "desc": desc, "path": path}
+def save_project(name, desc, path, binary_info):
+    project_dict = {"name": name,
+                    "desc": desc,
+                    "path": path,
+                    "bin_info": binary_info}
     project_collection.insert_one(project_dict)
 
-def update_current_project(name, desc, path):
+def update_current_project(name, desc, path, binary_info):
     current_collection.drop()
-    curr_dict = {"name": name, "desc": desc, "path": path}
+    curr_dict = {"name": name,
+                 "desc": desc,
+                 "path": path,
+                 "bin_info": binary_info}
     current_collection.insert_one(curr_dict)
 
 # Get current projects info
@@ -46,22 +52,32 @@ def getCurrentProjectInfo():
     name = ""
     path = ""
     desc = ""
+    bin_info = {}
     for x in current_collection.find():
-        path = x["path"]
-        desc = x["desc"]
-        name = x["name"]
-    return name, desc, path
+        try:
+            path = x["path"]
+            desc = x["desc"]
+            name = x["name"]
+            bin_info = x["bin_info"]
+        except KeyError:
+            print("Key error")
+    return name, desc, path, bin_info
 
 def get_project_from_name(to_find):
     name = ""
     desc = ""
     path = ""
+    bin_info = {}
     for c in project_collection.find():
-        if(c["name"] == to_find):
-            name = c["name"]
-            desc = c["desc"]
-            path = c["path"]
-            return name, desc, path
+        try :
+            if(c["name"] == to_find):
+                name = c["name"]
+                desc = c["desc"]
+                path = c["path"]
+                bin_info = c["bin_info"]
+                return name, desc, path, bin_info
+        except KeyError:
+            print("Key error")
 
 def delete_project_given_name(name):
     project_collection.delete_one({'name': name})

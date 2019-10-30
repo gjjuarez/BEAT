@@ -285,6 +285,16 @@ class UiMain(UiView.Ui_BEAT):
         self.ui = Ui_Figure11CommentView()
         self.ui.setupUi(self.window)
         self.window.show()
+        #Ui_Figure11CommentView.save_button.clicked.connect(self.save_comment)
+
+    '''
+    Saves comments to text file
+    '''
+    def save_comment(self):
+        if True:
+            print("Nothing here")
+        else:
+            print("Comment")
 
     '''
     Runs analysis and displayss results

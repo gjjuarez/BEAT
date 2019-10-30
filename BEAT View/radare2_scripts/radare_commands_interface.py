@@ -7,6 +7,16 @@ functiontable = None
 functioncol = None
 mydb = None
 
+def parse_binary(path):
+    rlocal = r2pipe.open(path)
+    binary_info = rlocal.cmd("if")
+    print(binary_info)
+    binary_info = binary_info.split("\n")[:-1]
+    x = dict(s.split(' ',1) for s in binary_info)
+    for k, v in x.items():
+        x[k] = v.lstrip()
+    return x
+
 def run_static_analysis():
     global rlocal
     global functiontable

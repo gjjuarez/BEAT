@@ -158,16 +158,8 @@ class UiMain(UiView.Ui_BEAT):
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
     def remove_project(self):
-        import pymongo
-        #from bson.objectid import ObjectId
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient['projectsdb']
-        mycol = mydb['current']
-        mycol.drop()
         name = self.project_list.currentItem().text()
-
-        mycol = mydb['projects']
-        result = mycol.delete_one({'name': name})
+        data_manager.delete_project_given_name(name)
         self.project_list.clear()
         self.fill_projects()
         print("Done Removing Project")

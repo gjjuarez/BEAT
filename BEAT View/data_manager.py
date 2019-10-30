@@ -63,6 +63,9 @@ def get_project_from_name(to_find):
             path = c["path"]
             return name, desc, path
 
+def delete_project_given_name(name):
+    project_collection.delete_one({'name': name})
+    current_collection.drop()
 
 # begin methods for adding, updating/creating, getting, and removal of data from collections
 def insert_data(data): #data needs to be in json format
@@ -131,8 +134,6 @@ POI_section_Size = 0
 POI_section_value = ""
 POI_structure = ""
 POI_order_to_functions = ""
-
-save_project("Project 1 test", "this is project one", "gravel") #test line################################
 
 def POI_type_selector():
     #take in something then if else to select the proper method

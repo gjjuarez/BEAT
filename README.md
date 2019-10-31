@@ -21,24 +21,24 @@ To build, the only dependencies are
 	3. Download Jinja from jinja.pocoo.org
 	
 	For Windows
-		7. Navigate to the Downloads Folder an run the Python3 installation.
-		8. In the command prompt type pip install PyQt5
-		9. In the command prompt type pip install pyinstaller
-		10. Run main_window2.exe from the build directory in Team01_Beat you opened earlier.
-		11. `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
-		12. `pyinstaller main.py`
+		4. Navigate to the Downloads Folder an run the Python3 installation.
+		5. In the command prompt type pip install PyQt5
+		6. In the command prompt type pip install pyinstaller
+		7. `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
+		8. `pyinstaller main.py`
 	
 	For Linux:
-		7. Go into the terminal and type apt-get update
-		8. cd Downloads
-		9. tar -xvf Python-3.8.0.tar.xz
-		10. cd Python3.8.0
-		11. ./configure
-		12. make
-		13. make install
-		14. python3 -v
-		15. apt-get install python3-pip
-		16. pip install PyQt5
-		18. pip install pyinstaller
-		19. git clone 
-		20. Run main_window2.exe from the build directory in Team01_Beat you opened earlier.
+		4. Go into the terminal and type apt-get update
+		5. type cd Downloads
+		6. type tar -xvf Python-3.8.0.tar.xz
+		7. type cd Python3.8.0
+		8. type ./configure
+		9. type make
+		10. type make install
+		11. type python3 -v
+		12. type apt-get install python3-pip
+		13. type pip install PyQt5
+		14. type pip install pyinstaller
+		15. type git clone https://github.com/gjjuarez/Team01_BEAT.git
+		16. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
+		17. type `pyinstaller main.py`

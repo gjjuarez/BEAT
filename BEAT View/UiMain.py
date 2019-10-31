@@ -12,6 +12,8 @@ from Terminal import EmbTerminalLinux
 from radare2_scripts import radare_commands_interface
 from PyQt5 import QtGui
 import data_manager
+import os.path
+from os import path
 
 class UiMain(UiView.Ui_BEAT):
     global staticIsRun
@@ -226,24 +228,71 @@ class UiMain(UiView.Ui_BEAT):
         self.ui.setupUi(self.window)
         self.window.show()
     '''
-    Opens Ui_Figure11CommentView
+    Opens Ui_Figure11CommentView and will show comments for selected POI 
+    if the comment exists
     '''
     def comment_view(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Figure11CommentView()
         self.ui.setupUi(self.window)
         self.window.show()
-        #Ui_Figure11CommentView.save_button.clicked.connect(self.save_comment)
+
+        current_item = self.points_of_interest_list_widget.currentItem()
+        print(str(current_item.text()))
+
+        # This looks for if comments already exits for a line
+
+        if path.exists("comment.txt"):
+            comment = open("comment.txt", "r+")
+            looking_for_comment = self.points_of_interest_list_widget.currentRow()
+            for line in comment:
+                comment_number = line.split(" ", 1)[0]
+                if comment_number == str(looking_for_comment):
+                    print("something there")
+                    self.ui.comment_textedit.setText(line)
+        comment.close()
+        self.ui.save_button.clicked.connect(self.save_comment)
+        self.ui.clear_button.clicked.connect(self.clear_comment)
 
     '''
     Saves comments to text file
     '''
     def save_comment(self):
-        if True:
-            print("Nothing here")
-        else:
-            print("Comment")
+        comment = open("comment.txt", "a+")
+        text = self.ui.comment_textedit.toPlainText()
+        comment.write("%d " % self.points_of_interest_list_widget.currentRow())
+        comment.write(text + "\n")
+        print(text)
+        comment.close()
 
+    '''
+    Works with save_comment to overwrite a comment that has already been placed 
+    on a POI  AND DOESNT WORK
+    '''
+    def replace_line(self, file_name, line_num, text):
+        if not text:
+            '''Do nothing'''
+            print("Do nothing")
+        else:
+            print("SHOULD REPLACE HERE")
+            '''lines = open(file_name, 'r').readlines()
+            lines[line_num] = text
+            out = open(file_name, 'w')
+            out.writelines(lines)
+            out.close()'''
+
+    '''
+    Clears a comment from the POI
+    '''
+    def clear_comment(self):
+        with open("comment.txt", "r+") as f:
+            new_f = f.readlines()
+            f.seek(0)
+            for line in new_f:
+                if self.ui.comment_textedit.toPlainText() not in line:
+                    f.write(line)
+            f.truncate()
+        self.ui.comment_textedit.clear()
     '''
     Runs analysis and displayss results
     '''

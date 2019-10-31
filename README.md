@@ -20,7 +20,7 @@ To build, the only dependencies are
 	2. Download Radare2 from https://wwww.radare.org/r/
 	3. Download Jinja from jinja.pocoo.org
 	
-	For Windows
+	For Windows:
 		4. Navigate to the Downloads Folder an run the Python3 installation.
 		5. In the command prompt type pip install PyQt5
 		6. type pip install pyinstaller

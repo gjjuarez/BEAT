@@ -27,9 +27,14 @@ class Ui_BEAT(object):
         self.tabWidget.setAccessibleName("")
         self.tabWidget.setObjectName("tabWidget")
         self.Project = QtWidgets.QWidget()
+        '''
+        Project Tab
+        '''
         self.Project.setObjectName("Project")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.Project)
         self.gridLayout_4.setObjectName("gridLayout_4")
+        self.gridLayout_4.setColumnStretch(0,0)
+        self.gridLayout_4.setColumnStretch(1,1)
         self.detailed_project_view_groupbox = QtWidgets.QGroupBox(self.Project)
         self.detailed_project_view_groupbox.setTitle("")
         self.detailed_project_view_groupbox.setObjectName("detailed_project_view_groupbox")
@@ -1002,10 +1007,19 @@ class Ui_BEAT(object):
         self.gridLayout.addWidget(self.new_project_button, 3, 0, 1, 2)
         self.gridLayout_4.addWidget(self.project_view_groupbox, 0, 0, 1, 1)
         self.tabWidget.addTab(self.Project, "")
+        '''
+        Analysis Tab
+        '''
         self.Analysis = QtWidgets.QWidget()
         self.Analysis.setObjectName("Analysis")
         self.gridLayout_14 = QtWidgets.QGridLayout(self.Analysis)
         self.gridLayout_14.setObjectName("gridLayout_14")
+        self.gridLayout_14.setRowStretch(0,0)
+        self.gridLayout_14.setRowStretch(1,2)
+        self.gridLayout_14.setColumnStretch(2,4)
+
+        #self.gridLayout_14.setColumnStretch(0,1)
+        #self.gridLayout_14.setColumnStretch(1,0)
         self.top_groupbox = QtWidgets.QGroupBox(self.Analysis)
         self.top_groupbox.setTitle("")
         self.top_groupbox.setObjectName("top_groupbox")
@@ -1502,6 +1516,8 @@ class Ui_BEAT(object):
         self.Plugin_Management.setObjectName("Plugin_Management")
         self.gridLayout_12 = QtWidgets.QGridLayout(self.Plugin_Management)
         self.gridLayout_12.setObjectName("gridLayout_12")
+        self.gridLayout_12.setColumnStretch(0,0)
+        self.gridLayout_12.setColumnStretch(1,1)
         self.plugin_view_groupbox = QtWidgets.QGroupBox(self.Plugin_Management)
         self.plugin_view_groupbox.setTitle("")
         self.plugin_view_groupbox.setObjectName("plugin_view_groupbox")
@@ -2372,6 +2388,7 @@ class Ui_BEAT(object):
         self.Points_of_Interest.setObjectName("Points_of_Interest")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.Points_of_Interest)
         self.gridLayout_8.setObjectName("gridLayout_8")
+        self.gridLayout_8.setColumnStretch(1,1)
         self.point_of_interest_view_groupbox = QtWidgets.QGroupBox(self.Points_of_Interest)
         self.point_of_interest_view_groupbox.setTitle("")
         self.point_of_interest_view_groupbox.setObjectName("point_of_interest_view_groupbox")
@@ -2753,6 +2770,7 @@ class Ui_BEAT(object):
         self.Documentation.setObjectName("Documentation")
         self.gridLayout_16 = QtWidgets.QGridLayout(self.Documentation)
         self.gridLayout_16.setObjectName("gridLayout_16")
+        self.gridLayout_16.setColumnStretch(1,1)
         self.document_view_groupbox = QtWidgets.QGroupBox(self.Documentation)
         self.document_view_groupbox.setTitle("")
         self.document_view_groupbox.setObjectName("document_view_groupbox")

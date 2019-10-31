@@ -159,16 +159,23 @@ def save_project(name, desc, path, binary_info):
                     "bin_info": binary_info}
     project_collection.insert_one(project_dict)
 
-def save_variables(analysis_run, POI_name, POI_value, POI_data_type,
-                   POI_size, POI_binary_section, POI_call_address):
+def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_type, address):
     global variable_collection
-    document = {'Variable Name': POI_name,
+    document = {'Analysis Run': analysis_run,
+                'Function Name': function_name,  # to reference parent, avoid conflicting names
+                'Variable Name': POI_name,
                 'Variable Value': POI_value,
                 'Variable Type': POI_data_type,
-                'Variable Size': POI_size,
-                'Binary Section': POI_binary_section,
-                'Call From Address': POI_call_address}
-    variable_collection.insert_one({'Analysis run': analysis_run, "POI Values": document})
+                'Address': address}
+    variable_collection.replace_one({'Function Name': function_name,
+                                     'Variable Name': POI_name}, document, upsert=True)
+    
+def get_variables():
+    global variable_collection
+    variables = []
+    for var in variable_collection.find():
+        variables.append(var)
+    return variables
 
 def save_strings(analysis_run, POI_value, section, address):
     global string_collection

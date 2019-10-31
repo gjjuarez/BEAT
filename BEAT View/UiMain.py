@@ -270,8 +270,7 @@ class UiMain(UiView.Ui_BEAT):
     def analyze_and_display_POI(self):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        name, desc, path, bin_info get_project_from_name()
-        radare_commands_interface.run_static_analysis(path)
+        radare_commands_interface.run_static_analysis()
         #self.terminal.begin()
         #self.stacked.setCurrentWidget(self.terminal)
         # self.terminal.begin_static()

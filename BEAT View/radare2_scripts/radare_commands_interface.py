@@ -2,6 +2,10 @@
 
 import r2pipe
 import pymongo
+import sys
+sys.path.append("..")  # for data_manager
+import data_manager
+
 rlocal = None
 functiontable = None
 functioncol = None
@@ -19,28 +23,30 @@ def parse_binary(path):
     rlocal.quit()
     return x
 
-def run_static_analysis(path):
+def run_static_analysis():
+    global functiontable
+    global rlocal
+    name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
     rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
     try:
         rlocal.cmd("aaa")  # analyze file
         rlocal.cmd("s main")
     except:
         pass  # fail quietly, almost always gives error when reading
-    functiontable = str(mycol["name"])[:2] + "funcs"
+    functiontable = name + "funcs"
     extract_all()
 
-def run_dynamic_analysis(path):
-    rlocal = r2pipe.open(path, flags=['-d'])
+'''
+def run_dynamic_analysis():
+    global rlocal
     try:
         #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
-        rlocal.cmd("aaa")  # analyze file
+        rlocal.cmd("aaa")
     except:
-        rlocal.cmd("exit")
         pass  # fail quietly, almost always gives error when reading
     extract_all()
     run_dynamic_and_update()
-
-
+'''
 
 def extract_vars_from_functions(filename):
     varFileName = "variables.txt"

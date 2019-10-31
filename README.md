@@ -9,11 +9,11 @@ To build executable out of python file
 
 ## DEPENDENCIES
 To build, the only dependencies are
-* Python 3 ver. 3.8.0 https://www.python.org/downloads
-* PyQT5 5.13.1 pip install PyQt5
-* Radare2 ver. 4.0.0 https://wwww.radare.org/r/
-* Jinja ver. 2.10.3 jinja.pocoo.org
-* pyinstaller
+* Python 3 ver. 3.8.0 - website: https://www.python.org/downloads
+* PyQT5 5.13.1 - command line: pip install PyQt5
+* Radare2 ver. 4.0.0 website: https://wwww.radare.org/r/
+* Jinja ver. 2.10.3 - website: jinja.pocoo.org
+* pyinstaller ver 3.5 - commmand line: pip install pyinstaller
 
 ## TUTORIAL
 	1. Download Python3 from https://www.python.org/downloads.

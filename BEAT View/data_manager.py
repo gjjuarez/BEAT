@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #! /usr/bin/env python3
 
 # database_operations.py version 1.1
@@ -567,4 +566,4 @@ POI_order_to_functions = ""
 
 #save_variables("static", "integer 2", 254, "integer", 256, "some random section in binary", "here lies a binary address")
 #save_variables("dynamic", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")
->>>>>>> 3876c293a273b7f178bb1ab40ec7cb065745d910
+

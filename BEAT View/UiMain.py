@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from ArchitectureError import Ui_ArchitectureError
 from PyQt5.QtWidgets import QListWidgetItem
 from Terminal import EmbTerminalLinux
 
@@ -24,12 +25,16 @@ class UiMain(UiView.Ui_BEAT):
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
 
+
+
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
 
         # Fill the Project list from mongo
         self.fill_projects()
+
+        self.update_plugin_list()
 
         self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
         self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
@@ -84,6 +89,7 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Points of Interest Tab Listeners
         '''
+        self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
 
         '''
         Documentation Tab Listeners
@@ -104,8 +110,8 @@ class UiMain(UiView.Ui_BEAT):
         self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
-
-        self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
+        self.detailed_point_of_interest_view_type_dropdown.clear()
+        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"])
         self.project_list.itemClicked.connect(self.project_selected)
 
     #########################################################################################
@@ -113,29 +119,32 @@ class UiMain(UiView.Ui_BEAT):
     #########################################################################################
     def project_selected(self):
         to_find = self.project_list.currentItem().text()
-        name, desc, path = data_manager.get_project_from_name(to_find)
-        data_manager.update_current_project(name, desc, path)
+        name, desc, path, bin_info = data_manager.get_project_from_name(to_find)
+        data_manager.update_current_project(name, desc, path, bin_info)
         self.setCurrentProject()
 
     def setCurrentProject(self):
-        name, desc, path = data_manager.getCurrentProjectInfo()
+        name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
         
         # If no project set...
         if name == "":
             BEAT.setWindowTitle("BEAT")
         else:
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
-
+        # fill name text
         self.project_name_text.setText(name)
         self.project_name_text.setReadOnly(True)
-
+        # fill description test
         self.project_desc_text.setText(desc)
         self.project_desc_text.setReadOnly(True)
-
+        # fill path text
         self.file_path_lineedit.setText(path)
         self.file_path_lineedit.setReadOnly(True)
+        # disable buttons
         self.save_project_button.setDisabled(True)
         self.file_browse_button.setDisabled(True)
+        # fill binary info
+        self.fill_binary_info(bin_info)
 
     '''
     Sets settings for new project viewer
@@ -160,25 +169,19 @@ class UiMain(UiView.Ui_BEAT):
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
     def remove_project(self):
-        import pymongo
-        #from bson.objectid import ObjectId
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient['projectsdb']
-        mycol = mydb['current']
-        mycol.drop()
         name = self.project_list.currentItem().text()
-
-        mycol = mydb['projects']
-        result = mycol.delete_one({'name': name})
+        data_manager.delete_project_given_name(name)
         self.project_list.clear()
         self.fill_projects()
-        print("Done Removing Project")
+        print("Done Removing Project:", name)
+        self.new_project()
 
 
     '''
     Fills projects list
     '''
     def fill_projects(self):
+        self.project_list.clear()
         self.project_list.addItems(data_manager.get_project_names())
 
     '''
@@ -188,11 +191,27 @@ class UiMain(UiView.Ui_BEAT):
         name = self.project_name_text.text()
         desc = self.project_desc_text.text()
         path = self.file_path_lineedit.text()
+        bin_info = self.check_binary_arch(path)
+        # check if the binary is correct architecture before saving
+        if bin_info == None:  # display error window
+            self.window = QtWidgets.QMainWindow()
+            self.ui = Ui_ArchitectureError()
+            self.ui.setupUi(self.window)
+            self.window.show()
+        else:
+            data_manager.save_project(name, desc, path, bin_info)
+            data_manager.update_current_project(name, desc, path, bin_info)
+            self.fill_projects()
+            self.setCurrentProject()
 
-        data_manager.save_project(name,desc,path)
-
-        self.fill_projects()
-        self.new_project()
+    def check_binary_arch(self, path):
+        binary_info = radare_commands_interface.parse_binary(path)
+        if 'arch' in binary_info and binary_info['arch'] == 'x86':
+            self.file_path_lineedit.setText(path)
+            self.fill_binary_info(binary_info)
+            return binary_info
+        else:
+            return None
 
     '''
     Opens the file browser and writes the selected file's filepath in file_path_lineedit 
@@ -200,6 +219,22 @@ class UiMain(UiView.Ui_BEAT):
     def browse_path(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.file_path_lineedit.setText(file_path)
+
+
+    def fill_binary_info(self, bi):
+        self.binary_file_properties_value_listwidget.clear()
+        try:
+            self.binary_file_properties_value_listwidget.addItems([bi['os'], bi['bintype'],
+                                                                   bi['machine'], bi['class'],
+                                                                   bi['bits'], bi['lang'],
+                                                                   bi['canary'], bi['crypto'],
+                                                                   bi['nx'], bi['pic'],
+                                                                   bi['relocs'], bi['relro'],
+                                                                   bi['stripped']])
+        except KeyError:
+            print("Failed to add binary info")
+            return
+        print("Done filling binary info")
 
     #########################################################################################
     # Analysis Tab Functions
@@ -521,7 +556,24 @@ class UiMain(UiView.Ui_BEAT):
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
-        self.plugin_view_plugin_listwidget.addItem(self.plugin_name_lineedit.text())
+        name = self.plugin_name_lineedit.text()
+        desc = self.plugin_description_textedit.toPlainText()
+        self.plugin_view_plugin_listwidget.addItem(name)
+        data_manager.save_plugin(name,desc)
+        self.update_plugin_list()
+        
+
+    def update_plugin_list(self):
+        plugins = data_manager.get_plugin_names()
+
+        self.plugin_view_plugin_listwidget.clear()
+        self.plugin_view_plugin_listwidget.addItems(plugins)
+
+        self.existing_plugin_dropdown.clear()
+        self.existing_plugin_dropdown.addItems(plugins)
+
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.clear()
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.addItems(plugins)
     '''
     Removes a selected plugin from the plugin list within Plugin Management 
     '''
@@ -530,6 +582,7 @@ class UiMain(UiView.Ui_BEAT):
         if not listItems: return
         for item in listItems:
            self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
+           data_manager.delete_plugin_given_name(item)
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''
@@ -543,6 +596,24 @@ class UiMain(UiView.Ui_BEAT):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
+    def add_poi_to_plugin(self):
+        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+        if poi_type == "Function":
+            data_manager.add_function_to_plugin(plugin,poi_type)
+        elif poi_type == "String":
+            data_manager.add_string_to_plugin(plugin,poi_type)
+        elif poi_type == "Variable":
+            data_manager.add_variable_to_plugin(plugin,poi_type)
+        elif poi_type == "DLL":
+            data_manager.add_dll_to_plugin(plugin,poi_type)
+        elif poi_type == "Packet Protocol":
+            data_manager.add_packet_to_plugin(plugin,poi_type)
+        elif poi_type == "Struct":
+            data_manager.add_struct_to_plugin(plugin,poi_type)
+
+        #data_manager.add_string_to_plugin(plugin,poi_type)
+
 
 if __name__ == "__main__":
     import sys
@@ -551,5 +622,6 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
+    ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

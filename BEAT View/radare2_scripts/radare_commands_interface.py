@@ -2,49 +2,51 @@
 
 import r2pipe
 import pymongo
+import sys
+sys.path.append("..")  # for data_manager
+import data_manager
+
 rlocal = None
 functiontable = None
 functioncol = None
 mydb = None
 
-def run_static_analysis():
+def parse_binary(path):
     global rlocal
+    rlocal = r2pipe.open(path)
+    binary_info = rlocal.cmd("if")
+    print(binary_info)
+    binary_info = binary_info.split("\n")[:-1]
+    x = dict(s.split(' ', 1) for s in binary_info)
+    for k, v in x.items():
+        x[k] = v.lstrip()
+    rlocal.quit()
+    return x
+
+def run_static_analysis():
     global functiontable
-    global mydb
-    dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = dbclient['projectsdb']
-    mycol = mydb['current']
-    path = ""
-    for x in mycol.find():
-        path = x["path"]
+    global rlocal
+    name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
     rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
     try:
         rlocal.cmd("aaa")  # analyze file
         rlocal.cmd("s main")
     except:
         pass  # fail quietly, almost always gives error when reading
-    functiontable = str(mycol["name"])[:2] + "funcs"
+    functiontable = name + "funcs"
     extract_all()
 
+'''
 def run_dynamic_analysis():
     global rlocal
-    import pymongo
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient['projectsdb']
-    mycol = mydb['current']
-    for x in mycol.find():
-        path = x["path"]
-    rlocal = r2pipe.open(path, flags=['-d'])
     try:
         #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
-        rlocal.cmd("aaa")  # analyze file
+        rlocal.cmd("aaa")
     except:
-        rlocal.cmd("exit")
         pass  # fail quietly, almost always gives error when reading
     extract_all()
     run_dynamic_and_update()
-
-
+'''
 
 def extract_vars_from_functions(filename):
     varFileName = "variables.txt"

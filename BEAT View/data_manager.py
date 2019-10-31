@@ -17,12 +17,91 @@ current_database = 'BEAT_Database' # change string ('temp') here to make a new d
 database = connection[current_database]
 
 # create a collection for each point of interest
-point_of_interest = 'POIs' # change string ('placeholder') here to make a new collection for each point of interest***
-collection = database[point_of_interest]
-#print("Database connected") #test line to check for proper connection
-
+POI_collection = database['POIs']# change string ('placeholder') here to make a new collection for each point of interest***
 project_collection = database['project']
 current_collection = database['current']
+plugin_collection = database['plugin']
+
+'''
+#################################################################################
+Plugin functions
+#################################################################################
+'''
+def get_plugin_names():
+    plugins = []
+    for c in plugin_collection.find():
+        plugins.append(str(c["name"]))
+    return plugins
+
+def save_plugin(name, desc):
+    plugin_dict = {"name": name,
+                   "desc": desc}
+    plugin_collection.insert_one(plugin_dict)
+
+def get_plugin_from_name(to_find):
+    name = ""
+    desc = ""
+    for c in plugin_collection.find():
+        try :
+            if(c["name"] == to_find):
+                name = c["name"]
+                desc = c["desc"]
+                return name, desc
+        except KeyError:
+            print("Key error")
+def delete_plugin_given_name(name):
+    plugin_collection.delete_one({'name': name})
+
+def add_string_to_plugin(name, string):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"string": string}
+    },upsert=True
+    )
+    from pprint import pprint
+
+    cursor = plugin_collection.find({})
+    for document in cursor: 
+        pprint(document)
+    #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
+def add_function_to_plugin(name, string):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"string": string}
+    },upsert=True
+    )
+def add_variable_to_plugin(name, variable):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"variable": variable}
+    },upsert=True
+    )
+
+def add_dll_to_plugin(name, dll):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"dll": dll}
+    },upsert=True
+    )
+def add_packet_to_plugin(name, packet):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"packet": packet}
+    },upsert=True
+    )
+def add_struct_to_plugin(name, struct):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"struct": struct}
+    },upsert=True
+    )
+
 '''
 #################################################################################
 Project functions
@@ -32,15 +111,21 @@ def get_project_names():
     projects = []
     for c in project_collection.find():
         projects.append(str(c["name"]))
-    return  projects
+    return projects
 
-def save_project(name, desc, path):
-    project_dict = {"name": name, "desc": desc, "path": path}
+def save_project(name, desc, path, binary_info):
+    project_dict = {"name": name,
+                    "desc": desc,
+                    "path": path,
+                    "bin_info": binary_info}
     project_collection.insert_one(project_dict)
 
-def update_current_project(name, desc, path):
+def update_current_project(name, desc, path, binary_info):
     current_collection.drop()
-    curr_dict = {"name": name, "desc": desc, "path": path}
+    curr_dict = {"name": name,
+                 "desc": desc,
+                 "path": path,
+                 "bin_info": binary_info}
     current_collection.insert_one(curr_dict)
 
 # Get current projects info
@@ -49,24 +134,36 @@ def getCurrentProjectInfo():
     name = ""
     path = ""
     desc = ""
+    bin_info = {}
     for x in current_collection.find():
-        path = x["path"]
-        desc = x["desc"]
-        name = x["name"]
-    return name, desc, path
+        try:
+            path = x["path"]
+            desc = x["desc"]
+            name = x["name"]
+            bin_info = x["bin_info"]
+        except KeyError:
+            print("Key error")
+    return name, desc, path, bin_info
 
 def get_project_from_name(to_find):
     name = ""
     desc = ""
     path = ""
+    bin_info = {}
     for c in project_collection.find():
-        if(c["name"] == to_find):
-            name = c["name"]
-            desc = c["desc"]
-            path = c["path"]
-            return name, desc, path
+        try :
+            if(c["name"] == to_find):
+                name = c["name"]
+                desc = c["desc"]
+                path = c["path"]
+                bin_info = c["bin_info"]
+                return name, desc, path, bin_info
+        except KeyError:
+            print("Key error")
 
-
+def delete_project_given_name(name):
+    project_collection.delete_one({'name': name})
+    current_collection.drop()
 
 # begin methods for adding, updating/creating, getting, and removal of data from collections
 def insert_data(data): #data needs to be in json format
@@ -75,11 +172,11 @@ def insert_data(data): #data needs to be in json format
 
 def update_or_create(document_id,data):
     #avoids duplicates by by creating a new document if the same id does not exist
-    document = collection.delete_one({'_id': ObjectId(document_id)},{"$set": data},upsert=True)
+    document = collection.update_one({'_id': ObjectId(document_id)},{"$set": data},upsert=True)
     return document.acknowledged
 
 def update_existing(document_id,data):
-    document = collection.delete_one({'_id': ObjectId(document_id)}, {"$set": data})
+    document = collection.update_one({'_id': ObjectId(document_id)}, {"$set": data})
     return document.acknowledged
 
 def remove_data(document_id):
@@ -114,12 +211,13 @@ poi_type = "variable" # change "variable" to variable, string, library, function
 # edit the following variables with what was found in the static or dynamic analysis
 # values that can be stored by the mongo Database are string, integer, boolean, double, Min/Max keys, arrays, timestamp,
 # Object, Null, Symbol, Date, ObjectId, Binary data, javascript code and regular expressions
-POI_object_ID = "" #when object  Id is made grab it and store it as well? or into another DB?
+POI_object_ID = ""
 POI_name = "POI_Temp"
-POI_value = 3
-POI_data_type = "variable"
-POI_size = 2
+POI_data_type = ""
 POI_call_address = ""
+
+POI_value = 0
+POI_size = 0
 POI_destination_address = ""
 POI_parameter_type = ""
 POI_parameter_order = ""
@@ -135,10 +233,29 @@ POI_section_value = ""
 POI_structure = ""
 POI_order_to_functions = ""
 
+def POI_type_selector():
+    #take in something then if else to select the proper method
+    #POI_name = something
+    #POI_call_address = something
+    #POI_data_type =
 
-# if/else statements to store the corresponding data tot he database
-if poi_type == "variable": #variable
-    document = collection.insert_many([{
+    #selects which method to run to store POI values
+    if POI_data_type == "variable": #variable
+        POI_variable()
+    elif POI_data_type == "string":
+        POI_string()
+    elif POI_data_type == "library":
+        POI_library()
+    elif POI_data_type == "function":
+        POI_function()
+    elif POI_data_type == "protocol":
+        POI_protocol()
+    elif POI_data_type == "struct":
+        POI_struct()
+
+# methods that handle the POI values to be stored
+def POI_variable():
+    document = POI_collection.insert_many([{
                 'Variable Name': POI_name,
                 'Variable Value': POI_value,
                 'Variable Type': POI_data_type,
@@ -146,8 +263,8 @@ if poi_type == "variable": #variable
                 'Bianry Section': POI_binary_section,
                 'Call From Address': POI_call_address}])
 
-elif poi_type == "string": #string
-    document = collection.insert_many([{
+def POI_string():
+    document = POI_collection.insert_many([{
                 'String Name': POI_name,
                 'String Value': POI_value,
                 'String Type': POI_data_type,
@@ -156,8 +273,8 @@ elif poi_type == "string": #string
                 'Destination Address': POI_destination_address,
                 'Section': POI_binary_section}])
 
-elif poi_type == "library": #library
-    document = collection.insert_many([{
+def POI_library():
+    document = POI_collection.insert_many([{
                 'Library Name': POI_name,
                 'Parameter Order': POI_parameter_order,
                 'Parameter Type': POI_parameter_type,
@@ -166,8 +283,8 @@ elif poi_type == "library": #library
                 'Return Value': POI_return_value,
                 'Call From Address': POI_order_to_functions}])
 
-elif poi_type == "function": #function
-    document = collection.insert_many([{
+def POI_function():
+    document = POI_collection.insert_many([{
                 'Function Name': POI_name,
                 'Function Value': POI_value,
                 'Return Type': POI_return_type,
@@ -176,8 +293,8 @@ elif poi_type == "function": #function
                 'Destination Address': POI_destination_address,
                 'Binary Section': POI_binary_section}])
 
-elif poi_type == "protocol": #pakect protocol
-    document = collection.insert_many([{
+def POI_protocol():
+    document = POI_collection.insert_many([{
                 'Protocol Name': POI_name,
                 'Call From Address': POI_call_address,
                 'Structure': POI_structure,
@@ -185,8 +302,8 @@ elif poi_type == "protocol": #pakect protocol
                 'Section Value': POI_section_value,
                 'Binary Section': POI_binary_section}])
 
-elif poi_type == "struct": #struct
-    document = collection.insert_many([{
+def POI_struct():
+    document = POI_collection.insert_many([{
                 'Struct Name': POI_name,
                 'Call From Address': POI_call_address,
                 'Structure': POI_structure,

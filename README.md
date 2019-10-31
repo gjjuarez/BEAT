@@ -23,9 +23,9 @@ To build, the only dependencies are
 	For Windows
 		4. Navigate to the Downloads Folder an run the Python3 installation.
 		5. In the command prompt type pip install PyQt5
-		6. In the command prompt type pip install pyinstaller
-		7. `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
-		8. `pyinstaller main.py`
+		6. type pip install pyinstaller
+		7. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
+		8. type `pyinstaller main.py`
 	
 	For Linux:
 		4. Go into the terminal and type apt-get update

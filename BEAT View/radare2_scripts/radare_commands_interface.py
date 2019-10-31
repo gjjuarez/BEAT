@@ -8,25 +8,18 @@ functioncol = None
 mydb = None
 
 def parse_binary(path):
+    global rlocal
     rlocal = r2pipe.open(path)
     binary_info = rlocal.cmd("if")
     print(binary_info)
     binary_info = binary_info.split("\n")[:-1]
-    x = dict(s.split(' ',1) for s in binary_info)
+    x = dict(s.split(' ', 1) for s in binary_info)
     for k, v in x.items():
         x[k] = v.lstrip()
+    rlocal.quit()
     return x
 
-def run_static_analysis():
-    global rlocal
-    global functiontable
-    global mydb
-    dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = dbclient['projectsdb']
-    mycol = mydb['current']
-    path = ""
-    for x in mycol.find():
-        path = x["path"]
+def run_static_analysis(path):
     rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
     try:
         rlocal.cmd("aaa")  # analyze file
@@ -36,14 +29,7 @@ def run_static_analysis():
     functiontable = str(mycol["name"])[:2] + "funcs"
     extract_all()
 
-def run_dynamic_analysis():
-    global rlocal
-    import pymongo
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient['projectsdb']
-    mycol = mydb['current']
-    for x in mycol.find():
-        path = x["path"]
+def run_dynamic_analysis(path):
     rlocal = r2pipe.open(path, flags=['-d'])
     try:
         #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode

@@ -13,7 +13,7 @@ To build, the only dependencies are
 * PyQT5 5.13.1 - command line: pip install PyQt5
 * Radare2 ver. 4.0.0 website: https://wwww.radare.org/r/
 * Jinja ver. 2.10.3 - website: jinja.pocoo.org
-* pyinstaller ver. 3.5 - commmand line: pip install pyinstaller
+* Pyinstaller ver. 3.5 - commmand line: pip install pyinstaller
 
 ## TUTORIAL
 	1. Download Python3 from https://www.python.org/downloads.
@@ -24,8 +24,8 @@ To build, the only dependencies are
 		4. Navigate to the Downloads Folder an run the Python3 installation.
 		5. In the command prompt type pip install PyQt5
 		6. type pip install pyinstaller
-		7. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
-		8. type `pyinstaller main.py`
+		7. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py` to build the python file.
+		8. type `pyinstaller main.py` to build the executable.
 	
 	For Linux:
 		4. Go into the terminal and type apt-get update
@@ -40,5 +40,5 @@ To build, the only dependencies are
 		13. type pip install PyQt5
 		14. type pip install pyinstaller
 		15. type git clone https://github.com/gjjuarez/Team01_BEAT.git
-		16. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
-		17. type `pyinstaller main.py`
+		16. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py` to build the python file.
+		17. type `pyinstaller main.py` to build the executable.

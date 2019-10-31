@@ -13,7 +13,7 @@ To build, the only dependencies are
 * PyQT5 5.13.1 - command line: pip install PyQt5
 * Radare2 ver. 4.0.0 website: https://wwww.radare.org/r/
 * Jinja ver. 2.10.3 - website: jinja.pocoo.org
-* pyinstaller ver 3.5 - commmand line: pip install pyinstaller
+* pyinstaller ver. 3.5 - commmand line: pip install pyinstaller
 
 ## TUTORIAL
 	1. Download Python3 from https://www.python.org/downloads.

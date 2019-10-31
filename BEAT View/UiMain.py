@@ -23,12 +23,16 @@ class UiMain(UiView.Ui_BEAT):
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
 
+
+
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
 
         # Fill the Project list from mongo
         self.fill_projects()
+
+        self.update_plugin_list()
 
         self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
         self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
@@ -83,6 +87,7 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Points of Interest Tab Listeners
         '''
+        self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
 
         '''
         Documentation Tab Listeners
@@ -103,8 +108,8 @@ class UiMain(UiView.Ui_BEAT):
         self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
-
-        self.detailed_point_of_interest_view_type_dropdown.addItem("a;l", "hi")
+        self.detailed_point_of_interest_view_type_dropdown.clear()
+        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"])
         self.project_list.itemClicked.connect(self.project_selected)
 
     #########################################################################################
@@ -492,7 +497,24 @@ class UiMain(UiView.Ui_BEAT):
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
-        self.plugin_view_plugin_listwidget.addItem(self.plugin_name_lineedit.text())
+        name = self.plugin_name_lineedit.text()
+        desc = self.plugin_description_textedit.toPlainText()
+        self.plugin_view_plugin_listwidget.addItem(name)
+        data_manager.save_plugin(name,desc)
+        self.update_plugin_list()
+        
+
+    def update_plugin_list(self):
+        plugins = data_manager.get_plugin_names()
+
+        self.plugin_view_plugin_listwidget.clear()
+        self.plugin_view_plugin_listwidget.addItems(plugins)
+
+        self.existing_plugin_dropdown.clear()
+        self.existing_plugin_dropdown.addItems(plugins)
+
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.clear()
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.addItems(plugins)
     '''
     Removes a selected plugin from the plugin list within Plugin Management 
     '''
@@ -501,6 +523,7 @@ class UiMain(UiView.Ui_BEAT):
         if not listItems: return
         for item in listItems:
            self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
+           data_manager.delete_plugin_given_name(item)
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''
@@ -513,6 +536,24 @@ class UiMain(UiView.Ui_BEAT):
     def browse_plugin_dataset(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
+
+    def add_poi_to_plugin(self):
+        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+        if poi_type == "Function":
+            data_manager.add_function_to_plugin(plugin,poi_type)
+        elif poi_type == "String":
+            data_manager.add_string_to_plugin(plugin,poi_type)
+        elif poi_type == "Variable":
+            data_manager.add_variable_to_plugin(plugin,poi_type)
+        elif poi_type == "DLL":
+            data_manager.add_dll_to_plugin(plugin,poi_type)
+        elif poi_type == "Packet Protocol":
+            data_manager.add_packet_to_plugin(plugin,poi_type)
+        elif poi_type == "Struct":
+            data_manager.add_struct_to_plugin(plugin,poi_type)
+
+        #data_manager.add_string_to_plugin(plugin,poi_type)
 
 
 if __name__ == "__main__":

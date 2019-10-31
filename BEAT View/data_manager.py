@@ -20,6 +20,88 @@ database = connection[current_database]
 POI_collection = database['POIs']# change string ('placeholder') here to make a new collection for each point of interest***
 project_collection = database['project']
 current_collection = database['current']
+plugin_collection = database['plugin']
+
+'''
+#################################################################################
+Plugin functions
+#################################################################################
+'''
+def get_plugin_names():
+    plugins = []
+    for c in plugin_collection.find():
+        plugins.append(str(c["name"]))
+    return plugins
+
+def save_plugin(name, desc):
+    plugin_dict = {"name": name,
+                   "desc": desc}
+    plugin_collection.insert_one(plugin_dict)
+
+def get_plugin_from_name(to_find):
+    name = ""
+    desc = ""
+    for c in plugin_collection.find():
+        try :
+            if(c["name"] == to_find):
+                name = c["name"]
+                desc = c["desc"]
+                return name, desc
+        except KeyError:
+            print("Key error")
+def delete_plugin_given_name(name):
+    plugin_collection.delete_one({'name': name})
+
+def add_string_to_plugin(name, string):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"string": string}
+    },upsert=True
+    )
+    from pprint import pprint
+
+    cursor = plugin_collection.find({})
+    for document in cursor: 
+        pprint(document)
+    #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
+def add_function_to_plugin(name, string):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"string": string}
+    },upsert=True
+    )
+def add_variable_to_plugin(name, variable):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"variable": variable}
+    },upsert=True
+    )
+
+def add_dll_to_plugin(name, dll):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"dll": dll}
+    },upsert=True
+    )
+def add_packet_to_plugin(name, packet):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"packet": packet}
+    },upsert=True
+    )
+def add_struct_to_plugin(name, struct):
+    plugin_collection.find_one_and_update(
+    {'name' : name},
+    {"$push":
+        {"struct": struct}
+    },upsert=True
+    )
+
 '''
 #################################################################################
 Project functions

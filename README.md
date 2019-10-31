@@ -17,15 +17,17 @@ To build, the only dependencies are
 
 ## TUTORIAL
 	1. Download Python3 from https://www.python.org/downloads.
-		2. https://wwww.radare.org/r/
-		3. jinja.pocoo.org
-		4. https://github.com/gjjuarez/Team01_BEAT
-		5. Navigate to the Downloads Folder and open Team01_BEAT.
-		6. Go to the build directory 
+	2. Download Radare2 from https://wwww.radare.org/r/
+	3. Download Jinja from jinja.pocoo.org
+	
 	For Windows
 		7. Navigate to the Downloads Folder an run the Python3 installation.
 		8. In the command prompt type pip install PyQt5
-		9. Run main_window2.exe from the build directory in Team01_Beat you opened earlier.
+		9. In the command prompt type pip install pyinstaller
+		10. Run main_window2.exe from the build directory in Team01_Beat you opened earlier.
+		11. `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
+		12. `pyinstaller main.py`
+	
 	For Linux:
 		7. Go into the terminal and type apt-get update
 		8. cd Downloads
@@ -37,4 +39,6 @@ To build, the only dependencies are
 		14. python3 -v
 		15. apt-get install python3-pip
 		16. pip install PyQt5
-		17. Run main_window2.exe from the build directory in Team01_Beat you opened earlier.
+		18. pip install pyinstaller
+		19. git clone 
+		20. Run main_window2.exe from the build directory in Team01_Beat you opened earlier.

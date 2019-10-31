@@ -66,8 +66,11 @@ def get_project_names():
         projects.append(str(c["name"]))
     return projects
 
-def save_project(name, desc, path):
-    project_dict = {"name": name, "desc": desc, "path": path}
+def save_project(name, desc, path, binary_info):
+    project_dict = {"name": name,
+                    "desc": desc,
+                    "path": path,
+                    "bin_info": binary_info}
     project_collection.insert_one(project_dict)
 
 def save_variables(analysis_run, POI_name, POI_value, POI_data_type,
@@ -93,23 +96,22 @@ def save_strings(analysis_run, POI_name, POI_value, POI_data_type, POI_size, POI
                 'Section': POI_binary_section}
     string_collection.insert_one({'Analysis run': analysis_run, "POI Values": document})
 
-def save_functions(analysis_run, name, POI_name, POI_value, POI_return_type, POI_return_value, POI_binary_section,
-                      POI_call_address, POI_destination_addressPOI_parameter_order, POI_parameter_type, POI_parameter_value,
-                      POI_order_to_functions):
+def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_binary_section, POI_parameter_order, POI_parameter_type):
     global function_collection
-    document = {'Function Name': POI_name,
-                'Function Value': POI_value,
+    document = {'Analysis run': analysis_run,
+                'Function Name': POI_name,
+                # 'Function Value': POI_value,
                 'Return Type': POI_return_type,
                 'Return Value': POI_return_value,
-                'Destination Address': POI_destination_address,
+                # 'Destination Address': POI_destination_address,
                 'Binary Section': POI_binary_section,
-                'Library Name': POI_name,
+                # 'Library Name': POI_name,
                 'Parameter Order': POI_parameter_order,
                 'Parameter Type': POI_parameter_type,
-                'Parameter Value': POI_parameter_value,
-                'Call From Address': POI_order_to_functions
+                # 'Parameter Value': POI_parameter_value,
+                # 'Call From Address': POI_order_to_functions
                 }
-    function_collection.insert_one({'Analysis run': analysis_run, "POI Values": document})
+    function_collection.insert_one(document)
 
 def save_protocols(analysis_run, POI_name, POI_structure, POI_section_size, POI_section_value,
                       POI_binary_section, POI_call_address):
@@ -135,11 +137,13 @@ def save_structs(analysis_run, POI_name, POI_structure, POI_member_order, POI_me
     struct_collection.insert_one({'Analysis run': analysis_run, "POI Values": document})
 
 
-def update_current_project(name, desc, path):
+def update_current_project(name, desc, path, binary_info):
     current_collection.drop()
-    curr_dict = {"name": name, "desc": desc, "binary path": path}
+    curr_dict = {"name": name,
+                 "desc": desc,
+                 "path": path,
+                 "bin_info": binary_info}
     current_collection.insert_one(curr_dict)
-
 
 # Get current projects info
 # If there is no project, returns three null strings
@@ -147,48 +151,59 @@ def getCurrentProjectInfo():
     name = ""
     path = ""
     desc = ""
+    bin_info = {}
     for x in current_collection.find():
-        path = x["binary path"]
-        desc = x["desc"]
-        name = x["name"]
-    return name, desc, path
-
+        try:
+            path = x["path"]
+            desc = x["desc"]
+            name = x["name"]
+            bin_info = x["bin_info"]
+        except KeyError:
+            print("Key error")
+    return name, desc, path, bin_info
 
 def get_project_from_name(to_find):
     name = ""
     desc = ""
     path = ""
+    bin_info = {}
     for c in project_collection.find():
-        if (c["name"] == to_find):
-            name = c["name"]
-            desc = c["desc"]
-            path = c["binary path"]
-            return name, desc, path
+        try :
+            if(c["name"] == to_find):
+                name = c["name"]
+                desc = c["desc"]
+                path = c["path"]
+                bin_info = c["bin_info"]
+                return name, desc, path, bin_info
+        except KeyError:
+            print("Key error")
 
+def delete_project_given_name(name):
+    project_collection.delete_one({'name': name})
+    current_collection.drop()
 
 # begin methods for adding, updating/creating, getting, and removal of data from collections
+def insert_data(data): #data needs to be in json format
+   document = collection.insert_one(data)
+   return document.inserted_id
 
-def update_or_create(document_id, data):
-    # avoids duplicates by by creating a new document if the same id does not exist
-    document = collection.update_one({'_id': ObjectId(document_id)}, {"$set": data}, upsert=True)
+def update_or_create(document_id,data):
+    #avoids duplicates by by creating a new document if the same id does not exist
+    document = collection.update_one({'_id': ObjectId(document_id)},{"$set": data},upsert=True)
     return document.acknowledged
 
-
-def update_existing(document_id, data):
+def update_existing(document_id,data):
     document = collection.update_one({'_id': ObjectId(document_id)}, {"$set": data})
     return document.acknowledged
 
-
 def remove_data(document_id):
     document = collection.delete_one({'_id': ObjectId(document_id)})
-    return document.acknowledged  # returns true if deleted
-
+    return document.acknowledged #returns true if deleted
 
 # select a single piece of data to return from a collection(point of interest)
 def get_single_data(document_id):
     data = collection.find_one({'_id': ObjectId(document_id)})
     return data
-
 
 # return everything from a collection(points of interest) in a list format
 def get_multiple_data():
@@ -199,7 +214,6 @@ def get_multiple_data():
 def end():
     # close the connection to the database
     connection.close()
-
 
 # start of main
 

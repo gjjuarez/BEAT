@@ -30,7 +30,6 @@ def run_static_analysis():
         pass  # fail quietly, almost always gives error when reading
     extract_all()
 
-'''
 def run_dynamic_analysis():
     global rlocal
     try:
@@ -40,26 +39,32 @@ def run_dynamic_analysis():
         pass  # fail quietly, almost always gives error when reading
     extract_all()
     run_dynamic_and_update()
-'''
 
-def extract_vars_from_functions(filename):
-    varFileName = "variables.txt"
+def extract_vars_from_functions():
+    global rlocal
     currentAddr = rlocal.cmd("s")  # dont lose original position
-    try:
-        with open(varFileName, 'w') as vf:
-            vf.write("[Variables]\n")
-        with open(filename) as f:
-            with open(varFileName, 'a') as varf:
-                for func in f.read().split("\n"):
-                    print(func.split()[0])
-                    rlocal.cmd("s " + func.split()[0])  # move to each functions offset
-                    functionVars = rlocal.cmd("afvd")
-                    if functionVars != "":
-                        varf.write(functionVars)
-                        varf.write("ENDFUNCTION\n")
+    functions = data_manager.get_functions()
+    for func in functions:
+        funcName = func["Function Name"]
+        rlocal.cmd("s " + funcName)
+        variables = rlocal.cmd("afvd").split("\n")
+        variableTypes = rlocal.cmd("afv").split("\n")
+        for var in variables:
+            attr = var.split()
+            if len(attr) < 1:
+                continue
 
-    except IOError:
-        print("Error extracting variables")
+            if attr[0] != "var":
+                continue
+            varName = attr[1]
+            varAddr = attr[3]
+            varValue = attr[5]
+            varType = ""
+            for varTemp in variableTypes:
+                if varName in varTemp:
+                    varType = varTemp.split()[1]
+            data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
+
     rlocal.cmd("s " + currentAddr)
 
 def extract_all():
@@ -67,7 +72,7 @@ def extract_all():
     extract_functions()
     extract_strings()
     # extract_imports()
-    # extract_vars_from_functions("functions.txt")
+    extract_vars_from_functions()
 
 def extract_functions():
     global rlocal
@@ -132,12 +137,10 @@ def extract_imports():
         print("Error extracting string")
 
 def run_dynamic_and_update():
-    try:
-        rlocal.cmd("dc")
-        extract_strings()
-        extract_vars_from_functions("functions.txt")
-    except:
-        print("Error running dynamic")
+    rlocal.cmd("dc")
+    extract_strings()
+    extract_functions()
+    extract_vars_from_functions()
 
 def set_breakpoint_at_function(func_name):
     try:

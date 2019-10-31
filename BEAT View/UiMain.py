@@ -466,34 +466,28 @@ class UiMain(UiView.Ui_BEAT):
             self.detailed_points_of_interest_listWidget.addItem(item)
             # display all variables related to current function
             # varIndex = self.read_and_display_variables_with_functions(varIndex)
-
+            self.read_and_display_variables_with_functions(func["Function Name"])
         # functions.close()
         self.display_functions_in_left_column()
 
-    def read_and_display_variables_with_functions(self, index):
-        with open("variables.txt", "r") as file:
-            # display all variables related to current function
-            for varline in file.read().split("\n")[index:]:
-                index = index + 1
-                if "ENDFUNCTION" in varline:
-                    break
-                print("detailed view")
-                varItem = QListWidgetItem("   " + varline)
+    def read_and_display_variables_with_functions(self, func_name):
+        # display all variables related to current function
+        variables = data_manager.get_variables()
+        for var in variables:
+            if func_name == var["Function Name"]:
+                varItem = QListWidgetItem("\tVariable Name: " + var["Variable Name"] + "\n"
+                                          "\t\tVariable Type: " + var["Variable Type"] + "\n"
+                                          "\t\tVariabel Value: " + var["Variable Value"] + "\n"
+                                          "\t\tAddress: " + var["Address"])
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
-        return index
 
-    def read_and_display_variables_with_functions_left_column(self, index):
-        with open("variables.txt", "r") as file:
-            # display all variables related to current function
-            for varline in file.read().split("\n")[index:]:
-                index = index + 1
-                if "ENDFUNCTION" in varline or varline == "":
-                    break
-                print("detail view: " + varline)
-                varline = varline.split(" ")[1]
-                varItem = QListWidgetItem("   " + varline)
+    def read_and_display_variables_with_functions_left_column(self, func_name):
+        variables = data_manager.get_variables()
+        # display all variables related to current function
+        for var in variables:
+            if func_name == var["Function Name"]:
+                varItem = QListWidgetItem("   " + var["Variable Name"])
                 self.points_of_interest_list_widget.addItem(varItem)
-        return index
 
     def display_functions_in_left_column(self):
         # breakPoints = radare_commands_interface.get_all_breakpoints()
@@ -507,7 +501,7 @@ class UiMain(UiView.Ui_BEAT):
             self.points_of_interest_list_widget.addItem(item)
 
             # display all variables related to current function
-            # varIndex = self.read_and_display_variables_with_functions_left_column(varIndex)
+            self.read_and_display_variables_with_functions_left_column(func["Function Name"])
 
     def read_and_display_all_strings(self):
         strings = data_manager.get_strings()
@@ -596,7 +590,6 @@ class UiMain(UiView.Ui_BEAT):
         self.plugin_view_plugin_listwidget.addItem(name)
         data_manager.save_plugin(name,desc)
         self.update_plugin_list()
-
 
     def update_plugin_list(self):
         plugins = data_manager.get_plugin_names()

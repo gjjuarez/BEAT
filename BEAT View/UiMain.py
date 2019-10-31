@@ -369,7 +369,7 @@ class UiMain(UiView.Ui_BEAT):
             self.read_and_display_all_functions()
             # variables displayed with functions instead
             # self.read_and_display_all_variables()
-            self.read_and_display_all_imports()
+            # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
     def set_breakpoint(self, item):
@@ -490,9 +490,7 @@ class UiMain(UiView.Ui_BEAT):
     def display_functions_in_left_column(self):
         # breakPoints = radare_commands_interface.get_all_breakpoints()
         functions = data_manager.get_functions()
-        # Start at the index 2 to the end get each line
         for func in functions:
-            # Separate by spaces and then get the last word
             item = QListWidgetItem(func["Function Name"])
 
             # Don't know if we need this following line
@@ -504,28 +502,28 @@ class UiMain(UiView.Ui_BEAT):
             # varIndex = self.read_and_display_variables_with_functions_left_column(varIndex)
 
     def read_and_display_all_strings(self):
-        strings = open("strings.txt", "r")
-        for line in strings.read().split("\n"):
-            item = QListWidgetItem(line)
+        strings = data_manager.get_strings()
+        for strg in strings:
+            value = strg["String Value"]
+            section = strg["Section"]
+            addr = strg["Address"]
+
+            item = QListWidgetItem("String: " + value + "\n"
+                                   + '\tBinary Section: ' + section + "\n"
+                                   + '\tAddress: ' + addr)
             self.detailed_points_of_interest_listWidget.addItem(item)
-        strings.close()
         self.display_strings_in_left_column()
 
     def display_strings_in_left_column(self):
-        strings = open("strings.txt", "r")
+        strings = data_manager.get_strings()
 
-        # Start at the index 2 to the end get each line
-        for line in strings.read().split("\n")[2:-1]:
-            # Separate by spaces and then get the last word
-            line = line.split(" ", 9)[-1]
-            item = QListWidgetItem(line)
+        for strg in strings:
+            value = strg["String Value"]
 
-            # Don't know if we need this following line
-            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            item = QListWidgetItem(value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
-        strings.close()
 
     def read_and_display_all_variables(self):
         variables = open("variables.txt", "r")

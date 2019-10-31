@@ -65,7 +65,7 @@ def extract_vars_from_functions(filename):
 def extract_all():
     # TODO: filter the search somehow
     extract_functions()
-    # extract_strings()
+    extract_strings()
     # extract_imports()
     # extract_vars_from_functions("functions.txt")
 
@@ -109,11 +109,18 @@ def extract_functions():
 def extract_strings():
     global rlocal
     strings = rlocal.cmd("iz").split("\n")
-    for str in strings[2:]:
-        attr = str.split()
+    for strg in strings[2:]:
+        if strg == "":
+            print("Empty string")
+            continue
+        attr = strg.split()
 
-        strValue = attr[len(attr)-1]
-        strSection = attr[5].strip("(").strip(")")
+        # save entire string value
+        strValue = ""
+        for value in attr[7:]:
+            strValue = strValue + " " + value
+
+        strSection = attr[5]
         strAddr = attr[2]
         data_manager.save_strings("static", strValue, strSection, strAddr)
 

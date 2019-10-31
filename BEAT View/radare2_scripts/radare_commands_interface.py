@@ -1,15 +1,11 @@
 #! /usr/bin/env python3
 
 import r2pipe
-import pymongo
 import sys
 sys.path.append("..")  # for data_manager
 import data_manager
 
 rlocal = None
-functiontable = None
-functioncol = None
-mydb = None
 
 def parse_binary(path):
     global rlocal
@@ -24,7 +20,6 @@ def parse_binary(path):
     return x
 
 def run_static_analysis():
-    global functiontable
     global rlocal
     name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
     rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
@@ -33,7 +28,6 @@ def run_static_analysis():
         rlocal.cmd("s main")
     except:
         pass  # fail quietly, almost always gives error when reading
-    functiontable = name + "funcs"
     extract_all()
 
 '''
@@ -69,75 +63,59 @@ def extract_vars_from_functions(filename):
     rlocal.cmd("s " + currentAddr)
 
 def extract_all():
-    print("")
-    global rlocal
-    global mydb
-    global functioncol
-    global functiontable
-
-    dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = dbclient['poidb']
-    if functiontable not in mydb.collection_names():
-        mydb.create_collection(functiontable)
-
-    functioncol = mydb[functiontable]
-
-    try:
-        # TODO: filter the search somehow
-        extract_functions()
-        # extract_strings()
-        # extract_imports()
-        # extract_vars_from_functions("functions.txt")
-    except:
-        print("Error extracting all POI")
+    # TODO: filter the search somehow
+    extract_functions()
+    # extract_strings()
+    # extract_imports()
+    # extract_vars_from_functions("functions.txt")
 
 def extract_functions():
     global rlocal
-    global mydb
-    global functioncol
-    mycol = mydb['current']
-    functioncol = mydb[functiontable]
-    dblist = mydb.list_collection_names()
-    print(dblist)
-
+    print("Entered extract functions!")
     funcs = rlocal.cmd("afl").split("\n")
     # go through every function and add to database
     for func in funcs:
-        try:
-            if func == "":
-                print("Empty line")
+        if func == "":
+            print("Empty line")
+            continue
+        # print("Function: " + func)
+        attr = func.split()
+        # print(attr)
+
+        funcName = attr[len(attr) - 1]
+        rlocal.cmd("s " + funcName)
+        funcHeader = rlocal.cmd("pdf~" + funcName + ":1").split()
+        paramList = rlocal.cmd("afvr").split("\n")
+        params = []
+        paramType = []
+        for p in paramList:
+            if p == "":
                 continue
-            # print("Function: " + func)
-            attr = func.split()
-            # print(attr)
-            funcAddr = attr[0]
-            funcName = attr[len(attr) - 1]
-            funcDict = {"name": funcName, "address": funcAddr}
-            # print(funcDict)
-            functioncol.insert_one(funcDict)
-        except:
-            pass
-    dblist = mydb.list_collection_names()
-    print(dblist)
-    print("Function data:")
-    for func in functioncol.find():
-        print(func)
-
-def read_functions():
-    global functioncol
-    functions = []
-    for func in functioncol.find():
-        functions.append(func)
-    # print(functions)
-    return functions
-
+            # add name of param
+            params.append(p.split()[2])
+            # add types of params
+            paramType.append(p.split()[1])
+        funcAddr = attr[0]
+        returnType = funcHeader[1]
+        # make sure function has a return type
+        if returnType == funcName:
+            returnType = None
+        returnValue = None  # don't know the value of return until running dynamic
+        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr, params, paramType)
+        # funcDict = {"name": funcName, "address": funcAddr}
+        # print(funcDict)
+        # functioncol.insert_one(funcDict)
 
 def extract_strings():
     global rlocal
-    try:
-        rlocal.cmd("iz > strings.txt")
-    except:
-        print("Error extracting string")
+    strings = rlocal.cmd("iz").split("\n")
+    for str in strings[2:]:
+        attr = str.split()
+
+        strValue = attr[len(attr)-1]
+        strSection = attr[5].strip("(").strip(")")
+        strAddr = attr[2]
+        data_manager.save_strings("static", strValue, strSection, strAddr)
 
 def extract_imports():
     global rlocal

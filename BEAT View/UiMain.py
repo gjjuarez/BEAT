@@ -105,6 +105,8 @@ class UiMain(UiView.Ui_BEAT):
         self.points_of_interest_list_widget.itemChanged.connect(self.set_breakpoint)
         # runs dynamic analysis on breakpoints then updates ui
         self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
+        # match detailed view with left column when selected
+        self.points_of_interest_list_widget.itemClicked.connect(self.match_selected_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         self.detailed_point_of_interest_view_type_dropdown.clear()
@@ -346,6 +348,12 @@ class UiMain(UiView.Ui_BEAT):
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
         self.display_POI(display_value)
+
+    def match_selected_POI(self):
+        row = self.points_of_interest_list_widget.currentRow()
+        if self.points_of_interest_list_widget.currentItem().isSelected():
+            self.detailed_points_of_interest_listWidget.itemAt(0, row).setSelected(True)
+            self.detailed_points_of_interest_listWidget.setCurrentRow(row)
 
     def change_displayed_POI(self):
         global staticIsRun

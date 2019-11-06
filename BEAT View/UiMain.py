@@ -83,6 +83,7 @@ class UiMain(UiView.Ui_BEAT):
         self.plugin_structure_browse_button.clicked.connect(self.browse_plugin_structure)
         #calls browse_plugin_dataset if plugin_predefined_data_set_browse_button is clicked
         self.plugin_predefined_data_set_browse_button.clicked.connect(self.browse_plugin_dataset)
+        self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_pois_in_plugin)
 
         '''
         Points of Interest Tab Listeners
@@ -538,22 +539,78 @@ class UiMain(UiView.Ui_BEAT):
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
     def add_poi_to_plugin(self):
+        print("Populating POIs in Plugin tab")
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
         poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+        to_add = self.point_of_interest_content_area_textedit.toPlainText()
         if poi_type == "Function":
-            data_manager.add_function_to_plugin(plugin,poi_type)
+            data_manager.add_function_to_plugin(plugin,to_add)
         elif poi_type == "String":
-            data_manager.add_string_to_plugin(plugin,poi_type)
+            data_manager.add_string_to_plugin(plugin,to_add)
         elif poi_type == "Variable":
-            data_manager.add_variable_to_plugin(plugin,poi_type)
+            data_manager.add_variable_to_plugin(plugin,to_add)
         elif poi_type == "DLL":
-            data_manager.add_dll_to_plugin(plugin,poi_type)
+            data_manager.add_dll_to_plugin(plugin,to_add)
         elif poi_type == "Packet Protocol":
-            data_manager.add_packet_to_plugin(plugin,poi_type)
+            data_manager.add_packet_to_plugin(plugin,to_add)
         elif poi_type == "Struct":
-            data_manager.add_struct_to_plugin(plugin,poi_type)
+            data_manager.add_struct_to_plugin(plugin,to_add)
+
+        self.point_of_interest_content_area_textedit.clear()
+        self.populate_pois_in_poi()
 
         #data_manager.add_string_to_plugin(plugin,poi_type)
+    def populate_pois_in_poi(self):
+        print("Populating POIs in POI tab")
+        try:
+            to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+        except:
+            return
+        strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
+        functions = data_manager.get_pois_from_plugin_and_type(to_find, "function")
+        variables = data_manager.get_pois_from_plugin_and_type(to_find, "variable")
+        dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
+        packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
+        structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
+
+        self.point_of_interest_view_listwidget.clear()
+
+        for s in strings:
+            self.point_of_interest_view_listwidget.addItem("String:", s)
+        for f in functions:
+            self.point_of_interest_view_listwidget.addItem("Function:", f)
+        for v in variables:
+            self.point_of_interest_view_listwidget.addItem("Variables:", v)
+        for d in dll:
+            self.point_of_interest_view_listwidget.addItem("DLL:", d)
+        for p in packets:
+            self.point_of_interest_view_listwidget.addItem("Packets:", p)
+        for st in structs:
+            self.point_of_interest_view_listwidget.addItem("Struct:", st)
+
+
+    def populate_pois_in_plugin(self):
+        #self.points_of_interest_list_textedit()
+        try:
+            to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+        except:
+            return
+
+        strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
+        functions = data_manager.get_pois_from_plugin_and_type(to_find, "function")
+        variables = data_manager.get_pois_from_plugin_and_type(to_find, "variable")
+        dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
+        packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
+        structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
+
+        self.points_of_interest_list_textedit.clear()
+        self.points_of_interest_list_textedit.append("Strings:"+ ", ".join(strings))
+        self.points_of_interest_list_textedit.append("Functions:"+ ", ".join(functions))
+        self.points_of_interest_list_textedit.append("Variables:"+ ", ".join(variables))
+        self.points_of_interest_list_textedit.append("DLLs:"+ ", ".join(dll))
+        self.points_of_interest_list_textedit.append("Packets:"+ ", ".join(packets))
+        self.points_of_interest_list_textedit.append("structs"+ ", ".join(structs))
+
 
 
 if __name__ == "__main__":

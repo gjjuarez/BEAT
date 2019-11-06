@@ -27,6 +27,14 @@ plugin_collection = database['plugin']
 Plugin functions
 #################################################################################
 '''
+
+def get_pois_from_plugin_and_type(plugin, type):
+    pois = []
+    for c in plugin_collection.find():
+        if c['name'] == plugin:
+            return c[type]
+
+
 def get_plugin_names():
     plugins = []
     for c in plugin_collection.find():
@@ -43,7 +51,7 @@ def get_plugin_from_name(to_find):
     desc = ""
     for c in plugin_collection.find():
         try :
-            if(c["name"] == to_find):
+            if(c["name"] == to_find()):
                 name = c["name"]
                 desc = c["desc"]
                 return name, desc
@@ -69,7 +77,7 @@ def add_function_to_plugin(name, string):
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
-        {"string": string}
+        {"function": string}
     },upsert=True
     )
 def add_variable_to_plugin(name, variable):

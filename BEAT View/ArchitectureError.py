@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'Figure7x86Architecture Error.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -82,9 +79,9 @@ class Ui_ArchitectureError(object):
 
         self.retranslateUi(ArchitectureError)
         QtCore.QMetaObject.connectSlotsByName(ArchitectureError)
-        #self.pushButton.clicked.connect(self.close_window)
+        self.pushButton.clicked.connect(self.close_window)
 
-    def close_window():
+    def close_window(self):
         import sys
         sys.exit()
 

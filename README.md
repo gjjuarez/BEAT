@@ -16,7 +16,7 @@ To build, the only dependencies are
 * Pyinstaller ver. 3.5 - commmand line: pip install pyinstaller
 
 ## ADDITONAL USEFUL SOFTWARE (OPTIONAL)
-* MongoDB Compass - GUI Representation & Control of Mongo Database.
+* MongoDB Compass: GUI Representation & Control of Mongo Database - https://www.mongodb.com/products/compass
 
 ## TUTORIAL
 	1. Download Python3 from https://www.python.org/downloads.

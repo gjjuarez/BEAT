@@ -273,10 +273,21 @@ class UiMain(UiView.Ui_BEAT):
         self.window.show()
 
         current_item = self.points_of_interest_list_widget.currentItem()
-        print(str(current_item.text()))
+        current_item_name = current_item.text() + ".txt"
+        comment = open(current_item_name, "r+")
+
+        looking_for_comment = self.points_of_interest_list_widget.currentRow()
+        for line in comment:
+            comment_number = line.split(" ", 1)[0]
+            if comment_number == str(looking_for_comment):
+                print("something there")
+                self.ui.comment_textedit.setText(line)
+        comment.close()
+        self.ui.save_button.clicked.connect(self.save_comment(comment))
+        self.ui.clear_button.clicked.connect(self.clear_comment)
 
         # This looks for if comments already exits for a line
-
+        '''
         if path.exists("comment.txt"):
             comment = open("comment.txt", "r+")
             looking_for_comment = self.points_of_interest_list_widget.currentRow()
@@ -288,12 +299,13 @@ class UiMain(UiView.Ui_BEAT):
         comment.close()
         self.ui.save_button.clicked.connect(self.save_comment)
         self.ui.clear_button.clicked.connect(self.clear_comment)
+        '''
 
     '''
     Saves comments to text file
     '''
-    def save_comment(self):
-        comment = open("comment.txt", "a+")
+    def save_comment(self, comment):
+        comment = open(comment, "a+")
         text = self.ui.comment_textedit.toPlainText()
         comment.write("%d " % self.points_of_interest_list_widget.currentRow())
         comment.write(text + "\n")

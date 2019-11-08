@@ -15,6 +15,9 @@ To build, the only dependencies are
 * Jinja ver. 2.10.3 - website: jinja.pocoo.org
 * Pyinstaller ver. 3.5 - commmand line: pip install pyinstaller
 
+## ADDITONAL USEFUL SOFTWARE (OPTIONAL)
+* MongoDB Compass: GUI Representation & Control of Mongo Database - https://www.mongodb.com/products/compass
+
 ## TUTORIAL
 	1. Download Python3 from https://www.python.org/downloads.
 	2. Download Radare2 from https://wwww.radare.org/r/

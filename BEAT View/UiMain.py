@@ -351,7 +351,10 @@ class UiMain(UiView.Ui_BEAT):
 
     def match_selected_POI(self):
         row = self.points_of_interest_list_widget.currentRow()
-        if self.points_of_interest_list_widget.currentItem().isSelected():
+        currentItem = self.points_of_interest_list_widget.currentItem()
+        if not currentItem:
+            return
+        if currentItem.isSelected():
             self.detailed_points_of_interest_listWidget.itemAt(0, row).setSelected(True)
             self.detailed_points_of_interest_listWidget.setCurrentRow(row)
 

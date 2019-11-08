@@ -281,8 +281,18 @@ def get_project_from_name(to_find):
             print("Key error")
 
 def delete_project_given_name(name):
-    project_collection.delete_one({'name': name})
-    current_collection.drop()
+    try:
+        project_collection.delete_one({'name': name})
+        current_collection.drop()
+
+        function_collection.drop()
+        string_collection.drop()
+        variable_collection.drop()
+        protocol_collection.drop()
+        struct_collection.drop()
+    except:
+        print("Drop collection error")
+
 
 # begin methods for adding, updating/creating, getting, and removal of data from collections
 def insert_data(data): #data needs to be in json format

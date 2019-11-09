@@ -60,7 +60,15 @@ def get_plugin_from_name(to_find):
 def delete_plugin_given_name(name):
     plugin_collection.delete_one({'name': name})
 
-def add_string_to_plugin(name, string):
+def add_string_to_plugin(name, string_name, string_type, string_size, string_call_address, string_destination_address,
+                         section):
+    string = {'String Name': string_name,
+             'String Type': string_type,
+             'String Size': string_size,
+             'Call from Address': string_call_address,
+             'Address': string_destination_address,
+             'Section': section
+            }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
@@ -73,14 +81,30 @@ def add_string_to_plugin(name, string):
     for document in cursor: 
         pprint(document)
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
-def add_function_to_plugin(name, string):
+def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value,
+                           function_call_address, function_destination_address, python_translation_code):
+    funtion = {'Function Name': function_name,
+               'Parameter Type and Order': parmeter_order_and_type,
+               'Parameter Value': parameter_value,
+               'Return Value': return_value,
+               'Binary Section': POI_binary_section,
+               'Call From Address': function_call_address,
+               'Destination Address': function_destination_address,
+               'Python Translation Code': python_translation_code
+               }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
         {"function": string}
     },upsert=True
     )
-def add_variable_to_plugin(name, variable):
+def add_variable_to_plugin(name, variable_name, variable_value, variable_type, variable_size, variable_call_address ):
+    variable = {'Variable Name': variable_name,
+                'Variable Value': variable_value,
+                'Variable Type': variable_type,
+                'Variable Size': variable_size,
+                'Call From Address': variable_call_address
+                }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
@@ -88,21 +112,29 @@ def add_variable_to_plugin(name, variable):
     },upsert=True
     )
 
-def add_dll_to_plugin(name, dll):
+def add_dll_to_plugin(name, libaray_name):
+    dll = {'Library': libaray_name
+           }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
         {"dll": dll}
     },upsert=True
     )
-def add_packet_to_plugin(name, packet):
+def add_packet_to_plugin(name, protocol_name, field_name, field_type):
+    packet = {'Protocol Name': protocol_name,
+              'Field Name': field_name,
+              'Field Type': field_type
+              }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
         {"packet": packet}
     },upsert=True
     )
-def add_struct_to_plugin(name, struct):
+def add_struct_to_plugin(name, struct_name):
+    struct = {'Struct Name': struct_name
+              }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":

@@ -152,6 +152,27 @@ def get_project_names():
         projects.append(str(c["name"]))
     return projects
 
+#returns all the POIs within a given collection in a list format
+def get_variable_POIs():
+    data = variable_collection.find()
+    return list(data)
+
+def get_string_POIs():
+    data = string_collection.find()
+    return list(data)
+
+def get_Function_POIs():
+    data = function_collection.find()
+    return list(data)
+
+def get_protocol_POIs():
+    data = protocol_collection.find()
+    return list(data)
+
+def get_struct_POIs():
+    data = struct_collection.find()
+    return list(data)
+
 def save_project(name, desc, path, binary_info):
     project_dict = {"name": name,
                     "desc": desc,
@@ -169,20 +190,24 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Address': address}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
-    
-def get_variables():
-    global variable_collection
-    variables = []
-    for var in variable_collection.find():
-        variables.append(var)
-    return variables
 
-def save_strings(analysis_run, POI_value, section, address):
+def get_variable_from_name(find_variable):
+        name = ""
+        for c in variable_collection.find():
+            try:
+                if (c["Variable Name"] == find_variable):
+                    name = c["Variable Name"]
+                    return name
+            except KeyError:
+                print("Key error")
+
+def save_strings(analysis_run, POI_value, section, address, comment):
     global string_collection
-    document = {'Analysis run': analysis_run,
+    document = {'Analysis Run': analysis_run,
                 'String Value': POI_value,
                 'Section': section,
-                'Address': address}
+                'Address': address,
+                'Comment': comment}
     string_collection.replace_one({'String Value': POI_value}, document, upsert=True)
 
 def get_strings():
@@ -192,9 +217,19 @@ def get_strings():
         strings.append(strg)
     return strings
 
+def get_string_from_name(find_string):
+    name = ""
+    for c in string_collection.find():
+        try:
+            if (c["String Name"] == find_string):
+                name = c["String Name"]
+                return name
+        except KeyError:
+            print("Key error")
+
 def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_binary_section, POI_parameter_order, POI_parameter_type):
     global function_collection
-    document = {'Analysis run': analysis_run,
+    document = {'Analysis Run': analysis_run,
                 'Function Name': POI_name,
                 # 'Function Value': POI_value,
                 'Return Type': POI_return_type,
@@ -209,19 +244,40 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 
+def get_function_from_name(find_function):
+    name = ""
+    for c in function_collection.find():
+        try:
+            if (c["Function Name"] == find_function):
+                name = c["Function Name"]
+                return name
+        except KeyError:
+            print("Key error")
+
 def save_protocols(analysis_run, POI_name, POI_structure, POI_section_size, POI_section_value,
-                      POI_binary_section, POI_call_address):
+                      POI_binary_section, POI_call_address, comment):
     global project_collection
     document = {'Protocol Name': POI_name,
                 'Call From Address': POI_call_address,
                 'Structure': POI_structure,
                 'Section Size': POI_section_size,
                 'Section Value': POI_section_value,
-                'Binary Section': POI_binary_section}
-    protocol_collection.insert_one({'Analysis run': analysis_run, "POI Values": document})
+                'Binary Section': POI_binary_section,
+                'Comment': comment}
+    function_collection.replace_one({"Protocol Name": POI_name}, document, upsert=True)
+
+def get_protocol_from_name(find_protocol):
+    name = ""
+    for c in protocol_collection.find():
+        try:
+            if (c["Protocol Name"] == find_protocol):
+                name = c["Protocol Name"]
+                return name
+        except KeyError:
+            print("Key error")
 
 def save_structs(analysis_run, POI_name, POI_structure, POI_member_order, POI_member_type, POI_member_value,
-                    POI_binary_section, POI_call_address):
+                    POI_binary_section, POI_call_address, comment):
     global struct_collection
     document = {'Struct Name': POI_name,
                 'Call From Address': POI_call_address,
@@ -229,8 +285,19 @@ def save_structs(analysis_run, POI_name, POI_structure, POI_member_order, POI_me
                 'Member Order': POI_member_order,
                 'Member Type': POI_member_type,
                 'Member Value': POI_member_value,
-                'Binary Section': POI_binary_section}
-    struct_collection.insert_one({'Analysis run': analysis_run, "POI Values": document})
+                'Binary Section': POI_binary_section,
+                'Comment': comment}
+    function_collection.replace_one({"Struct Name": POI_name}, document, upsert=True)
+
+def get_struct_from_name(find_struct):
+    name = ""
+    for c in struct_collection.find():
+        try:
+            if (c["Struct Name"] == find_struct):
+                name = c["Struct Name"]
+                return name
+        except KeyError:
+            print("Key error")
 
 def get_functions():
     global function_collection
@@ -294,7 +361,7 @@ def delete_project_given_name(name):
         print("Drop collection error")
 
 
-# begin methods for adding, updating/creating, getting, and removal of data from collections
+# deprecated code (left for now as examples)
 def insert_data(data): #data needs to be in json format
    document = collection.insert_one(data)
    return document.inserted_id
@@ -317,17 +384,9 @@ def get_single_data(document_id):
     data = collection.find_one({'_id': ObjectId(document_id)})
     return data
 
-# return everything from a collection(points of interest) in a list format
-def get_multiple_data():
-    data = collection.find()
-    return list(data)
-
-
 def end():
     # close the connection to the database
     connection.close()
-
-# start of main
 
 # test code##############################################################################################
 #initialize_POI_collections("project 1")

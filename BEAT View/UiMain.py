@@ -102,8 +102,9 @@ class UiMain(UiView.Ui_BEAT):
         # listens to changes in POI dropdown
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
         # sets breakpoints on currently checked items
-        self.points_of_interest_list_widget.itemChanged.connect(self.set_breakpoint)
+        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
         # runs dynamic analysis on breakpoints then updates ui
+        self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
         self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
         # match detailed view with left column when selected
         self.points_of_interest_list_widget.itemClicked.connect(self.match_selected_POI)
@@ -363,7 +364,10 @@ class UiMain(UiView.Ui_BEAT):
 
     def match_selected_POI(self):
         row = self.points_of_interest_list_widget.currentRow()
-        if self.points_of_interest_list_widget.currentItem().isSelected():
+        currentItem = self.points_of_interest_list_widget.currentItem()
+        if not currentItem:
+            return
+        if currentItem.isSelected():
             self.detailed_points_of_interest_listWidget.itemAt(0, row).setSelected(True)
             self.detailed_points_of_interest_listWidget.setCurrentRow(row)
 
@@ -392,12 +396,24 @@ class UiMain(UiView.Ui_BEAT):
             # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
-    def set_breakpoint(self, item):
-        print("Setting breakpoint")
+    # This function got deprecated.
+    # def set_breakpoint(self, item):
+    #     print("Setting breakpoint")
+    #     if item.checkState() == 2:  # if item is checked
+    #         radare_commands_interface.set_breakpoint_at_function(item.text())
+    #     else:  # item is unchecked
+    #         radare_commands_interface.remove_breakpoint_at_function(item.text())
+
+    def set_auto_breakpoint(self):
+        print("Setting breakpoints")
+        for i in range(self.points_of_interest_list_widget.count()):
+            radare_commands_interface.set_breakpoint_at_function(self.points_of_interest_list_widget.item(i).text())
+
+    def remove_breakpoints(self, item):
         if item.checkState() == 2:  # if item is checked
-            radare_commands_interface.set_breakpoint_at_function(item.text())
-        else:  # item is unchecked
             radare_commands_interface.remove_breakpoint_at_function(item.text())
+        elif item.checkState() == 0:
+            radare_commands_interface.set_breakpoint_at_function(item.text())
 
     def run_dynamic_then_display(self):
         # radare_commands_interface.run_dynamic_and_update()

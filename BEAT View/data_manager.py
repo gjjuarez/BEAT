@@ -208,7 +208,7 @@ def get_variable_from_name(find_variable):
             except KeyError:
                 print("Key error")
 
-def save_strings(analysis_run, POI_value, section, address, comment):
+def save_strings(analysis_run, POI_value, section, address, comment=''):
     global string_collection
     document = {'Analysis Run': analysis_run,
                 'String Value': POI_value,
@@ -262,7 +262,7 @@ def get_function_from_name(find_function):
             print("Key error")
 
 def save_protocols(analysis_run, POI_name, POI_structure, POI_section_size, POI_section_value,
-                      POI_binary_section, POI_call_address, comment):
+                      POI_binary_section, POI_call_address, comment=''):
     global project_collection
     document = {'Protocol Name': POI_name,
                 'Call From Address': POI_call_address,
@@ -284,7 +284,7 @@ def get_protocol_from_name(find_protocol):
             print("Key error")
 
 def save_structs(analysis_run, POI_name, POI_structure, POI_member_order, POI_member_type, POI_member_value,
-                    POI_binary_section, POI_call_address, comment):
+                    POI_binary_section, POI_call_address, comment=''):
     global struct_collection
     document = {'Struct Name': POI_name,
                 'Call From Address': POI_call_address,

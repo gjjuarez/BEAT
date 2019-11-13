@@ -17,7 +17,7 @@ class Ui_ArchitectureError(object):
         self.geo = QtWidgets.QDesktopWidget().screenGeometry()
         ArchitectureError.resize(self.geo.width()/2, self.geo.height()/3)
 
-        ArchitectureError.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        ArchitectureError.setMaxippumumSize(QtCore.QSize(16777215, 16777215))
 
 
         self.gridLayout_2 = QtWidgets.QGridLayout(ArchitectureError)

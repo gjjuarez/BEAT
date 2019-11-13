@@ -1,35 +1,14 @@
-import sys
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-def window():
-   app = QApplication(sys.argv)
-   w = QWidget()
-   b = QPushButton(w)
-   b.setText("Show message!")
+class Ui_ArchitectureError(object):
+    def setupUi(self, ArchitectureError):
+        ArchitectureError.setObjectName("ArchitectureError")
+        ArchitectureError.resize(688, 230)
 
-   b.move(50,50)
-   b.clicked.connect(showdialog)
-   w.setWindowTitle("PyQt Dialog demo")
-   w.show()
-   sys.exit(app.exec_())
 
-def showdialog():
-   msg = QMessageBox()
-   msg.setIcon(QMessageBox.Information)
+app = QtWidgets.QApplication([])
 
-   msg.setText("This is a message box")
-   msg.setInformativeText("This is additional information")
-   msg.setWindowTitle("MessageBox demo")
-   msg.setDetailedText("The details are as follows:")
-   msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-   msg.buttonClicked.connect(msgbtn)
-	
-   retval = msg.exec_()
-   print("value of pressed message box button:", retval)
-	
-def msgbtn(i):
-   print("Button pressed is:",i.text())
+error_dialog = QtWidgets.QErrorMessage()
+error_dialog.showMessage('Oh no!')
 
-if __name__ == '__main__': 
-	window()
+app.exec_()

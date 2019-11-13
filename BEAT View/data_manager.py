@@ -191,6 +191,13 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
+def get_variables():
+    global variable_collection
+    variables = []
+    for var in variable_collection.find():
+        variables.append(var)
+    return variables
+
 def get_variable_from_name(find_variable):
         name = ""
         for c in variable_collection.find():

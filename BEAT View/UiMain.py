@@ -189,6 +189,9 @@ class UiMain(UiView.Ui_BEAT):
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
 
+        self.binary_file_properties_value_listwidget.clear()
+
+
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''

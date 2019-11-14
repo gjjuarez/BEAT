@@ -119,7 +119,7 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
         self.type_dropdown.clear()
         self.type_dropdown.addItem("All")
-        self.type_dropdown.addItem("Functions")
+        self.type_dropdown.addItem("Function Call")
         self.type_dropdown.addItem("Variables")
         self.type_dropdown.addItem("Strings")
         self.type_dropdown.addItem("Sections")

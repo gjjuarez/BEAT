@@ -24,6 +24,15 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
+        ###########################
+        # Resizing according to user's desktop
+        ###########################
+        self.geo = QtWidgets.QDesktopWidget().screenGeometry()
+        BEAT.resize(self.geo.width(), self.geo.height())
+
+ 
+
+        BEAT.setMaximumSize(QtCore.QSize(16777215, 16777215))
 
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)

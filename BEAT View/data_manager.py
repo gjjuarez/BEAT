@@ -32,7 +32,7 @@ def get_pois_from_plugin_and_type(plugin, type):
     pois = []
     for c in plugin_collection.find():
         if c['name'] == plugin:
-            return c[type]
+            return list(c[type])
 
 
 def get_plugin_names():
@@ -83,7 +83,7 @@ def add_string_to_plugin(name, string_name, string_type, string_size, string_cal
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
 def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value,
                            function_call_address, function_destination_address, python_translation_code):
-    funtion = {'Function Name': function_name,
+    function = {'Function Name': function_name,
                'Parameter Type and Order': parmeter_order_and_type,
                'Parameter Value': parameter_value,
                'Return Value': return_value,
@@ -95,7 +95,7 @@ def add_function_to_plugin(name, function_name, parmeter_order_and_type, paramet
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
-        {"function": string}
+        {"function": function}
     },upsert=True
     )
 def add_variable_to_plugin(name, variable_name, variable_value, variable_type, variable_size, variable_call_address ):

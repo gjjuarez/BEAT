@@ -108,6 +108,13 @@ class UiMain(UiView.Ui_BEAT):
         self.points_of_interest_line_edit.returnPressed.connect(self.search_POI)
         # listens to changes in POI dropdown
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
+        self.type_dropdown.clear()
+        self.type_dropdown.addItem("All")
+        self.type_dropdown.addItem("Functions")
+        self.type_dropdown.addItem("Variables")
+        self.type_dropdown.addItem("Strings")
+        self.type_dropdown.addItem("Sections")
+        self.type_dropdown.addItem("Structures")
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
         # runs dynamic analysis on breakpoints then updates ui
@@ -181,6 +188,7 @@ class UiMain(UiView.Ui_BEAT):
         name = self.project_list.currentItem().text()
         data_manager.delete_project_given_name(name)
         self.project_list.clear()
+        self.binary_file_properties_value_listwidget.clear()
         self.fill_projects()
         print("Done Removing Project:", name)
         self.new_project()

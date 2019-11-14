@@ -73,6 +73,32 @@ def extract_all():
     extract_strings()
     # extract_imports()
     extract_vars_from_functions()
+    extract_global_vars()
+
+def extract_global_vars():
+    global rlocal
+    globalString = "GLOBAL"
+    # print("Extracting global vars")
+    glvars = rlocal.cmd("is~OBJ").split("\n")
+    newVars = list()
+    # print(glvars)
+    # find objects that are global
+    for item in glvars:
+        # print("Current item: " + item)
+        if item == "":  # remove empty items
+            continue
+        # remove any items that are not global
+        elif globalString in item.split()[3]:
+            newVars.append(item)
+
+    # print(newVars)
+    for v in newVars:
+        attributes = v.split()
+        address = attributes[2]
+        size = attributes[5]
+        name = attributes[6]
+        data_manager.save_global_variable("static", name, size, address)
+
 
 def extract_functions():
     global rlocal

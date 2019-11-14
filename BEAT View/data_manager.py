@@ -151,6 +151,7 @@ string_collection = None
 function_collection = None  #libraries (imports) included in this collection
 protocol_collection = None
 struct_collection = None
+global_var_collection = None
 
 def initialize_POI_collections(project_name):
     global variable_collection
@@ -158,6 +159,7 @@ def initialize_POI_collections(project_name):
     global function_collection
     global protocol_collection
     global struct_collection
+    global global_var_collection
     global database
 
     varName = project_name + "Variables"
@@ -165,6 +167,7 @@ def initialize_POI_collections(project_name):
     functionName = project_name + "Functions"
     protocolName = project_name + "Protocols"
     structName = project_name + "Structs"
+    globalVarName = project_name + "GlobalVars"
 
     if varName not in database.list_collection_names():
         database.create_collection(varName)
@@ -185,6 +188,10 @@ def initialize_POI_collections(project_name):
     if structName not in database.list_collection_names():
         database.create_collection(structName)
     struct_collection = database[structName]
+
+    if globalVarName not in database.list_collection_names():
+        database.create_collection(globalVarName)
+    global_var_collection = database[globalVarName]
 
 def get_project_names():
     projects = []
@@ -230,6 +237,15 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Address': address}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
+
+def save_global_variable(analysis_run, POI_name, POI_size, address, comment=""):
+    global global_var_collection
+    document = {'Analysis Run': analysis_run,
+                'Variable Name': POI_name,
+                'Variable Size': POI_size,
+                'Address': address,
+                'Comment': comment}
+    global_var_collection.replace_one({'Variable Name': POI_name}, document, upsert=True)
 
 def get_variables():
     global variable_collection

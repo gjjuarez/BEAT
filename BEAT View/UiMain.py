@@ -216,6 +216,9 @@ class UiMain(UiView.Ui_BEAT):
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
 
+        self.binary_file_properties_value_listwidget.clear()
+
+
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
@@ -698,10 +701,17 @@ class UiMain(UiView.Ui_BEAT):
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
-        name = self.plugin_name_lineedit.text()
-        desc = self.plugin_description_textedit.toPlainText()
-        self.plugin_view_plugin_listwidget.addItem(name)
-        data_manager.save_plugin(name,desc)
+        print('in save plugin')
+        if self.plugin_predefined_data_set_lineedit.text() != "":
+            print('about to call xmlparser')
+            import xmlparser
+
+            xmlparser.parse_xml(self.plugin_predefined_data_set_lineedit.text())
+        else:
+            name = self.plugin_name_lineedit.text()
+            desc = self.plugin_description_textedit.toPlainText()
+            self.plugin_view_plugin_listwidget.addItem(name)
+            data_manager.save_plugin(name,desc)
         self.update_plugin_list()
 
     def update_plugin_list(self):
@@ -762,6 +772,8 @@ class UiMain(UiView.Ui_BEAT):
     def populate_pois_in_poi(self):
         print("Populating POIs in POI tab")
         to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        self.point_of_interest_view_listwidget.clear()
+        if to_find == "": return
         try:
             strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
         except:
@@ -786,20 +798,26 @@ class UiMain(UiView.Ui_BEAT):
             structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
         except:
             structs = ""
-        self.point_of_interest_view_listwidget.clear()
 
-        for s in strings:
-            self.point_of_interest_view_listwidget.addItem(QListWidgetItem("String:"+ str(s)))
-        for f in functions:
-            self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Function:"+ str(f)))
-        for v in variables:
-            self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Variables:"+ str(v)))
-        for d in dll:
-            self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
-        for p in packets:
-            self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Packets:"+ str(p)))
-        for st in structs:
-            self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Struct:"+ str(st)))
+
+        if strings is not None:
+            for s in strings:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("String:"+ str(s)))
+        if functions is not None:
+            for f in functions:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Function:"+ str(f)))
+        if variables is not None:
+            for v in variables:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Variables:"+ str(v)))
+        if dll is not None:
+            for d in dll:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
+        if packets is not None:
+            for p in packets:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Packets:"+ str(p)))
+        if structs is not None:
+            for st in structs:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Struct:"+ str(st)))
 
 
     def poi_type_changed_in_poi(self):

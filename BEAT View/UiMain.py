@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 
 import UiView
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
@@ -63,7 +64,7 @@ class UiMain(UiView.Ui_BEAT):
         # calls new_project if new_project_bsutton is clicked
         self.new_project_button.clicked.connect(self.new_project)
         # calls remove_project if delete_project_button is clicked
-        self.delete_project_button.clicked.connect(self.remove_project)
+        self.delete_project_button.clicked.connect(self.project_deletion_message)
         # calls save_project if save_project_button is clicked
         self.save_project_button.clicked.connect(self.save_project)
         # calls browse_path if file_browse_button is clicked
@@ -128,6 +129,7 @@ class UiMain(UiView.Ui_BEAT):
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
         # runs dynamic analysis on breakpoints then updates ui
         self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        self.dynamic_run_button.clicked.connect(self.display_dynamic_info)
         # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
         #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
         # match detailed view with left column when selected
@@ -135,6 +137,31 @@ class UiMain(UiView.Ui_BEAT):
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         self.project_list.itemClicked.connect(self.project_selected)
+
+    #########################################################################################
+    # QMessageBox Warning Functions
+    #########################################################################################
+    def project_deletion_message(self):
+        name = self.project_list.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            data_manager.delete_project_given_name(name)
+            self.project_list.clear()
+            self.binary_file_properties_value_listwidget.clear()
+            self.fill_projects()
+            print("Done Removing Project:", name)
+            self.new_project()
+
+    # def plugin_deletion_message(self):
+    #     listItems = self.plugin_view_plugin_listwidget.selectedItems()
+    #     if not listItems: return
+    #     buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+    #         "Are you sure you want to permanently delete this plugin?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+    #     if buttonReply == QMessageBox.Yes:
+    #         for item in listItems:
+    #             self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
+    #             data_manager.delete_plugin_given_name(item)
 
     #########################################################################################
     # Project Tab Functions
@@ -466,6 +493,12 @@ class UiMain(UiView.Ui_BEAT):
             radare_commands_interface.remove_breakpoint_at_function(addr_location)
         elif item.checkState() == 0:
             radare_commands_interface.set_breakpoint_at_function(addr_location)
+
+    def display_dynamic_info(self):
+        things = radare_commands_interface.dynamicAnalysis()
+        for t in things:
+            self.detailed_points_of_interest_dynamic_info_listWidget.addItem(t)
+
 
     def run_dynamic_then_display(self):
         # radare_commands_interface.run_dynamic_and_update()

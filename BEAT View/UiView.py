@@ -13,6 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_BEAT(object):
     def setupUi(self, BEAT):
         BEAT.setObjectName("BEAT")
+        # THis is a test comment
 
 
         ###########################

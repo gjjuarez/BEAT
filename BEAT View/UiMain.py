@@ -13,6 +13,8 @@ from Terminal import EmbTerminalLinux
 from radare2_scripts import radare_commands_interface
 from PyQt5 import QtGui
 import data_manager
+import os.path
+from os import path
 
 class UiMain(UiView.Ui_BEAT):
     global staticIsRun
@@ -22,8 +24,6 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-
-
 
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
@@ -51,39 +51,38 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Project Tab Listeners
         '''
-        #calls new_project if new_project_bsutton is clicked
+        # calls new_project if new_project_bsutton is clicked
         self.new_project_button.clicked.connect(self.new_project)
-        #calls remove_project if delete_project_button is clicked
+        # calls remove_project if delete_project_button is clicked
         self.delete_project_button.clicked.connect(self.remove_project)
-        #calls save_project if save_project_button is clicked 
+        # calls save_project if save_project_button is clicked
         self.save_project_button.clicked.connect(self.save_project)
-        #calls browse_path if file_browse_button is clicked
+        # calls browse_path if file_browse_button is clicked
         self.file_browse_button.clicked.connect(self.browse_path)
-        #self.delete_project_button.connect(self.delete_current_project)
+        # self.delete_project_button.connect(self.delete_current_project)
 
         '''
         Analysis Tab Listeners 
         '''
-        #calls enable_dynamic_analysis after static_run_button is clicked
+        # calls enable_dynamic_analysis after static_run_button is clicked
         self.static_run_button.clicked.connect(self.enable_dynamic_analysis)
-        #calls analysis_result aft er analysis_result_button is clicked
+        # calls analysis_result aft er analysis_result_button is clicked
         self.analysis_result_button.clicked.connect(self.analysis_result)
-        #calls comment_view after comment_button is clicked
+        # calls comment_view after comment_button is clicked
         self.comment_button.clicked.connect(self.comment_view)
-        #calls output_field after output_field_button is clicked
+        # calls output_field after output_field_button is clicked
         self.output_field_button.clicked.connect(self.output_field)
-
 
         '''
         Plugin Management Tab Listeners
         '''
-        #calls save_plugin if detailed_plugin_view_save_button is clicked
+        # calls save_plugin if detailed_plugin_view_save_button is clicked
         self.detailed_plugin_view_save_button.clicked.connect(self.save_plugin)
-        #calls remove_plugin  if detailed_plugin_view_delete_button is clicked
+        # calls remove_plugin  if detailed_plugin_view_delete_button is clicked
         self.detailed_plugin_view_delete_button.clicked.connect(self.remove_plugin)
-        #calls browse_plugin_structure if plugin_structure_browse_button is clicked
+        # calls browse_plugin_structure if plugin_structure_browse_button is clicked
         self.plugin_structure_browse_button.clicked.connect(self.browse_plugin_structure)
-        #calls browse_plugin_dataset if plugin_predefined_data_set_browse_button is clicked
+        # calls browse_plugin_dataset if plugin_predefined_data_set_browse_button is clicked
         self.plugin_predefined_data_set_browse_button.clicked.connect(self.browse_plugin_dataset)
         self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_pois_in_plugin)
 
@@ -110,9 +109,13 @@ class UiMain(UiView.Ui_BEAT):
         # listens to changes in POI dropdown
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
         # sets breakpoints on currently checked items
-        self.points_of_interest_list_widget.itemChanged.connect(self.set_breakpoint)
+        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
         # runs dynamic analysis on breakpoints then updates ui
-        self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
+        self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
+        #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
+        # match detailed view with left column when selected
+        self.points_of_interest_list_widget.itemClicked.connect(self.match_selected_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         self.project_list.itemClicked.connect(self.project_selected)
@@ -128,7 +131,8 @@ class UiMain(UiView.Ui_BEAT):
 
     def setCurrentProject(self):
         name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
-        
+        data_manager.initialize_POI_collections(name)
+
         # If no project set...
         if name == "":
             BEAT.setWindowTitle("BEAT")
@@ -152,9 +156,10 @@ class UiMain(UiView.Ui_BEAT):
     '''
     Sets settings for new project viewer
     '''
+
     def new_project(self):
-        #self.detailed_project_view_groupbox.show()
-        #self.label.show()
+        # self.detailed_project_view_groupbox.show()
+        # self.label.show()
 
         self.project_name_text.setText("")
         self.project_name_text.setReadOnly(False)
@@ -171,6 +176,7 @@ class UiMain(UiView.Ui_BEAT):
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
+
     def remove_project(self):
         name = self.project_list.currentItem().text()
         data_manager.delete_project_given_name(name)
@@ -179,10 +185,10 @@ class UiMain(UiView.Ui_BEAT):
         print("Done Removing Project:", name)
         self.new_project()
 
-
     '''
     Fills projects list
     '''
+
     def fill_projects(self):
         self.project_list.clear()
         self.project_list.addItems(data_manager.get_project_names())
@@ -190,6 +196,7 @@ class UiMain(UiView.Ui_BEAT):
     '''
     Adds a project name to the projdynamic_runect list within Project
     '''
+
     def save_project(self):
         name = self.project_name_text.text()
         desc = self.project_desc_text.text()
@@ -219,10 +226,10 @@ class UiMain(UiView.Ui_BEAT):
     '''
     Opens the file browser and writes the selected file's filepath in file_path_lineedit 
     '''
+
     def browse_path(self):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.file_path_lineedit.setText(file_path)
-
 
     def fill_binary_info(self, bi):
         self.binary_file_properties_value_listwidget.clear()
@@ -265,8 +272,10 @@ class UiMain(UiView.Ui_BEAT):
         self.ui = Ui_Figure10OutputFieldView()
         self.ui.setupUi(self.window)
         self.window.show()
+
     '''
-    Opens Ui_Figure11CommentView
+    Opens Ui_Figure11CommentView and will show comments for selected POI 
+    if the comment exists
     '''
     def comment_view(self):
         self.window = QtWidgets.QMainWindow()
@@ -274,6 +283,62 @@ class UiMain(UiView.Ui_BEAT):
         self.ui.setupUi(self.window)
         self.window.show()
 
+        current_item = self.points_of_interest_list_widget.currentItem()
+        print(str(current_item.text()))
+
+        # This looks for if comments already exits for a line
+
+        if path.exists("comment.txt"):
+            comment = open("comment.txt", "r+")
+            looking_for_comment = self.points_of_interest_list_widget.currentRow()
+            for line in comment:
+                comment_number = line.split(" ", 1)[0]
+                if comment_number == str(looking_for_comment):
+                    print("something there")
+                    self.ui.comment_textedit.setText(line)
+        comment.close()
+        self.ui.save_button.clicked.connect(self.save_comment)
+        self.ui.clear_button.clicked.connect(self.clear_comment)
+
+    '''
+    Saves comments to text file
+    '''
+    def save_comment(self):
+        comment = open("comment.txt", "a+")
+        text = self.ui.comment_textedit.toPlainText()
+        comment.write("%d " % self.points_of_interest_list_widget.currentRow())
+        comment.write(text + "\n")
+        print(text)
+        comment.close()
+
+    '''
+    Works with save_comment to overwrite a comment that has already been placed 
+    on a POI  AND DOESNT WORK
+    '''
+    def replace_line(self, file_name, line_num, text):
+        if not text:
+            '''Do nothing'''
+            print("Do nothing")
+        else:
+            print("SHOULD REPLACE HERE")
+            '''lines = open(file_name, 'r').readlines()
+            lines[line_num] = text
+            out = open(file_name, 'w')
+            out.writelines(lines)
+            out.close()'''
+
+    '''
+    Clears a comment from the POI
+    '''
+    def clear_comment(self):
+        with open("comment.txt", "r+") as f:
+            new_f = f.readlines()
+            f.seek(0)
+            for line in new_f:
+                if self.ui.comment_textedit.toPlainText() not in line:
+                    f.write(line)
+            f.truncate()
+        self.ui.comment_textedit.clear()
     '''
     Runs analysis and displayss results
     '''
@@ -281,8 +346,8 @@ class UiMain(UiView.Ui_BEAT):
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
         radare_commands_interface.run_static_analysis()
-        #self.terminal.begin()
-        #self.stacked.setCurrentWidget(self.terminal)
+        # self.terminal.begin()
+        # self.stacked.setCurrentWidget(self.terminal)
         # self.terminal.begin_static()
         global staticIsRun
         staticIsRun = True
@@ -290,6 +355,15 @@ class UiMain(UiView.Ui_BEAT):
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
         self.display_POI(display_value)
+
+    def match_selected_POI(self):
+        row = self.points_of_interest_list_widget.currentRow()
+        currentItem = self.points_of_interest_list_widget.currentItem()
+        if not currentItem:
+            return
+        if currentItem.isSelected():
+            self.detailed_points_of_interest_listWidget.itemAt(0, row).setSelected(True)
+            self.detailed_points_of_interest_listWidget.setCurrentRow(row)
 
     def change_displayed_POI(self):
         global staticIsRun
@@ -313,15 +387,68 @@ class UiMain(UiView.Ui_BEAT):
             self.read_and_display_all_functions()
             # variables displayed with functions instead
             # self.read_and_display_all_variables()
-            self.read_and_display_all_imports()
+            # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
-    def set_breakpoint(self, item):
-        print("Setting breakpoint")
+    # This function got deprecated.
+    # def set_breakpoint(self, item):
+    #     print("Setting breakpoint")
+    #     if item.checkState() == 2:  # if item is checked
+    #         radare_commands_interface.set_breakpoint_at_function(item.text())
+    #     else:  # item is unchecked
+    #         radare_commands_interface.remove_breakpoint_at_function(item.text())
+
+    def set_right_breakpoint(self):
+        display_value = str(self.type_dropdown.currentText())
+
+        if display_value == "All":
+            print("Have to do things here")
+            self.set_auto_breakpoint_at_string()
+        elif display_value == "Strings":
+            self.set_auto_breakpoint_at_string()
+        elif display_value == "Function Call":
+            self.set_auto_breakpoint_at_function()
+
+    def set_auto_breakpoint_at_all(self):
+        print("Setting breakpoints")
+        strings = data_manager.get_strings()
+
+        for strg in strings:
+            addr = strg["Address"]
+            radare_commands_interface.set_breakpoint_at_strings(addr)
+
+    def set_auto_breakpoint_at_string(self):
+        print("Setting breakpoints")
+        strings = data_manager.get_strings()
+        functions = data_manager.get_functions()
+        variables = data_manager.get_variables()
+
+        for func in functions:
+            radare_commands_interface.set_breakpoint_at_function(func['Binary Section'])
+            for var in variables:
+                if func['Function Name'] == var["Function Name"]:
+                    radare_commands_interface.set_breakpoint_for_var_inside_function(var["Address"])
+
+        for strg in strings:
+            addr = strg["Address"]
+            radare_commands_interface.set_breakpoint_at_strings(addr)
+
+    def set_auto_breakpoint_at_function(self):
+        print("Setting breakpoints")
+        for i in range(self.points_of_interest_list_widget.count()):
+            radare_commands_interface.set_breakpoint_at_function(self.points_of_interest_list_widget.item(i).text())
+
+    def remove_breakpoints(self, item):
+        functions = data_manager.get_functions()
+        for func in functions:
+            if func['Function Name'] == item.text():
+                addr_location = func['Binary Section']
+
         if item.checkState() == 2:  # if item is checked
-            radare_commands_interface.set_breakpoint_at_function(item.text())
-        else:  # item is unchecked
-            radare_commands_interface.remove_breakpoint_at_function(item.text())
+            # radare_commands_interface.remove_breakpoint_at_function(item.text())
+            radare_commands_interface.remove_breakpoint_at_function(addr_location)
+        elif item.checkState() == 0:
+            radare_commands_interface.set_breakpoint_at_function(addr_location)
 
     def run_dynamic_then_display(self):
         # radare_commands_interface.run_dynamic_and_update()
@@ -329,11 +456,11 @@ class UiMain(UiView.Ui_BEAT):
         self.dynamic_stop_button.setDisabled(False)
         print("Running dynamic analysis!")
         
-        self.terminal.kill_process()
-        self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
-        self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
-        self.terminal.setObjectName("Terminal")
-        self.terminal.begin_dynamic()
+        # self.terminal.kill_process()
+        # self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
+        # self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
+        # self.terminal.setObjectName("Terminal")
+        # self.terminal.begin_dynamic()
         print("Done with dynamic analysis!")
         self.change_displayed_POI()  # updates ui
         self.dynamic_run_button.setDisabled(False)
@@ -367,50 +494,69 @@ class UiMain(UiView.Ui_BEAT):
 
     def read_and_display_all_functions(self):
         # functions = open("functions.txt", "r")
-        functions = radare_commands_interface.read_functions()
+        functions = data_manager.get_functions()
 
         for func in functions:
-            item = QListWidgetItem(func["name"] + "  " + func["address"])
+            # item = QListWidgetItem("Function name: " + func['Function Name'])
+            paramTypes = ""
+            try:
+                for pt in func["Parameter Type"]:
+                    paramTypes = paramTypes + pt
+            except TypeError:
+                paramTypes = "n/a"
+
+            paramOrder = ""
+            try:
+                for pt in func["Parameter Type"]:
+                    paramOrder = paramOrder + pt
+            except TypeError:
+                paramOrder = "n/a"
+
+            returnVal = "n/a"
+            if func['Return Value']:
+                returnVal = func['Return Value']
+
+            returnType = "n/a"
+            if func['Return Type']:
+                returnVal = func['Return Type']
+
+            item = QListWidgetItem("Function name: " + func['Function Name'] + "\n"
+                                   + '\tReturn Type: ' + returnType + "\n"
+                                   + '\tReturn Value: ' + returnVal + "\n"
+                                   + '\tBinary Section: ' + func['Binary Section'] + "\n"
+                                   + '\tParameter Order: ' + paramOrder)
+            # + '\tParameter Type' + paramTypes)
             self.detailed_points_of_interest_listWidget.addItem(item)
             # display all variables related to current function
             # varIndex = self.read_and_display_variables_with_functions(varIndex)
-
+            self.read_and_display_variables_with_functions(func["Function Name"])
         # functions.close()
         self.display_functions_in_left_column()
 
-    def read_and_display_variables_with_functions(self, index):
-        with open("variables.txt", "r") as file:
-            # display all variables related to current function
-            for varline in file.read().split("\n")[index:]:
-                index = index + 1
-                if "ENDFUNCTION" in varline:
-                    break
-                print("detailed view")
-                varItem = QListWidgetItem("   " + varline)
+    def read_and_display_variables_with_functions(self, func_name):
+        # display all variables related to current function
+        variables = data_manager.get_variables()
+        for var in variables:
+            if func_name == var["Function Name"]:
+                varItem = QListWidgetItem("\tVariable Name: " + var["Variable Name"] + "\n"
+                                          "\t\tVariable Type: " + var["Variable Type"] + "\n"
+                                          "\t\tVariabel Value: " + var["Variable Value"] + "\n"
+                                          "\t\tAddress: " + var["Address"])
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
-        return index
 
-    def read_and_display_variables_with_functions_left_column(self, index):
-        with open("variables.txt", "r") as file:
-            # display all variables related to current function
-            for varline in file.read().split("\n")[index:]:
-                index = index + 1
-                if "ENDFUNCTION" in varline or varline == "":
-                    break
-                print("detail view: " + varline)
-                varline = varline.split(" ")[1]
-                varItem = QListWidgetItem("   " + varline)
+    def read_and_display_variables_with_functions_left_column(self, func_name):
+        variables = data_manager.get_variables()
+        # display all variables related to current function
+        for var in variables:
+            if func_name == var["Function Name"]:
+                varItem = QListWidgetItem("   " + var["Variable Name"])
                 self.points_of_interest_list_widget.addItem(varItem)
-        return index
 
     def display_functions_in_left_column(self):
         # breakPoints = radare_commands_interface.get_all_breakpoints()
-        functions = radare_commands_interface.read_functions()
-
-        # Start at the index 2 to the end get each line
+        functions = data_manager.get_functions()
         for func in functions:
-            # Separate by spaces and then get the last word
-            item = QListWidgetItem(func["name"])
+            item = QListWidgetItem(func["Function Name"])
 
             # Don't know if we need this following line
             # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
@@ -418,31 +564,31 @@ class UiMain(UiView.Ui_BEAT):
             self.points_of_interest_list_widget.addItem(item)
 
             # display all variables related to current function
-            # varIndex = self.read_and_display_variables_with_functions_left_column(varIndex)
+            self.read_and_display_variables_with_functions_left_column(func["Function Name"])
 
     def read_and_display_all_strings(self):
-        strings = open("strings.txt", "r")
-        for line in strings.read().split("\n"):
-            item = QListWidgetItem(line)
+        strings = data_manager.get_strings()
+        for strg in strings:
+            value = strg["String Value"]
+            section = strg["Section"]
+            addr = strg["Address"]
+
+            item = QListWidgetItem("String: " + value + "\n"
+                                   + '\tBinary Section: ' + section + "\n"
+                                   + '\tAddress: ' + addr)
             self.detailed_points_of_interest_listWidget.addItem(item)
-        strings.close()
         self.display_strings_in_left_column()
 
     def display_strings_in_left_column(self):
-        strings = open("strings.txt", "r")
+        strings = data_manager.get_strings()
 
-        # Start at the index 2 to the end get each line
-        for line in strings.read().split("\n")[2:-1]:
-            # Separate by spaces and then get the last word
-            line = line.split(" ", 9)[-1]
-            item = QListWidgetItem(line)
+        for strg in strings:
+            value = strg["String Value"]
 
-            # Don't know if we need this following line
-            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            item = QListWidgetItem(value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
-        strings.close()
 
     def read_and_display_all_variables(self):
         variables = open("variables.txt", "r")
@@ -460,12 +606,12 @@ class UiMain(UiView.Ui_BEAT):
         # Start at the index 2 to the end get each line
         for line in variables.read().split("\n")[:-1]:
             # Separate by spaces and then get the last word
-            #line = line.split(" ", 1)[-1]
+            # line = line.split(" ", 1)[-1]
             line = line.split(" ")[1]
             item = QListWidgetItem(line)
 
             # Don't know if we need this following line
-            #item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
@@ -507,7 +653,6 @@ class UiMain(UiView.Ui_BEAT):
         self.plugin_view_plugin_listwidget.addItem(name)
         data_manager.save_plugin(name,desc)
         self.update_plugin_list()
-        
 
     def update_plugin_list(self):
         plugins = data_manager.get_plugin_names()

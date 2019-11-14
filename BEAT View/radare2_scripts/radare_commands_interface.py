@@ -1,15 +1,11 @@
 #! /usr/bin/env python3
 
 import r2pipe
-import pymongo
 import sys
 sys.path.append("..")  # for data_manager
 import data_manager
 
 rlocal = None
-functiontable = None
-functioncol = None
-mydb = None
 
 def parse_binary(path):
     global rlocal
@@ -24,7 +20,6 @@ def parse_binary(path):
     return x
 
 def run_static_analysis():
-    global functiontable
     global rlocal
     name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
     rlocal = r2pipe.open(path, flags=['-d'])  # open in debug mode, necessary for breakpoints
@@ -33,10 +28,8 @@ def run_static_analysis():
         rlocal.cmd("s main")
     except:
         pass  # fail quietly, almost always gives error when reading
-    functiontable = name + "funcs"
     extract_all()
 
-'''
 def run_dynamic_analysis():
     global rlocal
     try:
@@ -46,98 +39,95 @@ def run_dynamic_analysis():
         pass  # fail quietly, almost always gives error when reading
     extract_all()
     run_dynamic_and_update()
-'''
 
-def extract_vars_from_functions(filename):
-    varFileName = "variables.txt"
+def extract_vars_from_functions():
+    global rlocal
     currentAddr = rlocal.cmd("s")  # dont lose original position
-    try:
-        with open(varFileName, 'w') as vf:
-            vf.write("[Variables]\n")
-        with open(filename) as f:
-            with open(varFileName, 'a') as varf:
-                for func in f.read().split("\n"):
-                    print(func.split()[0])
-                    rlocal.cmd("s " + func.split()[0])  # move to each functions offset
-                    functionVars = rlocal.cmd("afvd")
-                    if functionVars != "":
-                        varf.write(functionVars)
-                        varf.write("ENDFUNCTION\n")
+    functions = data_manager.get_functions()
+    for func in functions:
+        funcName = func["Function Name"]
+        rlocal.cmd("s " + funcName)
+        variables = rlocal.cmd("afvd").split("\n")
+        variableTypes = rlocal.cmd("afv").split("\n")
+        for var in variables:
+            attr = var.split()
+            if len(attr) < 1:
+                continue
 
-    except IOError:
-        print("Error extracting variables")
+            if attr[0] != "var":
+                continue
+            varName = attr[1]
+            varAddr = attr[3]
+            varValue = attr[5]
+            varType = ""
+            for varTemp in variableTypes:
+                if varName in varTemp:
+                    varType = varTemp.split()[1]
+            data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
+
     rlocal.cmd("s " + currentAddr)
 
 def extract_all():
-    print("")
-    global rlocal
-    global mydb
-    global functioncol
-    global functiontable
-
-    dbclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = dbclient['poidb']
-    if functiontable not in mydb.collection_names():
-        mydb.create_collection(functiontable)
-
-    functioncol = mydb[functiontable]
-
-    try:
-        # TODO: filter the search somehow
-        extract_functions()
-        # extract_strings()
-        # extract_imports()
-        # extract_vars_from_functions("functions.txt")
-    except:
-        print("Error extracting all POI")
+    # TODO: filter the search somehow
+    extract_functions()
+    extract_strings()
+    # extract_imports()
+    extract_vars_from_functions()
 
 def extract_functions():
     global rlocal
-    global mydb
-    global functioncol
-    mycol = mydb['current']
-    functioncol = mydb[functiontable]
-    dblist = mydb.list_collection_names()
-    print(dblist)
-
+    print("Entered extract functions!")
     funcs = rlocal.cmd("afl").split("\n")
     # go through every function and add to database
     for func in funcs:
-        try:
-            if func == "":
-                print("Empty line")
+        if func == "":
+            print("Empty line")
+            continue
+        # print("Function: " + func)
+        attr = func.split()
+        # print(attr)
+
+        funcName = attr[len(attr) - 1]
+        rlocal.cmd("s " + funcName)
+        funcHeader = rlocal.cmd("pdf~" + funcName + ":1").split()
+        paramList = rlocal.cmd("afvr").split("\n")
+        params = []
+        paramType = []
+        for p in paramList:
+            if p == "":
                 continue
-            # print("Function: " + func)
-            attr = func.split()
-            # print(attr)
-            funcAddr = attr[0]
-            funcName = attr[len(attr) - 1]
-            funcDict = {"name": funcName, "address": funcAddr}
-            # print(funcDict)
-            functioncol.insert_one(funcDict)
-        except:
-            pass
-    dblist = mydb.list_collection_names()
-    print(dblist)
-    print("Function data:")
-    for func in functioncol.find():
-        print(func)
-
-def read_functions():
-    global functioncol
-    functions = []
-    for func in functioncol.find():
-        functions.append(func)
-    # print(functions)
-    return functions
-
+            # add name of param
+            params.append(p.split()[2])
+            # add types of params
+            paramType.append(p.split()[1])
+        funcAddr = attr[0]
+        returnType = funcHeader[1]
+        # make sure function has a return type
+        if returnType == funcName:
+            returnType = None
+        returnValue = None  # don't know the value of return until running dynamic
+        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr, params, paramType)
+        # funcDict = {"name": funcName, "address": funcAddr}
+        # print(funcDict)
+        # functioncol.insert_one(funcDict)
 
 def extract_strings():
     global rlocal
-    try:
-        rlocal.cmd("iz > strings.txt")
-    except:
-        print("Error extracting string")
+    strings = rlocal.cmd("iz").split("\n")
+    for strg in strings[2:]:
+        if strg == "":
+            print("Empty string")
+            continue
+        attr = strg.split()
+
+        # save entire string value
+        strValue = ""
+        for value in attr[7:]:
+            strValue = strValue + " " + value
+
+        strSection = attr[5]
+        strAddr = attr[2]
+        data_manager.save_strings("static", strValue, strSection, strAddr)
 
 def extract_imports():
     global rlocal
@@ -147,26 +137,38 @@ def extract_imports():
         print("Error extracting string")
 
 def run_dynamic_and_update():
-    try:
-        rlocal.cmd("dc")
-        extract_strings()
-        extract_vars_from_functions("functions.txt")
-    except:
-        print("Error running dynamic")
+    rlocal.cmd("dc")
+    extract_strings()
+    extract_functions()
+    extract_vars_from_functions()
 
 def set_breakpoint_at_function(func_name):
     try:
         rlocal.cmd("db " + func_name)
-        print("Breakpoint successfully set at: " + func_name)
+        print("Function breakpoint successfully set at: " + func_name)
     except:
-        print("Error setting breakpoint at: " + func_name)
+        print("Error setting breakpoint at function address: " + func_name)
 
 def remove_breakpoint_at_function(func_name):
     try:
         rlocal.cmd("db- " + func_name)
-        print("Breakpoint successfully removed at: " + func_name)
+        print("Function breakpoint successfully removed at: " + func_name)
     except:
-        print("Error removing breakpoint at: " + func_name)
+        print("Error removing breakpoint at function address: " + func_name)
+
+def set_breakpoint_at_strings(string_addr):
+    try:
+        rlocal.cmd("db " + string_addr)
+        print("String breakpoint successfully set at: " + string_addr)
+    except:
+        print("Error setting breakpoint at string address: " + string_addr)
+
+def set_breakpoint_for_var_inside_function(var_address):
+    try:
+        rlocal.cmd("db " + var_address)
+        print("Var breakpoint successfully set at: " + var_address)
+    except:
+        print("Error setting breakpoint at var address: " + var_address)
 
 def get_all_breakpoints():
     global rlocal

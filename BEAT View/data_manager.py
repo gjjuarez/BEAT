@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# database_operations.py version 1.1
+# database_operations.py version 1.2
 import pymongo
 from bson import ObjectId
 
@@ -10,14 +10,12 @@ from bson import ObjectId
 # document = data related to the POI (type, size, etc.)
 
 # connect to database on a local machine
-connection = pymongo.MongoClient('localhost',27017)
+connection = pymongo.MongoClient('localhost', 27017)
 
 # create database
-current_database = 'BEAT_Database' # change string ('temp') here to make a new database for each project***
+current_database = 'BEAT_Database'  # change string ('temp') here to make a new database for each project***
 database = connection[current_database]
 
-# create a collection for each point of interest
-POI_collection = database['POIs']# change string ('placeholder') here to make a new collection for each point of interest***
 project_collection = database['project']
 current_collection = database['current']
 plugin_collection = database['plugin']
@@ -147,11 +145,73 @@ def add_struct_to_plugin(name, struct_name):
 Project functions
 #################################################################################
 '''
+
+variable_collection = None
+string_collection = None
+function_collection = None  #libraries (imports) included in this collection
+protocol_collection = None
+struct_collection = None
+
+def initialize_POI_collections(project_name):
+    global variable_collection
+    global string_collection
+    global function_collection
+    global protocol_collection
+    global struct_collection
+    global database
+
+    varName = project_name + "Variables"
+    stringName = project_name + "Strings"
+    functionName = project_name + "Functions"
+    protocolName = project_name + "Protocols"
+    structName = project_name + "Structs"
+
+    if varName not in database.list_collection_names():
+        database.create_collection(varName)
+    variable_collection = database[varName]
+
+    if stringName not in database.list_collection_names():
+        database.create_collection(stringName)
+    string_collection = database[stringName]
+
+    if functionName not in database.list_collection_names():
+        database.create_collection(functionName)
+    function_collection = database[functionName]
+
+    if protocolName not in database.list_collection_names():
+        database.create_collection(protocolName)
+    protocol_collection = database[protocolName]
+
+    if structName not in database.list_collection_names():
+        database.create_collection(structName)
+    struct_collection = database[structName]
+
 def get_project_names():
     projects = []
     for c in project_collection.find():
         projects.append(str(c["name"]))
     return projects
+
+#returns all the POIs within a given collection in a list format
+def get_variable_POIs():
+    data = variable_collection.find()
+    return list(data)
+
+def get_string_POIs():
+    data = string_collection.find()
+    return list(data)
+
+def get_Function_POIs():
+    data = function_collection.find()
+    return list(data)
+
+def get_protocol_POIs():
+    data = protocol_collection.find()
+    return list(data)
+
+def get_struct_POIs():
+    data = struct_collection.find()
+    return list(data)
 
 def save_project(name, desc, path, binary_info):
     project_dict = {"name": name,
@@ -159,6 +219,139 @@ def save_project(name, desc, path, binary_info):
                     "path": path,
                     "bin_info": binary_info}
     project_collection.insert_one(project_dict)
+
+def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_type, address):
+    global variable_collection
+    document = {'Analysis Run': analysis_run,
+                'Function Name': function_name,  # to reference parent, avoid conflicting names
+                'Variable Name': POI_name,
+                'Variable Value': POI_value,
+                'Variable Type': POI_data_type,
+                'Address': address}
+    variable_collection.replace_one({'Function Name': function_name,
+                                     'Variable Name': POI_name}, document, upsert=True)
+
+def get_variables():
+    global variable_collection
+    variables = []
+    for var in variable_collection.find():
+        variables.append(var)
+    return variables
+
+def get_variable_from_name(find_variable):
+        name = ""
+        for c in variable_collection.find():
+            try:
+                if (c["Variable Name"] == find_variable):
+                    name = c["Variable Name"]
+                    return name
+            except KeyError:
+                print("Key error")
+
+def save_strings(analysis_run, POI_value, section, address, comment=''):
+    global string_collection
+    document = {'Analysis Run': analysis_run,
+                'String Value': POI_value,
+                'Section': section,
+                'Address': address,
+                'Comment': comment}
+    string_collection.replace_one({'String Value': POI_value}, document, upsert=True)
+
+def get_strings():
+    global string_collection
+    strings = []
+    for strg in string_collection.find():
+        strings.append(strg)
+    return strings
+
+def get_string_from_name(find_string):
+    name = ""
+    for c in string_collection.find():
+        try:
+            if (c["String Name"] == find_string):
+                name = c["String Name"]
+                return name
+        except KeyError:
+            print("Key error")
+
+def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_binary_section, POI_parameter_order, POI_parameter_type):
+    global function_collection
+    document = {'Analysis Run': analysis_run,
+                'Function Name': POI_name,
+                # 'Function Value': POI_value,
+                'Return Type': POI_return_type,
+                'Return Value': POI_return_value,
+                # 'Destination Address': POI_destination_address,
+                'Binary Section': POI_binary_section,
+                # 'Library Name': POI_name,
+                'Parameter Order': POI_parameter_order,
+                'Parameter Type': POI_parameter_type,
+                # 'Parameter Value': POI_parameter_value,
+                # 'Call From Address': POI_order_to_functions
+                }
+    function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
+
+def get_function_from_name(find_function):
+    name = ""
+    for c in function_collection.find():
+        try:
+            if (c["Function Name"] == find_function):
+                name = c["Function Name"]
+                return name
+        except KeyError:
+            print("Key error")
+
+def save_protocols(analysis_run, POI_name, POI_structure, POI_section_size, POI_section_value,
+                      POI_binary_section, POI_call_address, comment=''):
+    global project_collection
+    document = {'Protocol Name': POI_name,
+                'Call From Address': POI_call_address,
+                'Structure': POI_structure,
+                'Section Size': POI_section_size,
+                'Section Value': POI_section_value,
+                'Binary Section': POI_binary_section,
+                'Comment': comment}
+    function_collection.replace_one({"Protocol Name": POI_name}, document, upsert=True)
+
+def get_protocol_from_name(find_protocol):
+    name = ""
+    for c in protocol_collection.find():
+        try:
+            if (c["Protocol Name"] == find_protocol):
+                name = c["Protocol Name"]
+                return name
+        except KeyError:
+            print("Key error")
+
+def save_structs(analysis_run, POI_name, POI_structure, POI_member_order, POI_member_type, POI_member_value,
+                    POI_binary_section, POI_call_address, comment=''):
+    global struct_collection
+    document = {'Struct Name': POI_name,
+                'Call From Address': POI_call_address,
+                'Structure': POI_structure,
+                'Member Order': POI_member_order,
+                'Member Type': POI_member_type,
+                'Member Value': POI_member_value,
+                'Binary Section': POI_binary_section,
+                'Comment': comment}
+    function_collection.replace_one({"Struct Name": POI_name}, document, upsert=True)
+
+def get_struct_from_name(find_struct):
+    name = ""
+    for c in struct_collection.find():
+        try:
+            if (c["Struct Name"] == find_struct):
+                name = c["Struct Name"]
+                return name
+        except KeyError:
+            print("Key error")
+
+def get_functions():
+    global function_collection
+    functions = []
+    for func in function_collection.find():
+        functions.append(func)
+    return functions
 
 def update_current_project(name, desc, path, binary_info):
     current_collection.drop()
@@ -202,10 +395,20 @@ def get_project_from_name(to_find):
             print("Key error")
 
 def delete_project_given_name(name):
-    project_collection.delete_one({'name': name})
-    current_collection.drop()
+    try:
+        project_collection.delete_one({'name': name})
+        current_collection.drop()
 
-# begin methods for adding, updating/creating, getting, and removal of data from collections
+        function_collection.drop()
+        string_collection.drop()
+        variable_collection.drop()
+        protocol_collection.drop()
+        struct_collection.drop()
+    except:
+        print("Drop collection error")
+
+
+# deprecated code (left for now as examples)
 def insert_data(data): #data needs to be in json format
    document = collection.insert_one(data)
    return document.inserted_id
@@ -228,126 +431,14 @@ def get_single_data(document_id):
     data = collection.find_one({'_id': ObjectId(document_id)})
     return data
 
-# return everything from a collection(points of interest) in a list format
-def get_multiple_data():
-    data = collection.find()
-    return list(data)
-
-
 def end():
     # close the connection to the database
     connection.close()
 
-# start of main
+# test code##############################################################################################
+#initialize_POI_collections("project 1")
 
-# useful notes on database operations:
-# data = {"_id": "Project 01","Name", "HP"} #how to define a user defined id *can't use the same id twice!*
-# id = insert_data(data) #this will return the id auto generated by mongoDB
+#save_variables("static", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")
 
-# used to change the type of data entered into the database via the if/else statements below
-poi_type = "variable" # change "variable" to variable, string, library, function, packet, or struct depding on the type
-                      # of data to be entered into the database *note struct not yet implemented*
-
-# edit the following variables with what was found in the static or dynamic analysis
-# values that can be stored by the mongo Database are string, integer, boolean, double, Min/Max keys, arrays, timestamp,
-# Object, Null, Symbol, Date, ObjectId, Binary data, javascript code and regular expressions
-POI_object_ID = ""
-POI_name = "POI_Temp"
-POI_data_type = ""
-POI_call_address = ""
-
-POI_value = 0
-POI_size = 0
-POI_destination_address = ""
-POI_parameter_type = ""
-POI_parameter_order = ""
-POI_parameter_value = ""
-POI_member_type = ""
-POI_member_order = ""
-POI_member_value = ""
-POI_return_type = ""
-POI_return_value = ""
-POI_binary_section = ""
-POI_section_Size = 0
-POI_section_value = ""
-POI_structure = ""
-POI_order_to_functions = ""
-
-def POI_type_selector():
-    #take in something then if else to select the proper method
-    #POI_name = something
-    #POI_call_address = something
-    #POI_data_type =
-
-    #selects which method to run to store POI values
-    if POI_data_type == "variable": #variable
-        POI_variable()
-    elif POI_data_type == "string":
-        POI_string()
-    elif POI_data_type == "library":
-        POI_library()
-    elif POI_data_type == "function":
-        POI_function()
-    elif POI_data_type == "protocol":
-        POI_protocol()
-    elif POI_data_type == "struct":
-        POI_struct()
-
-# methods that handle the POI values to be stored
-def POI_variable():
-    document = POI_collection.insert_many([{
-                'Variable Name': POI_name,
-                'Variable Value': POI_value,
-                'Variable Type': POI_data_type,
-                'Variable Size': POI_size,
-                'Bianry Section': POI_binary_section,
-                'Call From Address': POI_call_address}])
-
-def POI_string():
-    document = POI_collection.insert_many([{
-                'String Name': POI_name,
-                'String Value': POI_value,
-                'String Type': POI_data_type,
-                'String Size': POI_size,
-                'Call From Address': POI_call_address,
-                'Destination Address': POI_destination_address,
-                'Section': POI_binary_section}])
-
-def POI_library():
-    document = POI_collection.insert_many([{
-                'Library Name': POI_name,
-                'Parameter Order': POI_parameter_order,
-                'Parameter Type': POI_parameter_type,
-                'Parameter Value': POI_parameter_value,
-                'Return Type': POI_return_type,
-                'Return Value': POI_return_value,
-                'Call From Address': POI_order_to_functions}])
-
-def POI_function():
-    document = POI_collection.insert_many([{
-                'Function Name': POI_name,
-                'Function Value': POI_value,
-                'Return Type': POI_return_type,
-                'Return Value': POI_return_value,
-                'Call From Address': POI_call_address,
-                'Destination Address': POI_destination_address,
-                'Binary Section': POI_binary_section}])
-
-def POI_protocol():
-    document = POI_collection.insert_many([{
-                'Protocol Name': POI_name,
-                'Call From Address': POI_call_address,
-                'Structure': POI_structure,
-                'Section Size': POI_section_Size,
-                'Section Value': POI_section_value,
-                'Binary Section': POI_binary_section}])
-
-def POI_struct():
-    document = POI_collection.insert_many([{
-                'Struct Name': POI_name,
-                'Call From Address': POI_call_address,
-                'Structure': POI_structure,
-                'Member Order': POI_member_order,
-                'Member Type': POI_member_type,
-                'Member Value': POI_member_value,
-                'Binary Section': POI_binary_section}])
+#save_variables("static", "integer 2", 254, "integer", 256, "some random section in binary", "here lies a binary address")
+#save_variables("dynamic", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")

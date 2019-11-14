@@ -4,6 +4,7 @@ import r2pipe
 import sys
 sys.path.append("..")  # for data_manager
 import data_manager
+#import filter
 
 rlocal = None
 

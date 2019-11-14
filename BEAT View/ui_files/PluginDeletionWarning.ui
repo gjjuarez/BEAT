@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ProjectDeletionWarning</class>
- <widget class="QMainWindow" name="ProjectDeletionWarning">
+ <class>PluginDeletionWarning</class>
+ <widget class="QMainWindow" name="PluginDeletionWarning">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="project_deletion_warning_widget">
+  <widget class="QWidget" name="plugin_deletion_warning_widget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QGroupBox" name="project_deletion_warning_groupbox">
@@ -44,7 +44,7 @@
        <item row="0" column="1">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Are you sure that you want to permanently delete this project? </string>
+          <string>Are you sure that you want to permanently delete this plugin? </string>
          </property>
         </widget>
        </item>

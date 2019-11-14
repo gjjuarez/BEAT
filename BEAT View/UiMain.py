@@ -6,6 +6,9 @@ from PyQt5 import QtWidgets
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from ProjectDeletionWarning import Ui_ProjectDeletionWarning
+from PointofInterestDeletionWarning import Ui_PointofInterestDeletionWarning
+from PluginDeletionWarning import Ui_PluginDeletionWarning
 from ArchitectureError import Ui_ArchitectureError
 from PyQt5.QtWidgets import QListWidgetItem
 from Terminal import EmbTerminalLinux
@@ -44,15 +47,15 @@ class UiMain(UiView.Ui_BEAT):
         self.setCurrentProject()
 
         #########################################################################################
-        # Project Tab Functions
+        # Project Tab Listeners
         #########################################################################################
         '''
         Project Tab Listeners
         '''
         # calls new_project if new_project_bsutton is clicked
         self.new_project_button.clicked.connect(self.new_project)
-        # calls remove_project if delete_project_button is clicked
-        self.delete_project_button.clicked.connect(self.remove_project)
+        # calls project_deletion_warning if delete_project_button is clicked
+        self.delete_project_button.clicked.connect(self.project_deletion_warning)
         # calls save_project if save_project_button is clicked
         self.save_project_button.clicked.connect(self.save_project)
         # calls browse_path if file_browse_button is clicked
@@ -171,6 +174,25 @@ class UiMain(UiView.Ui_BEAT):
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
 
+    '''
+    Opens Figure12AnalysisResultReview
+    
+    def analysis_result(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_Figure12AnalysisResultReview()
+        self.ui.setupUi(self.window)
+        self.window.show()
+    '''
+
+    def project_deletion_warning(self): 
+        print("Entered method")
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_ProjectDeletionWarning()
+        self.ui.setupUi(self.window)
+        self.widow.show() 
+        self.ui.ok_pushbutton.connect(remove_project)
+        self.ui.cancel_pushbutton.connect(self.close)
+
     def remove_project(self):
         name = self.project_list.currentItem().text()
         data_manager.delete_project_given_name(name)
@@ -182,7 +204,6 @@ class UiMain(UiView.Ui_BEAT):
     '''
     Fills projects list
     '''
-
     def fill_projects(self):
         self.project_list.clear()
         self.project_list.addItems(data_manager.get_project_names())

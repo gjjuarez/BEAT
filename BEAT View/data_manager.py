@@ -25,6 +25,14 @@ plugin_collection = database['plugin']
 Plugin functions
 #################################################################################
 '''
+
+def get_pois_from_plugin_and_type(plugin, type):
+    pois = []
+    for c in plugin_collection.find():
+        if c['name'] == plugin:
+            return list(c[type])
+
+
 def get_plugin_names():
     plugins = []
     for c in plugin_collection.find():
@@ -41,7 +49,7 @@ def get_plugin_from_name(to_find):
     desc = ""
     for c in plugin_collection.find():
         try :
-            if(c["name"] == to_find):
+            if(c["name"] == to_find()):
                 name = c["name"]
                 desc = c["desc"]
                 return name, desc
@@ -50,7 +58,15 @@ def get_plugin_from_name(to_find):
 def delete_plugin_given_name(name):
     plugin_collection.delete_one({'name': name})
 
-def add_string_to_plugin(name, string):
+def add_string_to_plugin(name, string_name, string_type, string_size, string_call_address, string_destination_address,
+                         section):
+    string = {'String Name': string_name,
+             'String Type': string_type,
+             'String Size': string_size,
+             'Call from Address': string_call_address,
+             'Address': string_destination_address,
+             'Section': section
+            }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
@@ -63,14 +79,30 @@ def add_string_to_plugin(name, string):
     for document in cursor: 
         pprint(document)
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
-def add_function_to_plugin(name, string):
+def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value,
+                           function_call_address, function_destination_address, python_translation_code):
+    function = {'Function Name': function_name,
+               'Parameter Type and Order': parmeter_order_and_type,
+               'Parameter Value': parameter_value,
+               'Return Value': return_value,
+               'Binary Section': POI_binary_section,
+               'Call From Address': function_call_address,
+               'Destination Address': function_destination_address,
+               'Python Translation Code': python_translation_code
+               }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
-        {"string": string}
+        {"function": function}
     },upsert=True
     )
-def add_variable_to_plugin(name, variable):
+def add_variable_to_plugin(name, variable_name, variable_value, variable_type, variable_size, variable_call_address ):
+    variable = {'Variable Name': variable_name,
+                'Variable Value': variable_value,
+                'Variable Type': variable_type,
+                'Variable Size': variable_size,
+                'Call From Address': variable_call_address
+                }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
@@ -78,21 +110,29 @@ def add_variable_to_plugin(name, variable):
     },upsert=True
     )
 
-def add_dll_to_plugin(name, dll):
+def add_dll_to_plugin(name, libaray_name):
+    dll = {'Library': libaray_name
+           }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
         {"dll": dll}
     },upsert=True
     )
-def add_packet_to_plugin(name, packet):
+def add_packet_to_plugin(name, protocol_name, field_name, field_type):
+    packet = {'Protocol Name': protocol_name,
+              'Field Name': field_name,
+              'Field Type': field_type
+              }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
         {"packet": packet}
     },upsert=True
     )
-def add_struct_to_plugin(name, struct):
+def add_struct_to_plugin(name, struct_name):
+    struct = {'Struct Name': struct_name
+              }
     plugin_collection.find_one_and_update(
     {'name' : name},
     {"$push":
@@ -111,6 +151,7 @@ string_collection = None
 function_collection = None  #libraries (imports) included in this collection
 protocol_collection = None
 struct_collection = None
+global_var_collection = None
 
 def initialize_POI_collections(project_name):
     global variable_collection
@@ -118,6 +159,7 @@ def initialize_POI_collections(project_name):
     global function_collection
     global protocol_collection
     global struct_collection
+    global global_var_collection
     global database
 
     varName = project_name + "Variables"
@@ -125,6 +167,7 @@ def initialize_POI_collections(project_name):
     functionName = project_name + "Functions"
     protocolName = project_name + "Protocols"
     structName = project_name + "Structs"
+    globalVarName = project_name + "GlobalVars"
 
     if varName not in database.list_collection_names():
         database.create_collection(varName)
@@ -145,6 +188,10 @@ def initialize_POI_collections(project_name):
     if structName not in database.list_collection_names():
         database.create_collection(structName)
     struct_collection = database[structName]
+
+    if globalVarName not in database.list_collection_names():
+        database.create_collection(globalVarName)
+    global_var_collection = database[globalVarName]
 
 def get_project_names():
     projects = []
@@ -190,6 +237,15 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Address': address}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
+
+def save_global_variable(analysis_run, POI_name, POI_size, address, comment=""):
+    global global_var_collection
+    document = {'Analysis Run': analysis_run,
+                'Variable Name': POI_name,
+                'Variable Size': POI_size,
+                'Address': address,
+                'Comment': comment}
+    global_var_collection.replace_one({'Variable Name': POI_name}, document, upsert=True)
 
 def get_variables():
     global variable_collection

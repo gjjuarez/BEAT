@@ -27,10 +27,20 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
+        ###########################
+        # Resizing according to user's desktop
+        ###########################
+        self.geo = QtWidgets.QDesktopWidget().screenGeometry()
+        BEAT.resize(self.geo.width(), self.geo.height())
+
+ 
+
+        BEAT.setMaximumSize(QtCore.QSize(16777215, 16777215))
 
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
+        self.Poi_stacked_Widget.setCurrentIndex(3)
 
         # Fill the Project list from mongo
         self.fill_projects()
@@ -46,6 +56,7 @@ class UiMain(UiView.Ui_BEAT):
 
         self.setCurrentProject()
 
+        self.populate_pois_in_poi()
         #########################################################################################
         # Project Tab Listeners
         #########################################################################################
@@ -85,12 +96,17 @@ class UiMain(UiView.Ui_BEAT):
         self.plugin_structure_browse_button.clicked.connect(self.browse_plugin_structure)
         # calls browse_plugin_dataset if plugin_predefined_data_set_browse_button is clicked
         self.plugin_predefined_data_set_browse_button.clicked.connect(self.browse_plugin_dataset)
+        self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_pois_in_plugin)
 
         '''
         Points of Interest Tab Listeners
-        '''
-        self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
+        '''        
+        self.detailed_point_of_interest_view_type_dropdown.clear()
+        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"])
+        #self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
 
+        self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(self.poi_type_changed_in_poi)
+        self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
         '''
         Documentation Tab Listeners
         '''
@@ -104,17 +120,23 @@ class UiMain(UiView.Ui_BEAT):
         self.points_of_interest_line_edit.returnPressed.connect(self.search_POI)
         # listens to changes in POI dropdown
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
+        self.type_dropdown.clear()
+        self.type_dropdown.addItem("All")
+        self.type_dropdown.addItem("Functions")
+        self.type_dropdown.addItem("Variables")
+        self.type_dropdown.addItem("Strings")
+        self.type_dropdown.addItem("Sections")
+        self.type_dropdown.addItem("Structures")
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
         # runs dynamic analysis on breakpoints then updates ui
-        self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
-        self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
+        self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
+        #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
         # match detailed view with left column when selected
         self.points_of_interest_list_widget.itemClicked.connect(self.match_selected_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
-        self.detailed_point_of_interest_view_type_dropdown.clear()
-        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"])
         self.project_list.itemClicked.connect(self.project_selected)
 
     #########################################################################################
@@ -170,6 +192,9 @@ class UiMain(UiView.Ui_BEAT):
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
 
+        self.binary_file_properties_value_listwidget.clear()
+
+
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
     '''
@@ -197,6 +222,7 @@ class UiMain(UiView.Ui_BEAT):
         name = self.project_list.currentItem().text()
         data_manager.delete_project_given_name(name)
         self.project_list.clear()
+        self.binary_file_properties_value_listwidget.clear()
         self.fill_projects()
         print("Done Removing Project:", name)
         self.new_project()
@@ -425,16 +451,57 @@ class UiMain(UiView.Ui_BEAT):
     #     else:  # item is unchecked
     #         radare_commands_interface.remove_breakpoint_at_function(item.text())
 
-    def set_auto_breakpoint(self):
+    def set_right_breakpoint(self):
+        display_value = str(self.type_dropdown.currentText())
+
+        if display_value == "All":
+            print("Have to do things here")
+            self.set_auto_breakpoint_at_string()
+        elif display_value == "Strings":
+            self.set_auto_breakpoint_at_string()
+        elif display_value == "Function Call":
+            self.set_auto_breakpoint_at_function()
+
+    def set_auto_breakpoint_at_all(self):
+        print("Setting breakpoints")
+        strings = data_manager.get_strings()
+
+        for strg in strings:
+            addr = strg["Address"]
+            radare_commands_interface.set_breakpoint_at_strings(addr)
+
+    def set_auto_breakpoint_at_string(self):
+        print("Setting breakpoints")
+        strings = data_manager.get_strings()
+        functions = data_manager.get_functions()
+        variables = data_manager.get_variables()
+
+        for func in functions:
+            radare_commands_interface.set_breakpoint_at_function(func['Binary Section'])
+            for var in variables:
+                if func['Function Name'] == var["Function Name"]:
+                    radare_commands_interface.set_breakpoint_for_var_inside_function(var["Address"])
+
+        for strg in strings:
+            addr = strg["Address"]
+            radare_commands_interface.set_breakpoint_at_strings(addr)
+
+    def set_auto_breakpoint_at_function(self):
         print("Setting breakpoints")
         for i in range(self.points_of_interest_list_widget.count()):
             radare_commands_interface.set_breakpoint_at_function(self.points_of_interest_list_widget.item(i).text())
 
     def remove_breakpoints(self, item):
+        functions = data_manager.get_functions()
+        for func in functions:
+            if func['Function Name'] == item.text():
+                addr_location = func['Binary Section']
+
         if item.checkState() == 2:  # if item is checked
-            radare_commands_interface.remove_breakpoint_at_function(item.text())
+            # radare_commands_interface.remove_breakpoint_at_function(item.text())
+            radare_commands_interface.remove_breakpoint_at_function(addr_location)
         elif item.checkState() == 0:
-            radare_commands_interface.set_breakpoint_at_function(item.text())
+            radare_commands_interface.set_breakpoint_at_function(addr_location)
 
     def run_dynamic_then_display(self):
         # radare_commands_interface.run_dynamic_and_update()
@@ -673,23 +740,213 @@ class UiMain(UiView.Ui_BEAT):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
-    def add_poi_to_plugin(self):
-        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
-        poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
-        if poi_type == "Function":
-            data_manager.add_function_to_plugin(plugin,poi_type)
-        elif poi_type == "String":
-            data_manager.add_string_to_plugin(plugin,poi_type)
-        elif poi_type == "Variable":
-            data_manager.add_variable_to_plugin(plugin,poi_type)
-        elif poi_type == "DLL":
-            data_manager.add_dll_to_plugin(plugin,poi_type)
-        elif poi_type == "Packet Protocol":
-            data_manager.add_packet_to_plugin(plugin,poi_type)
-        elif poi_type == "Struct":
-            data_manager.add_struct_to_plugin(plugin,poi_type)
+    # def add_poi_to_plugin(self):
+    #     print("Populating POIs in Plugin tab")
+    #     plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+    #     poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+    #     to_add = self.point_of_interest_content_area_textedit.toPlainText()
+    #     if poi_type == "Function":
+    #         data_manager.add_function_to_plugin(plugin,to_add)
+    #     elif poi_type == "String":
+    #         data_manager.add_string_to_plugin(plugin,to_add)
+    #     elif poi_type == "Variable":
+    #         data_manager.add_variable_to_plugin(plugin,to_add)
+    #     elif poi_type == "DLL":
+    #         data_manager.add_dll_to_plugin(plugin,to_add)
+    #     elif poi_type == "Packet Protocol":
+    #         data_manager.add_packet_to_plugin(plugin,to_add)
+    #     elif poi_type == "Struct":
+    #         data_manager.add_struct_to_plugin(plugin,to_add)
+    #
+    #     self.point_of_interest_content_area_textedit.clear()
+    #     self.populate_pois_in_poi()
 
         #data_manager.add_string_to_plugin(plugin,poi_type)
+    def populate_pois_in_poi(self):
+        print("Populating POIs in POI tab")
+        to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        self.point_of_interest_view_listwidget.clear()
+        if to_find == "": return
+        try:
+            strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
+        except:
+            strings = ""
+        try:
+            functions = data_manager.get_pois_from_plugin_and_type(to_find, "function")
+        except:
+            functions = ""
+        try:
+            variables = data_manager.get_pois_from_plugin_and_type(to_find, "variable")
+        except:
+            variables = ""
+        try:
+            dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
+        except:
+            dll = ""
+        try:
+            packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
+        except:
+            packets = ""
+        try:
+            structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
+        except:
+            structs = ""
+
+
+        if strings is not None:
+            for s in strings:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("String:"+ str(s)))
+        if functions is not None:
+            for f in functions:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Function:"+ str(f)))
+        if variables is not None:
+            for v in variables:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Variables:"+ str(v)))
+        if dll is not None:
+            for d in dll:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
+        if packets is not None:
+            for p in packets:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Packets:"+ str(p)))
+        if structs is not None:
+            for st in structs:
+                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Struct:"+ str(st)))
+
+
+    def poi_type_changed_in_poi(self):
+        poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+        # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
+        if poi_detected == "Function":
+            self.Poi_stacked_Widget.setCurrentIndex(3)
+        elif poi_detected == "String":
+            self.Poi_stacked_Widget.setCurrentIndex(5)
+        elif poi_detected == "Variable":
+            self.Poi_stacked_Widget.setCurrentIndex(0)
+        elif poi_detected == "DLL":
+            self.Poi_stacked_Widget.setCurrentIndex(2)
+        elif poi_detected == "Packet Protocol":
+            self.Poi_stacked_Widget.setCurrentIndex(1)
+        elif poi_detected == "Struct":
+            self.Poi_stacked_Widget.setCurrentIndex(4)
+
+    def save_poi(self):
+        poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
+        if poi_detected == "Function":
+            name = self.poi_function_name_lineedit.text()
+            type = self.poi_function_parameter_lineedit.text()
+            parameter_val = self.poi_function_paramtervalue_lineedit.text()
+            return_val = self.poi_function_returnvalue_lineedit.text()
+            call_from = self.poi_function_callfromaddress_lineedit.text()
+            destination = self.poi_function_destinationaddress_lineedit.text()
+            translated_code = self.poi_function_pythontranslatedcode_lineedit.text()
+
+            data_manager.add_function_to_plugin(plugin, name, type, parameter_val, return_val, call_from, destination, translated_code)
+
+            self.poi_function_name_lineedit.setText("")
+            self.poi_function_parameter_lineedit.setText("")
+            self.poi_function_paramtervalue_lineedit.setText("")
+            self.poi_function_returnvalue_lineedit.setText("")
+            self.poi_function_callfromaddress_lineedit.setText("")
+            self.poi_function_destinationaddress_lineedit.setText("")
+            self.poi_function_pythontranslatedcode_lineedit.setText("")
+
+        elif poi_detected == "String":
+            name = self.poi_string_name_lineedit.text()
+            str_type = self.poi_string_type_lineedit.text()
+            size = self.poi_string_size_lineedit.text()
+            call_from = self.poi_string_callfromaddress_lineedit.text()
+            destination = self.poi_string_destinationaddress_lineedit.text()
+            section = self.poi_string_section_lineedit.text()
+            data_manager.add_string_to_plugin(plugin,name,str_type,size,call_from,destination,section)
+
+            self.poi_string_name_lineedit.setText("")
+            self.poi_string_type_lineedit.setText("")
+            self.poi_string_size_lineedit.setText("")
+            self.poi_string_callfromaddress_lineedit.setText("")
+            self.poi_string_destinationaddress_lineedit.setText("")
+            self.poi_string_section_lineedit.setText("")
+
+        elif poi_detected == "Variable":
+            name = self.poi_variable_name_lineedit.text()
+            value = self.poi_variable_value_lineedit.text()
+            var_type = self.poi_variable_type_lineedit.text()
+            size = self.poi_variable_size_lineedit.text()
+            address = self.poi_variable_callfromaddress_lineedit.text()
+            data_manager.add_variable_to_plugin(plugin,name, value, var_type, size, address)
+
+            self.poi_variable_name_lineedit.setText("")
+            self.poi_variable_value_lineedit.setText("")
+            self.poi_variable_type_lineedit.setText("")
+            self.poi_variable_size_lineedit.setText("")
+            self.poi_variable_callfromaddress_lineedit.setText("")
+
+        elif poi_detected == "DLL":
+            print("geting dlllllllllllllllllllllllll :D")
+            name = self.poi_dll_libraryname_lineedit.text()
+            print(name)
+            data_manager.add_dll_to_plugin(plugin, name)
+
+            self.poi_dll_libraryname_lineedit.setText("")
+
+        elif poi_detected == "Packet Protocol":
+            protocol_name = self.poi_protocol_name_lineedit.text()
+            field_name = self.poi_protocol_fieldname_lineedit.text()
+            field_type = self.poi_protocol_fieldtype_lineedit.text()
+            data_manager.add_packet_to_plugin(plugin, protocol_name, field_name, field_type)
+
+            self.poi_protocol_name_lineedit.setText("")
+            self.poi_protocol_fieldname_lineedit.setText("")
+            self.poi_protocol_fieldtype_lineedit.setText("")
+
+        elif poi_detected == "Struct":
+            name = self.poi_struct_name_lineedit.text()
+            data_manager.add_struct_to_plugin(plugin, name)
+            self.poi_struct_name_lineedit.setText("")
+
+        #self.point_of_interest_content_area_textedit.clear()
+        self.populate_pois_in_poi()
+
+    def populate_pois_in_plugin(self):
+        #self.points_of_interest_list_textedit()
+        try:
+            to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+
+            try:
+                strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
+            except:
+                strings = ""
+            try:
+                functions = data_manager.get_pois_from_plugin_and_type(to_find, "function")
+            except:
+                functions = ""
+            try:
+                variables = data_manager.get_pois_from_plugin_and_type(to_find, "variable")
+            except:
+                variables = ""
+            try:
+                dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
+            except:
+                dll = ""
+            try:
+                packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
+            except:
+                packets = ""
+            try:
+                structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
+            except:
+                structs = ""
+
+            self.points_of_interest_list_textedit.clear()
+            self.points_of_interest_list_textedit.append("Strings:"+ str(strings)+ "\n")
+            self.points_of_interest_list_textedit.append("Functions:"+ str(functions)+ "\n")
+            self.points_of_interest_list_textedit.append("Variables:"+ str(variables)+ "\n")
+            self.points_of_interest_list_textedit.append("DLLs:"+ str(dll)+ "\n")
+            self.points_of_interest_list_textedit.append("Packets:"+ str(packets)+ "\n")
+            self.points_of_interest_list_textedit.append("structs"+ str(structs)+ "\n")
+        except:
+            return
 
 
 if __name__ == "__main__":

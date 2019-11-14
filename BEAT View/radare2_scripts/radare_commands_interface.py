@@ -4,6 +4,7 @@ import r2pipe
 import sys
 sys.path.append("..")  # for data_manager
 import data_manager
+#import filter
 
 rlocal = None
 
@@ -73,6 +74,32 @@ def extract_all():
     extract_strings()
     # extract_imports()
     extract_vars_from_functions()
+    extract_global_vars()
+
+def extract_global_vars():
+    global rlocal
+    globalString = "GLOBAL"
+    # print("Extracting global vars")
+    glvars = rlocal.cmd("is~OBJ").split("\n")
+    newVars = list()
+    # print(glvars)
+    # find objects that are global
+    for item in glvars:
+        # print("Current item: " + item)
+        if item == "":  # remove empty items
+            continue
+        # remove any items that are not global
+        elif globalString in item.split()[3]:
+            newVars.append(item)
+
+    # print(newVars)
+    for v in newVars:
+        attributes = v.split()
+        address = attributes[2]
+        size = attributes[5]
+        name = attributes[6]
+        data_manager.save_global_variable("static", name, size, address)
+
 
 def extract_functions():
     global rlocal
@@ -145,16 +172,30 @@ def run_dynamic_and_update():
 def set_breakpoint_at_function(func_name):
     try:
         rlocal.cmd("db " + func_name)
-        print("Breakpoint successfully set at: " + func_name)
+        print("Function breakpoint successfully set at: " + func_name)
     except:
-        print("Error setting breakpoint at: " + func_name)
+        print("Error setting breakpoint at function address: " + func_name)
 
 def remove_breakpoint_at_function(func_name):
     try:
         rlocal.cmd("db- " + func_name)
-        print("Breakpoint successfully removed at: " + func_name)
+        print("Function breakpoint successfully removed at: " + func_name)
     except:
-        print("Error removing breakpoint at: " + func_name)
+        print("Error removing breakpoint at function address: " + func_name)
+
+def set_breakpoint_at_strings(string_addr):
+    try:
+        rlocal.cmd("db " + string_addr)
+        print("String breakpoint successfully set at: " + string_addr)
+    except:
+        print("Error setting breakpoint at string address: " + string_addr)
+
+def set_breakpoint_for_var_inside_function(var_address):
+    try:
+        rlocal.cmd("db " + var_address)
+        print("Var breakpoint successfully set at: " + var_address)
+    except:
+        print("Error setting breakpoint at var address: " + var_address)
 
 def get_all_breakpoints():
     global rlocal

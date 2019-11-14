@@ -111,8 +111,9 @@ class UiMain(UiView.Ui_BEAT):
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
         # runs dynamic analysis on breakpoints then updates ui
-        self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
-        self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
+        self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
+        #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
         # match detailed view with left column when selected
         self.points_of_interest_list_widget.itemClicked.connect(self.match_selected_POI)
 
@@ -400,16 +401,57 @@ class UiMain(UiView.Ui_BEAT):
     #     else:  # item is unchecked
     #         radare_commands_interface.remove_breakpoint_at_function(item.text())
 
-    def set_auto_breakpoint(self):
+    def set_right_breakpoint(self):
+        display_value = str(self.type_dropdown.currentText())
+
+        if display_value == "All":
+            print("Have to do things here")
+            self.set_auto_breakpoint_at_string()
+        elif display_value == "Strings":
+            self.set_auto_breakpoint_at_string()
+        elif display_value == "Function Call":
+            self.set_auto_breakpoint_at_function()
+
+    def set_auto_breakpoint_at_all(self):
+        print("Setting breakpoints")
+        strings = data_manager.get_strings()
+
+        for strg in strings:
+            addr = strg["Address"]
+            radare_commands_interface.set_breakpoint_at_strings(addr)
+
+    def set_auto_breakpoint_at_string(self):
+        print("Setting breakpoints")
+        strings = data_manager.get_strings()
+        functions = data_manager.get_functions()
+        variables = data_manager.get_variables()
+
+        for func in functions:
+            radare_commands_interface.set_breakpoint_at_function(func['Binary Section'])
+            for var in variables:
+                if func['Function Name'] == var["Function Name"]:
+                    radare_commands_interface.set_breakpoint_for_var_inside_function(var["Address"])
+
+        for strg in strings:
+            addr = strg["Address"]
+            radare_commands_interface.set_breakpoint_at_strings(addr)
+
+    def set_auto_breakpoint_at_function(self):
         print("Setting breakpoints")
         for i in range(self.points_of_interest_list_widget.count()):
             radare_commands_interface.set_breakpoint_at_function(self.points_of_interest_list_widget.item(i).text())
 
     def remove_breakpoints(self, item):
+        functions = data_manager.get_functions()
+        for func in functions:
+            if func['Function Name'] == item.text():
+                addr_location = func['Binary Section']
+
         if item.checkState() == 2:  # if item is checked
-            radare_commands_interface.remove_breakpoint_at_function(item.text())
+            # radare_commands_interface.remove_breakpoint_at_function(item.text())
+            radare_commands_interface.remove_breakpoint_at_function(addr_location)
         elif item.checkState() == 0:
-            radare_commands_interface.set_breakpoint_at_function(item.text())
+            radare_commands_interface.set_breakpoint_at_function(addr_location)
 
     def run_dynamic_then_display(self):
         # radare_commands_interface.run_dynamic_and_update()

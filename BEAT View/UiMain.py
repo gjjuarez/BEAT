@@ -668,10 +668,17 @@ class UiMain(UiView.Ui_BEAT):
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
-        name = self.plugin_name_lineedit.text()
-        desc = self.plugin_description_textedit.toPlainText()
-        self.plugin_view_plugin_listwidget.addItem(name)
-        data_manager.save_plugin(name,desc)
+        print('in save plugin')
+        if self.plugin_predefined_data_set_lineedit.text() != "":
+            print('about to call xmlparser')
+            import xmlparser
+
+            xmlparser.parse_xml(self.plugin_predefined_data_set_lineedit.text())
+        else:
+            name = self.plugin_name_lineedit.text()
+            desc = self.plugin_description_textedit.toPlainText()
+            self.plugin_view_plugin_listwidget.addItem(name)
+            data_manager.save_plugin(name,desc)
         self.update_plugin_list()
 
     def update_plugin_list(self):

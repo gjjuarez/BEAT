@@ -3,7 +3,7 @@ Currently, this repository contains the UI files of BEAT, and also a version of 
 
 ## BUILD
 To BUILD the python file of the main page run
-`pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py`
+`pyuic5 -x BEAT.ui -o UiView.py`
 To build executable out of python file
 `pyinstaller main.py`
 

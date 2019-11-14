@@ -7387,7 +7387,7 @@ p, li { white-space: pre-wrap; }
              <number>5</number>
             </property>
             <widget class="QWidget" name="Poi_Variable_Stack_3">
-             <widget class="QLineEdit" name="poi_variable_name_lineedit_3">
+             <widget class="QLineEdit" name="poi_variable_name_lineedit">
               <property name="geometry">
                <rect>
                 <x>140</x>
@@ -7397,7 +7397,7 @@ p, li { white-space: pre-wrap; }
                </rect>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_variable_name_label_3">
+             <widget class="QLabel" name="poi_variable_name_label">
               <property name="geometry">
                <rect>
                 <x>-2</x>
@@ -7410,7 +7410,7 @@ p, li { white-space: pre-wrap; }
                <string>Variable Name</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_variable_value_lineedit_3">
+             <widget class="QLineEdit" name="poi_variable_value_lineedit">
               <property name="geometry">
                <rect>
                 <x>140</x>
@@ -7420,7 +7420,7 @@ p, li { white-space: pre-wrap; }
                </rect>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_variable_value_label_3">
+             <widget class="QLabel" name="poi_variable_value_label">
               <property name="geometry">
                <rect>
                 <x>-2</x>
@@ -7433,7 +7433,7 @@ p, li { white-space: pre-wrap; }
                <string>Variable Value</string>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_variable_type_label_3">
+             <widget class="QLabel" name="poi_variable_type_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7446,7 +7446,7 @@ p, li { white-space: pre-wrap; }
                <string>Variable Type</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_variable_type_lineedit_3">
+             <widget class="QLineEdit" name="poi_variable_type_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>
@@ -7456,7 +7456,7 @@ p, li { white-space: pre-wrap; }
                </rect>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_variable_size_lineedit_3">
+             <widget class="QLineEdit" name="poi_variable_size_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>
@@ -7469,7 +7469,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_variable_size_label_3">
+             <widget class="QLabel" name="poi_variable_size_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7482,7 +7482,7 @@ p, li { white-space: pre-wrap; }
                <string>Variable Size</string>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_callfromaddress_size_label_3">
+             <widget class="QLabel" name="poi_callfromaddress_size_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7495,7 +7495,7 @@ p, li { white-space: pre-wrap; }
                <string>Call From Adress</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_variable_callfromaddress_lineedit_3">
+             <widget class="QLineEdit" name="poi_variable_callfromaddress_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>
@@ -7510,7 +7510,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="Poi_PacketPotocol_Stack_3">
-             <widget class="QLineEdit" name="poi_protocol_name_lineedit_3">
+             <widget class="QLineEdit" name="poi_protocol_name_lineedit">
               <property name="geometry">
                <rect>
                 <x>150</x>
@@ -7523,7 +7523,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_protocol_name_label_3">
+             <widget class="QLabel" name="poi_protocol_name_label">
               <property name="geometry">
                <rect>
                 <x>8</x>
@@ -7536,7 +7536,7 @@ p, li { white-space: pre-wrap; }
                <string>Protocol Name</string>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_protocol_fieldname_label_3">
+             <widget class="QLabel" name="poi_protocol_fieldname_label">
               <property name="geometry">
                <rect>
                 <x>8</x>
@@ -7549,7 +7549,7 @@ p, li { white-space: pre-wrap; }
                <string>Field Name</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_protocol_fieldname_lineedit_3">
+             <widget class="QLineEdit" name="poi_protocol_fieldname_lineedit">
               <property name="geometry">
                <rect>
                 <x>150</x>
@@ -7562,7 +7562,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_protocol_fieldtype_label_3">
+             <widget class="QLabel" name="poi_protocol_fieldtype_label">
               <property name="geometry">
                <rect>
                 <x>8</x>
@@ -7575,7 +7575,7 @@ p, li { white-space: pre-wrap; }
                <string>Field Type</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_prototype_fieldtype_lineedit_3">
+             <widget class="QLineEdit" name="poi_prototype_fieldtype_lineedit">
               <property name="geometry">
                <rect>
                 <x>150</x>
@@ -7590,7 +7590,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="Poi_Dll_Stack_3">
-             <widget class="QLabel" name="poi_dll_libraryname_label_3">
+             <widget class="QLabel" name="poi_dll_libraryname_label">
               <property name="geometry">
                <rect>
                 <x>20</x>
@@ -7603,7 +7603,7 @@ p, li { white-space: pre-wrap; }
                <string>Library Name</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_dll_libraryname_lineedit_3">
+             <widget class="QLineEdit" name="poi_dll_libraryname_lineedit">
               <property name="geometry">
                <rect>
                 <x>162</x>
@@ -7618,7 +7618,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="Poi_Function_Stack_3">
-             <widget class="QLineEdit" name="poi_function_name_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_name_lineedit">
               <property name="geometry">
                <rect>
                 <x>152</x>
@@ -7631,7 +7631,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_name_label_3">
+             <widget class="QLabel" name="poi_function_name_label">
               <property name="geometry">
                <rect>
                 <x>10</x>
@@ -7644,7 +7644,7 @@ p, li { white-space: pre-wrap; }
                <string>Function Name</string>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_parameter_label_3">
+             <widget class="QLabel" name="poi_function_parameter_label">
               <property name="geometry">
                <rect>
                 <x>8</x>
@@ -7657,7 +7657,7 @@ p, li { white-space: pre-wrap; }
                <string>Parameter Type and Order</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_function_parameter_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_parameter_lineedit">
               <property name="geometry">
                <rect>
                 <x>230</x>
@@ -7670,7 +7670,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_parametervalue_label_3">
+             <widget class="QLabel" name="poi_function_parametervalue_label">
               <property name="geometry">
                <rect>
                 <x>8</x>
@@ -7683,7 +7683,7 @@ p, li { white-space: pre-wrap; }
                <string>Parameter Value</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_function_paramtervalue_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_paramtervalue_lineedit">
               <property name="geometry">
                <rect>
                 <x>160</x>
@@ -7696,7 +7696,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_returnvalue_label_3">
+             <widget class="QLabel" name="poi_function_returnvalue_label">
               <property name="geometry">
                <rect>
                 <x>10</x>
@@ -7709,7 +7709,7 @@ p, li { white-space: pre-wrap; }
                <string>Return Value</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_function_returnvalue_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_returnvalue_lineedit">
               <property name="geometry">
                <rect>
                 <x>152</x>
@@ -7722,7 +7722,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_callfromaddress_label_3">
+             <widget class="QLabel" name="poi_function_callfromaddress_label">
               <property name="geometry">
                <rect>
                 <x>8</x>
@@ -7735,7 +7735,7 @@ p, li { white-space: pre-wrap; }
                <string>Call From Address</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_function_callfromaddress_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_callfromaddress_lineedit">
               <property name="geometry">
                <rect>
                 <x>170</x>
@@ -7748,7 +7748,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_destinationaddress_label_3">
+             <widget class="QLabel" name="poi_function_destinationaddress_label">
               <property name="geometry">
                <rect>
                 <x>10</x>
@@ -7761,7 +7761,7 @@ p, li { white-space: pre-wrap; }
                <string>Destination Address</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_function_destinationaddress_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_destinationaddress_lineedit">
               <property name="geometry">
                <rect>
                 <x>172</x>
@@ -7774,7 +7774,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_function_pythontranslatedcode_label_3">
+             <widget class="QLabel" name="poi_function_pythontranslatedcode_label">
               <property name="geometry">
                <rect>
                 <x>10</x>
@@ -7787,7 +7787,7 @@ p, li { white-space: pre-wrap; }
                <string>Python Translated Code </string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_function_pythontranslatedcode_lineedit_3">
+             <widget class="QLineEdit" name="poi_function_pythontranslatedcode_lineedit">
               <property name="geometry">
                <rect>
                 <x>210</x>
@@ -7802,7 +7802,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="Poi_Struct_stack_3">
-             <widget class="QLineEdit" name="poi_struct_name_lineedit_3">
+             <widget class="QLineEdit" name="poi_struct_name_lineedit">
               <property name="geometry">
                <rect>
                 <x>140</x>
@@ -7815,7 +7815,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_struct_name_label_3">
+             <widget class="QLabel" name="poi_struct_name_label">
               <property name="geometry">
                <rect>
                 <x>-2</x>
@@ -7830,7 +7830,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="Poi_String_Stack_3">
-             <widget class="QLabel" name="poi_string_name_label_3">
+             <widget class="QLabel" name="poi_string_name_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7843,7 +7843,7 @@ p, li { white-space: pre-wrap; }
                <string>String Name</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_string_name_lineedit_3">
+             <widget class="QLineEdit" name="poi_string_name_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>
@@ -7856,7 +7856,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_string_type_lineedit_3">
+             <widget class="QLineEdit" name="poi_string_type_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>
@@ -7869,7 +7869,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_string_type_label_3">
+             <widget class="QLabel" name="poi_string_type_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7882,7 +7882,7 @@ p, li { white-space: pre-wrap; }
                <string>String Type</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_string_size_lineedit_3">
+             <widget class="QLineEdit" name="poi_string_size_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>
@@ -7895,7 +7895,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_string_size_label_3">
+             <widget class="QLabel" name="poi_string_size_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7908,7 +7908,7 @@ p, li { white-space: pre-wrap; }
                <string>String Size</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_string_callfromaddress_lineedit_3">
+             <widget class="QLineEdit" name="poi_string_callfromaddress_lineedit">
               <property name="geometry">
                <rect>
                 <x>162</x>
@@ -7921,7 +7921,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_string_callfromaddress_label_3">
+             <widget class="QLabel" name="poi_string_callfromaddress_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7934,7 +7934,7 @@ p, li { white-space: pre-wrap; }
                <string>Call from Address</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_string_destinationaddress_lineedit_3">
+             <widget class="QLineEdit" name="poi_string_destinationaddress_lineedit">
               <property name="geometry">
                <rect>
                 <x>172</x>
@@ -7947,7 +7947,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_string_destinationaddress_label_3">
+             <widget class="QLabel" name="poi_string_destinationaddress_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7960,7 +7960,7 @@ p, li { white-space: pre-wrap; }
                <string>Destination Address</string>
               </property>
              </widget>
-             <widget class="QLabel" name="poi_string_section_label_3">
+             <widget class="QLabel" name="poi_string_section_label">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7973,7 +7973,7 @@ p, li { white-space: pre-wrap; }
                <string>Section</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="poi_string_section_lineedit_3">
+             <widget class="QLineEdit" name="poi_string_section_lineedit">
               <property name="geometry">
                <rect>
                 <x>142</x>

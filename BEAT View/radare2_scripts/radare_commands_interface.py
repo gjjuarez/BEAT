@@ -145,16 +145,30 @@ def run_dynamic_and_update():
 def set_breakpoint_at_function(func_name):
     try:
         rlocal.cmd("db " + func_name)
-        print("Breakpoint successfully set at: " + func_name)
+        print("Function breakpoint successfully set at: " + func_name)
     except:
-        print("Error setting breakpoint at: " + func_name)
+        print("Error setting breakpoint at function address: " + func_name)
 
 def remove_breakpoint_at_function(func_name):
     try:
         rlocal.cmd("db- " + func_name)
-        print("Breakpoint successfully removed at: " + func_name)
+        print("Function breakpoint successfully removed at: " + func_name)
     except:
-        print("Error removing breakpoint at: " + func_name)
+        print("Error removing breakpoint at function address: " + func_name)
+
+def set_breakpoint_at_strings(string_addr):
+    try:
+        rlocal.cmd("db " + string_addr)
+        print("String breakpoint successfully set at: " + string_addr)
+    except:
+        print("Error setting breakpoint at string address: " + string_addr)
+
+def set_breakpoint_for_var_inside_function(var_address):
+    try:
+        rlocal.cmd("db " + var_address)
+        print("Var breakpoint successfully set at: " + var_address)
+    except:
+        print("Error setting breakpoint at var address: " + var_address)
 
 def get_all_breakpoints():
     global rlocal

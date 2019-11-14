@@ -78,20 +78,20 @@ def extract_all():
 def extract_global_vars():
     global rlocal
     globalString = "GLOBAL"
-    print("Extracting global vars")
+    # print("Extracting global vars")
     glvars = rlocal.cmd("is~OBJ").split("\n")
     newVars = list()
-    print(glvars)
+    # print(glvars)
     # find objects that are global
     for item in glvars:
-        print("Current item: " + item)
+        # print("Current item: " + item)
         if item == "":  # remove empty items
             continue
         # remove any items that are not global
         elif globalString in item.split()[3]:
             newVars.append(item)
 
-    print(newVars)
+    # print(newVars)
     for v in newVars:
         attributes = v.split()
         address = attributes[2]

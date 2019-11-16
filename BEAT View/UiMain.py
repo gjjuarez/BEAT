@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 
 import UiView
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
@@ -63,7 +64,7 @@ class UiMain(UiView.Ui_BEAT):
         # calls new_project if new_project_bsutton is clicked
         self.new_project_button.clicked.connect(self.new_project)
         # calls remove_project if delete_project_button is clicked
-        self.delete_project_button.clicked.connect(self.remove_project)
+        self.delete_project_button.clicked.connect(self.project_deletion_message)
         # calls save_project if save_project_button is clicked
         self.save_project_button.clicked.connect(self.save_project)
         # calls browse_path if file_browse_button is clicked
@@ -125,9 +126,10 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.addItem("Sections")
         self.type_dropdown.addItem("Structures")
         # sets breakpoints on currently checked items
-        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
+        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
         # runs dynamic analysis on breakpoints then updates ui
         self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        self.dynamic_run_button.clicked.connect(self.display_dynamic_info)
         # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
         #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
         # match detailed view with left column when selected
@@ -135,6 +137,31 @@ class UiMain(UiView.Ui_BEAT):
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
         self.project_list.itemClicked.connect(self.project_selected)
+
+    #########################################################################################
+    # QMessageBox Warning Functions
+    #########################################################################################
+    def project_deletion_message(self):
+        name = self.project_list.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            data_manager.delete_project_given_name(name)
+            self.project_list.clear()
+            self.binary_file_properties_value_listwidget.clear()
+            self.fill_projects()
+            print("Done Removing Project:", name)
+            self.new_project()
+
+    # def plugin_deletion_message(self):
+    #     listItems = self.plugin_view_plugin_listwidget.selectedItems()
+    #     if not listItems: return
+    #     buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+    #         "Are you sure you want to permanently delete this plugin?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+    #     if buttonReply == QMessageBox.Yes:
+    #         for item in listItems:
+    #             self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
+    #             data_manager.delete_plugin_given_name(item)
 
     #########################################################################################
     # Project Tab Functions
@@ -224,10 +251,16 @@ class UiMain(UiView.Ui_BEAT):
         bin_info = self.check_binary_arch(path)
         # check if the binary is correct architecture before saving
         if bin_info == None:  # display error window
+            buttonReply = QMessageBox.warning(BEAT, 'x86 Architecture Error',
+                                               "The selected binary is not of x86 architecture.", QMessageBox.Ok, QMessageBox.Ok)
+            return
+            '''
             self.window = QtWidgets.QMainWindow()
             self.ui = Ui_ArchitectureError()
             self.ui.setupUi(self.window)
             self.window.show()
+            '''
+
         else:
             data_manager.save_project(name, desc, path, bin_info)
             data_manager.update_current_project(name, desc, path, bin_info)
@@ -410,14 +443,6 @@ class UiMain(UiView.Ui_BEAT):
             # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
-    # This function got deprecated.
-    # def set_breakpoint(self, item):
-    #     print("Setting breakpoint")
-    #     if item.checkState() == 2:  # if item is checked
-    #         radare_commands_interface.set_breakpoint_at_function(item.text())
-    #     else:  # item is unchecked
-    #         radare_commands_interface.remove_breakpoint_at_function(item.text())
-
     def set_right_breakpoint(self):
         display_value = str(self.type_dropdown.currentText())
 
@@ -469,6 +494,12 @@ class UiMain(UiView.Ui_BEAT):
             radare_commands_interface.remove_breakpoint_at_function(addr_location)
         elif item.checkState() == 0:
             radare_commands_interface.set_breakpoint_at_function(addr_location)
+
+    def display_dynamic_info(self):
+        things = radare_commands_interface.dynamicAnalysis()
+        for t in things:
+            self.detailed_points_of_interest_dynamic_info_listWidget.addItem(t)
+
 
     def run_dynamic_then_display(self):
         # radare_commands_interface.run_dynamic_and_update()
@@ -638,27 +669,40 @@ class UiMain(UiView.Ui_BEAT):
         variables.close()
 
     def search_POI(self):
-        # clear background in left column
-        for i in range(self.points_of_interest_list_widget.count()):
-            self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
-        # clear background for detailed view
-        for i in range(self.detailed_points_of_interest_listWidget.count()):
-            self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+        text = str(self.points_of_interest_line_edit.text())
+        if len(text) is not 0:
+            search_result = self.points_of_interest_list_widget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.points_of_interest_list_widget.count()):
+                self.points_of_interest_list_widget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.points_of_interest_list_widget.count()):
+                self.points_of_interest_list_widget.item(item).setHidden(False)
 
-        display_value = str(self.points_of_interest_line_edit.text())
-        # don't search if empty string
-        if display_value == "":
-            return
-        # highlights search in left column
-        search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
-        if len(search_result) > 0:
-            for item in search_result:
-                item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
-        # highlights search in detailed view
-        search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
-        if len(search_result) > 0:
-            for item in search_result:
-                item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+    # this method highlights the searched POI but breaks the program because it somehow calls the remove breakpoints method with the current listener it has
+    # def search_POI(self):
+    #     # clear background in left column
+    #     for i in range(self.points_of_interest_list_widget.count()):
+    #         self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+    #     # clear background for detailed view
+    #     for i in range(self.detailed_points_of_interest_listWidget.count()):
+    #         self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+    #
+    #     display_value = str(self.points_of_interest_line_edit.text())
+    #     # don't search if empty string
+    #     if display_value == "":
+    #         return
+    #     # highlights search in left column
+    #     search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
+    #     if len(search_result) > 0:
+    #         for item in search_result:
+    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+    #     # highlights search in detailed view
+    #     search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
+    #     if len(search_result) > 0:
+    #         for item in search_result:
+    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
 
     #########################################################################################
     # Plugin Management Tab Functions
@@ -668,10 +712,17 @@ class UiMain(UiView.Ui_BEAT):
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
-        name = self.plugin_name_lineedit.text()
-        desc = self.plugin_description_textedit.toPlainText()
-        self.plugin_view_plugin_listwidget.addItem(name)
-        data_manager.save_plugin(name,desc)
+        print('in save plugin')
+        if self.plugin_predefined_data_set_lineedit.text() != "":
+            print('about to call xmlparser')
+            import xmlparser
+
+            xmlparser.parse_xml(self.plugin_predefined_data_set_lineedit.text())
+        else:
+            name = self.plugin_name_lineedit.text()
+            desc = self.plugin_description_textedit.toPlainText()
+            self.plugin_view_plugin_listwidget.addItem(name)
+            data_manager.save_plugin(name,desc)
         self.update_plugin_list()
 
     def update_plugin_list(self):

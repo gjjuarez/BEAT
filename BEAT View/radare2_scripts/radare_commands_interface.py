@@ -216,6 +216,43 @@ def get_all_breakpoints():
 def display_POI_in_points_of_interest():
     print("Test")
 
+def dynamicAnalysis():
+    functions = data_manager.get_functions()
+    # infile = r2pipe.open(filePath, ['-d', '-e', 'dbg.profile=profile.rr2']) #open file, will do only once
+    global rlocal
+    #rlocal= r2pipe.open("/home/krunkcoco/PycharmProjects/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])
+    # infile.cmd('e dbg.profile=robot.rr2')  # this line should configure things properly should input be required
+    #rlocal.cmd("aaa") # entire analysis is needed for full functionality
+    progress = [] # empty list to attach things too
+    #rlocal.cmd("ood")
+    for func in functions: # iterate over list of functions
+        curntFunc = func['Function Name']
+        progress.append("Function Name:")
+        progress.append(curntFunc)
+        rlocal.cmd("s " + curntFunc)
+        # rlocal.cmd("ood")   # open in debug mode
+        breakpointString = "db " + str(curntFunc)
+        rlocal.cmd(breakpointString) # first set the breakpoint
+        rlocal.cmd("dc")    # continue to run until breakpoint is hit, there may be some input required which still not sure where to pass it
+        progress.append("Hit breakpoint @ " + curntFunc)
+        argsnvar = rlocal.cmd("afvd")   # get args and local vars at this point
+        progress.append("----------Initial Values of Args and Variables----------")
+        progress.append(argsnvar)   # put args on list
+        # rlocal.cmd("dcr")   # continue execution until return call
+        returnvals = rlocal.cmd("afvd")#values at the end
+        progress.append("----------Final Values of Args and Variables----------")
+        progress.append(returnvals)     # end values
+        stack = rlocal.cmd("x@rsp")     # peek in the stack, some other values may be elswhere will have to modify
+        # progress.append("----------STACK----------")
+        # progress.append(stack)  # add stack to list
+        rax = rlocal.cmd("dr rax")#return value
+        progress.append("----------RETURN VALUE----------")
+        progress.append(rax)    # put in list
+        progress.append("--------------------------------")
+        # at this point process is done so the breakpoint needs to be removed for next thing
+        # rlocal.cmd("db-*")  # remove all breakpoints
+    return progress
+
 if __name__ == "__main__":
     #pass
     import sys

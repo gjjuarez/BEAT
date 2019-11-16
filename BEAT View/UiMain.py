@@ -732,6 +732,8 @@ class UiMain(UiView.Ui_BEAT):
     def populate_pois_in_poi(self):
         print("Populating POIs in POI tab")
         to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        # save current plugin name in data manager
+
         self.point_of_interest_view_listwidget.clear()
         if to_find == "": return
         try:
@@ -879,6 +881,7 @@ class UiMain(UiView.Ui_BEAT):
         #self.points_of_interest_list_textedit()
         try:
             to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+            data_manager.set_current_plugin(to_find)
 
             try:
                 strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")

@@ -26,12 +26,24 @@ Plugin functions
 #################################################################################
 '''
 
+current_plugin_name = ""
+
+def set_current_plugin(name):
+    global current_plugin_name
+    current_plugin_name = name
+
 def get_pois_from_plugin_and_type(plugin, type):
     pois = []
     for c in plugin_collection.find():
         if c['name'] == plugin:
             return list(c[type])
 
+def get_pois_from_plugin_and_type(type):
+    pois = []
+    plugin = current_plugin_name
+    for c in plugin_collection.find():
+        if c['name'] == plugin:
+            return list(c[type])
 
 def get_plugin_names():
     plugins = []
@@ -279,6 +291,19 @@ def get_strings():
     for strg in string_collection.find():
         strings.append(strg)
     return strings
+
+def get_all_plugin_strings():
+    global current_plugin_name
+    for c in plugin_collection.find():
+        try:
+            if (c["name"] == current_plugin_name):
+                strings = []
+                for s in c["strings"]:
+                    strings.append(c["strings"])
+                return strings
+        except KeyError:
+            print("Key error")
+
 
 def get_string_from_name(find_string):
     name = ""

@@ -2,9 +2,9 @@
 
 import r2pipe
 import sys
+from . import filter
 sys.path.append("..")  # for data_manager
 import data_manager
-#import filter
 
 rlocal = None
 
@@ -141,12 +141,12 @@ def extract_functions():
 def extract_strings():
     global rlocal
     strings = rlocal.cmd("iz").split("\n")
+
     for strg in strings[2:]:
         if strg == "":
             print("Empty string")
             continue
         attr = strg.split()
-
         # save entire string value
         strValue = ""
         for value in attr[7:]:
@@ -154,7 +154,9 @@ def extract_strings():
 
         strSection = attr[5]
         strAddr = attr[2]
-        data_manager.save_strings("static", strValue, strSection, strAddr)
+        # filter out strings
+        if filter.filter_string(strValue, strSection, strAddr):
+            data_manager.save_strings("static", strValue, strSection, strAddr)
 
 def extract_imports():
     global rlocal

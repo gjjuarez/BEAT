@@ -126,7 +126,7 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.addItem("Sections")
         self.type_dropdown.addItem("Structures")
         # sets breakpoints on currently checked items
-        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints)
+        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
         # runs dynamic analysis on breakpoints then updates ui
         self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
         self.dynamic_run_button.clicked.connect(self.display_dynamic_info)
@@ -251,10 +251,16 @@ class UiMain(UiView.Ui_BEAT):
         bin_info = self.check_binary_arch(path)
         # check if the binary is correct architecture before saving
         if bin_info == None:  # display error window
+            buttonReply = QMessageBox.warning(BEAT, 'x86 Architecture Error',
+                                               "The selected binary is not of x86 architecture.", QMessageBox.Ok, QMessageBox.Ok)
+            return
+            '''
             self.window = QtWidgets.QMainWindow()
             self.ui = Ui_ArchitectureError()
             self.ui.setupUi(self.window)
             self.window.show()
+            '''
+
         else:
             data_manager.save_project(name, desc, path, bin_info)
             data_manager.update_current_project(name, desc, path, bin_info)
@@ -436,14 +442,6 @@ class UiMain(UiView.Ui_BEAT):
             # self.read_and_display_all_variables()
             # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
-
-    # This function got deprecated.
-    # def set_breakpoint(self, item):
-    #     print("Setting breakpoint")
-    #     if item.checkState() == 2:  # if item is checked
-    #         radare_commands_interface.set_breakpoint_at_function(item.text())
-    #     else:  # item is unchecked
-    #         radare_commands_interface.remove_breakpoint_at_function(item.text())
 
     def set_right_breakpoint(self):
         display_value = str(self.type_dropdown.currentText())
@@ -671,27 +669,40 @@ class UiMain(UiView.Ui_BEAT):
         variables.close()
 
     def search_POI(self):
-        # clear background in left column
-        for i in range(self.points_of_interest_list_widget.count()):
-            self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
-        # clear background for detailed view
-        for i in range(self.detailed_points_of_interest_listWidget.count()):
-            self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+        text = str(self.points_of_interest_line_edit.text())
+        if len(text) is not 0:
+            search_result = self.points_of_interest_list_widget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.points_of_interest_list_widget.count()):
+                self.points_of_interest_list_widget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.points_of_interest_list_widget.count()):
+                self.points_of_interest_list_widget.item(item).setHidden(False)
 
-        display_value = str(self.points_of_interest_line_edit.text())
-        # don't search if empty string
-        if display_value == "":
-            return
-        # highlights search in left column
-        search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
-        if len(search_result) > 0:
-            for item in search_result:
-                item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
-        # highlights search in detailed view
-        search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
-        if len(search_result) > 0:
-            for item in search_result:
-                item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+    # this method highlights the searched POI but breaks the program because it somehow calls the remove breakpoints method with the current listener it has
+    # def search_POI(self):
+    #     # clear background in left column
+    #     for i in range(self.points_of_interest_list_widget.count()):
+    #         self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+    #     # clear background for detailed view
+    #     for i in range(self.detailed_points_of_interest_listWidget.count()):
+    #         self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+    #
+    #     display_value = str(self.points_of_interest_line_edit.text())
+    #     # don't search if empty string
+    #     if display_value == "":
+    #         return
+    #     # highlights search in left column
+    #     search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
+    #     if len(search_result) > 0:
+    #         for item in search_result:
+    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+    #     # highlights search in detailed view
+    #     search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
+    #     if len(search_result) > 0:
+    #         for item in search_result:
+    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
 
     #########################################################################################
     # Plugin Management Tab Functions

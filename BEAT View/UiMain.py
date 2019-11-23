@@ -552,14 +552,14 @@ class UiMain(UiView.Ui_BEAT):
             paramTypes = ""
             try:
                 for pt in func["Parameter Type"]:
-                    paramTypes = paramTypes + pt
+                    paramTypes = paramTypes + ", " + pt
             except TypeError:
                 paramTypes = "n/a"
 
             paramOrder = ""
             try:
-                for pt in func["Parameter Type"]:
-                    paramOrder = paramOrder + pt
+                for pt in func["Parameter Order"]:
+                    paramOrder = paramOrder + ", " + pt
             except TypeError:
                 paramOrder = "n/a"
 
@@ -569,12 +569,12 @@ class UiMain(UiView.Ui_BEAT):
 
             returnType = "n/a"
             if func['Return Type']:
-                returnVal = func['Return Type']
+                returnType = func['Return Type']
 
             item = QListWidgetItem("Function name: " + func['Function Name'] + "\n"
                                    + '\tReturn Type: ' + returnType + "\n"
                                    + '\tReturn Value: ' + returnVal + "\n"
-                                   + '\tBinary Section: ' + func['Binary Section'] + "\n"
+                                   + '\tAddress: ' + func['Address'] + "\n"
                                    + '\tParameter Order: ' + paramOrder)
             # + '\tParameter Type' + paramTypes)
             self.detailed_points_of_interest_listWidget.addItem(item)
@@ -857,7 +857,8 @@ class UiMain(UiView.Ui_BEAT):
             destination = self.poi_function_destinationaddress_lineedit.text()
             translated_code = self.poi_function_pythontranslatedcode_lineedit.text()
 
-            data_manager.add_function_to_plugin(plugin, name, type, parameter_val, return_val, call_from, destination, translated_code)
+            data_manager.add_function_to_plugin(plugin, name, type, parameter_val,
+                                                return_val, call_from, destination, translated_code)
 
             self.poi_function_name_lineedit.setText("")
             self.poi_function_parameter_lineedit.setText("")

@@ -435,11 +435,11 @@ class UiMain(UiView.Ui_BEAT):
         elif display_value == "Function Call":
             self.read_and_display_all_functions()
         elif display_value == "Variables":
-            self.read_and_display_all_variables()
+            self.read_and_display_global_variables()
         elif display_value == "All":
             self.read_and_display_all_functions()
             # variables displayed with functions instead
-            # self.read_and_display_all_variables()
+            self.read_and_display_global_variables()
             # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
@@ -641,32 +641,27 @@ class UiMain(UiView.Ui_BEAT):
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
 
-    def read_and_display_all_variables(self):
-        variables = open("variables.txt", "r")
-        for line in variables.read().split("\n"):
-            item = QListWidgetItem(line)
+    def read_and_display_global_variables(self):
+        variables = data_manager.get_global_variables()
+
+        for var in variables:
+            item = QListWidgetItem("Variable name: " + var['Variable Name'] + "\n"
+                                   + '\tVariable Size: ' + var['Variable Size'] + "\n"
+                                   + '\tVariable Value: ' + var['Variable Value'] + "\n"
+                                   + '\tAddress: ' + var['Address'])
             self.detailed_points_of_interest_listWidget.addItem(item)
-        variables.close()
-        # No method for this yet
-        self.display_variables_in_left_column()
+        self.display_global_variables_in_left_column()
 
-    def display_variables_in_left_column(self):
-        variables = open("variables.txt", "r")
-        variables.readline()  # skip the title for variables
+    def display_global_variables_in_left_column(self):
+        variables = data_manager.get_global_variables()
 
-        # Start at the index 2 to the end get each line
-        for line in variables.read().split("\n")[:-1]:
-            # Separate by spaces and then get the last word
-            # line = line.split(" ", 1)[-1]
-            line = line.split(" ")[1]
-            item = QListWidgetItem(line)
+        for var in variables:
+            value = var["Variable Name"]
 
-            # Don't know if we need this following line
-            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            item = QListWidgetItem(value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
-        variables.close()
 
     def search_POI(self):
         text = str(self.points_of_interest_line_edit.text())

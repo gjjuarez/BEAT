@@ -5,6 +5,7 @@ void addition(int addVar) {
 	addVar++;
 }
 int otherGlobal = 6;
+char myCharGlobal = 'Y';
 
 struct S1 {
     int x;
@@ -15,6 +16,6 @@ int main(){
 	int myVar = 5;
 	printf("hello world");
 	addition(myVar);
-	struct S1 myStruct = {12, 3};
+	myCharGlobal = 'N';
 	return 0;
 }

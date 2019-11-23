@@ -42,8 +42,11 @@ def get_pois_from_plugin_and_type(type):
     pois = []
     plugin = current_plugin_name
     for c in plugin_collection.find():
-        if c['name'] == plugin:
-            return list(c[type])
+        try:
+            if c['name'] == plugin:
+                return list(c[type])
+        except:
+            return None
 
 def get_plugin_names():
     plugins = []
@@ -91,13 +94,13 @@ def add_string_to_plugin(name, string_name, string_type, string_size, string_cal
     for document in cursor: 
         pprint(document)
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
-def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value, POI_binary_section,
+def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value, # POI_binary_section,
                            function_call_address, function_destination_address, python_translation_code):
     function = {'Function Name': function_name,
                'Parameter Type and Order': parmeter_order_and_type,
                'Parameter Value': parameter_value,
                'Return Value': return_value,
-               'Binary Section': POI_binary_section,
+               # 'Binary Section': POI_binary_section,
                'Call From Address': function_call_address,
                'Destination Address': function_destination_address,
                'Python Translation Code': python_translation_code
@@ -323,7 +326,8 @@ def get_string_from_name(find_string):
         except KeyError:
             print("Key error")
 
-def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_binary_section, POI_parameter_order, POI_parameter_type):
+def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_address,
+                   POI_parameter_order, POI_parameter_type, POI_parameter_values=[], binary_section="", call_address=""):
     global function_collection
     document = {'Analysis Run': analysis_run,
                 'Function Name': POI_name,
@@ -331,12 +335,13 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Return Type': POI_return_type,
                 'Return Value': POI_return_value,
                 # 'Destination Address': POI_destination_address,
-                'Binary Section': POI_binary_section,
+                'Address': POI_address,
                 # 'Library Name': POI_name,
                 'Parameter Order': POI_parameter_order,
                 'Parameter Type': POI_parameter_type,
-                # 'Parameter Value': POI_parameter_value,
-                # 'Call From Address': POI_order_to_functions
+                'Binary Section': binary_section,
+                'Parameter Value': POI_parameter_values,
+                'Call From Address': call_address
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 

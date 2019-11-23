@@ -250,14 +250,22 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
-def save_global_variable(analysis_run, POI_name, POI_size, address, comment=""):
+def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="-1", comment=""):
     global global_var_collection
     document = {'Analysis Run': analysis_run,
                 'Variable Name': POI_name,
+                'Variable Value': POI_value,
                 'Variable Size': POI_size,
                 'Address': address,
                 'Comment': comment}
     global_var_collection.replace_one({'Variable Name': POI_name}, document, upsert=True)
+
+def get_global_variables():
+    global global_var_collection
+    variables = []
+    for var in global_var_collection.find():
+        variables.append(var)
+    return variables
 
 def get_variables():
     global variable_collection

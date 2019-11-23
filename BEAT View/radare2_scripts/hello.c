@@ -1,8 +1,9 @@
 #include <stdio.h>
 
 int myGlobal = 11;
-void addition(int addVar) {
+int addition(int addVar) {
 	addVar++;
+	return addVar;
 }
 int otherGlobal = 6;
 char myCharGlobal = 'Y';
@@ -17,5 +18,5 @@ int main(){
 	printf("hello world");
 	addition(myVar);
 	myCharGlobal = 'N';
-	return 0;
+	return 8;
 }

@@ -116,10 +116,11 @@ def extract_functions():
     global rlocal
     print("Entered extract functions!")
     funcs = rlocal.cmd("afl").split("\n")
+    currentAddr = rlocal.cmd("s")
     # go through every function and add to database
     for func in funcs:
         if func == "":
-            print("Empty line")
+            # print("Empty line")
             continue
         # print("Function: " + func)
         attr = func.split()
@@ -143,11 +144,16 @@ def extract_functions():
         # make sure function has a return type
         if returnType == funcName:
             returnType = None
-        returnValue = None  # don't know the value of return until running dynamic
+        returnValue = rlocal.cmd("pdf~eax").strip("\n").split()
+        # check if return exists
+        if len(returnValue) < 1:
+            returnValue = " "
+        returnValue = returnValue[len(returnValue)-1]
+        print("Return value: " + returnValue)
+        # (dr al) - to check return register value during dynamic
+
         data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr, params, paramType)
-        # funcDict = {"name": funcName, "address": funcAddr}
-        # print(funcDict)
-        # functioncol.insert_one(funcDict)
+    rlocal.cmd("s " + currentAddr)
 
 def extract_strings():
     global rlocal

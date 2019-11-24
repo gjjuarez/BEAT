@@ -18,5 +18,7 @@ int main(){
 	printf("hello world");
 	addition(myVar);
 	myCharGlobal = 'N';
+
+	myVar = addition(myVar);
 	return 8;
 }

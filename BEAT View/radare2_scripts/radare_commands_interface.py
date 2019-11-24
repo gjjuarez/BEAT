@@ -55,6 +55,7 @@ def extract_vars_from_functions():
             if len(attr) < 1:
                 continue
 
+            # skip parameters
             if attr[0] != "var":
                 continue
             varName = attr[1]
@@ -127,6 +128,7 @@ def extract_functions():
         # print(attr)
 
         funcName = attr[len(attr) - 1]
+
         rlocal.cmd("s " + funcName)
         funcHeader = rlocal.cmd("pdf~" + funcName + ":1").split()
         paramList = rlocal.cmd("afvr").split("\n")
@@ -139,20 +141,74 @@ def extract_functions():
             params.append(p.split()[2])
             # add types of params
             paramType.append(p.split()[1])
+
         funcAddr = attr[0]
+
         returnType = funcHeader[1]
         # make sure function has a return type
         if returnType == funcName:
             returnType = None
+
         returnValue = rlocal.cmd("pdf~eax").strip("\n").split()
         # check if return exists
         if len(returnValue) < 1:
             returnValue = " "
         returnValue = returnValue[len(returnValue)-1]
-        print("Return value: " + returnValue)
+        #print("Return value: " + returnValue)
         # (dr al) - to check return register value during dynamic
 
-        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr, params, paramType)
+        # get return address of function
+        returnAddr = rlocal.cmd("pdf~ret[1]").strip("\n")
+
+        # get all xrefs TO the current function
+        # include caller names, addresses, and reference types
+        callFrom = rlocal.cmd("axt @" + funcName + ";~[0-2]").split("\n")
+        # check if there are no calls
+        if len(callFrom) < 1:
+            callFrom = []
+
+        # get parameter values if parameters exist
+        # print(funcName)
+        # print(params)
+        paramVal = []
+        if len(params) > 0:
+            values = rlocal.cmd("afvd~arg").split("\n")
+            #print(values)
+
+            for val in values:
+                print(val)
+                if val == "":
+                    continue
+                val = val.split()
+
+                # get value of param
+                # use px [numBytes] @[rsi/rdi/rax] to get value during dynamic
+                hexVal = val[len(val)-1]
+
+                # check if value is given for param in radare2 or empty
+                if "=" == hexVal:  # no value exists, radare2 can't get a value
+                    paramVal.append("n/a")
+                    continue
+                elif "0x" not in hexVal:  # value is at different index
+                    hexVal = val[4]  # should be value in hex
+                paramVal.append(hexVal)
+                # print("Parameter Value: " + hexVal)
+
+        # get section in binary
+        # in format of:
+        # Nm Paddr       Size Vaddr           Memsz Perms    Checksum    Name
+        # 00 0x00001050   417 0x556ae87f9050   417  -r-x      0x1234    .text
+        # Checksum is usually empty
+        section = rlocal.cmd("iS.~:2").strip("\n")
+        if len(section) < 1:
+            sectionName = "n/a"
+        else:
+            sectionArray = section.split()
+            sectionName = sectionArray[len(sectionArray)-1]
+        # print(sectionName)
+
+        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr,
+                                    params, paramType, returnAddr, callFrom, paramVal, sectionName)
     rlocal.cmd("s " + currentAddr)
 
 def extract_strings():

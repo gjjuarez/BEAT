@@ -552,14 +552,14 @@ class UiMain(UiView.Ui_BEAT):
             paramTypes = ""
             try:
                 for pt in func["Parameter Type"]:
-                    paramTypes = paramTypes + ", " + pt
+                    paramTypes = paramTypes + " " + pt
             except TypeError:
                 paramTypes = "n/a"
 
             paramOrder = ""
             try:
                 for pt in func["Parameter Order"]:
-                    paramOrder = paramOrder + ", " + pt
+                    paramOrder = paramOrder + " " + pt
             except TypeError:
                 paramOrder = "n/a"
 
@@ -591,7 +591,7 @@ class UiMain(UiView.Ui_BEAT):
             if func_name == var["Function Name"]:
                 varItem = QListWidgetItem("\tVariable Name: " + var["Variable Name"] + "\n"
                                           "\t\tVariable Type: " + var["Variable Type"] + "\n"
-                                          "\t\tVariabel Value: " + var["Variable Value"] + "\n"
+                                          "\t\tVariable Value: " + var["Variable Value"] + "\n"
                                           "\t\tAddress: " + var["Address"])
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
 

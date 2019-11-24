@@ -327,21 +327,26 @@ def get_string_from_name(find_string):
             print("Key error")
 
 def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_address,
-                   POI_parameter_order, POI_parameter_type, POI_parameter_values=[], binary_section="", call_address=""):
+                   POI_parameter_order, POI_parameter_type, dest_address, call_from=None,
+                   POI_parameter_values=None, binary_section=""):
+    if call_from is None:
+        call_from = []
+    if POI_parameter_values is None:
+        POI_parameter_values = []
     global function_collection
     document = {'Analysis Run': analysis_run,
                 'Function Name': POI_name,
                 # 'Function Value': POI_value,
                 'Return Type': POI_return_type,
                 'Return Value': POI_return_value,
-                # 'Destination Address': POI_destination_address,
+                'Destination Address': dest_address,
                 'Address': POI_address,
                 # 'Library Name': POI_name,
                 'Parameter Order': POI_parameter_order,
                 'Parameter Type': POI_parameter_type,
                 'Binary Section': binary_section,
                 'Parameter Value': POI_parameter_values,
-                'Call From Address': call_address
+                'Call From': call_from  # either a function name or address
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 

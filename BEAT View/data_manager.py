@@ -55,8 +55,43 @@ def get_plugin_from_name(to_find):
                 return name, desc
         except KeyError:
             print("Key error")
+
 def delete_plugin_given_name(name):
-    plugin_collection.delete_one({'name': name})
+    try:
+        plugin_collection.delete_one({'name': name})
+    except:
+        print("Drop collection error")
+
+def delete_function_poi_by_name(poi_name):
+    try:
+        function_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI function error")
+
+def delete_string_poi_by_name(poi_name):
+    try:
+        string_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI string error")
+
+def delete_variable_poi_by_name(poi_name):
+    try:
+        variable_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI variable error")
+
+def delete_prototcol_poi_by_name(poi_name):
+    try:
+        protocol_collection.delete_one({'name': poi_name})
+        struct_collection.drop()
+    except:
+        print("Delete POI protocol error")
+
+def delete_struct_poi_by_name(poi_name):
+    try:
+        struct_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI struct error")
 
 def add_string_to_plugin(name, string_name, string_type, string_size, string_call_address, string_destination_address,
                          section):
@@ -423,6 +458,35 @@ def delete_project_given_name(name):
     except:
         print("Drop collection error")
 
+def delete_function_collection():
+    try:
+        function_collection.drop()
+    except:
+        print("Drop function collection error")
+
+def delete_string_collection():
+    try:
+        string_collection.drop()
+    except:
+        print("Drop string collection error")
+
+def delete_variable_collection():
+    try:
+        variable_collection.drop()
+    except:
+        print("Drop variable collection error")
+
+def delete_protocol_collection():
+    try:
+        protocol_collection.drop()
+    except:
+        print("Drop protocol collection error")
+
+def delete_struct_collection():
+    try:
+        struct_collection.drop()
+    except:
+        print("Drop struct collection error")
 
 # deprecated code (left for now as examples)
 def insert_data(data): #data needs to be in json format

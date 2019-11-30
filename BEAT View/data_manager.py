@@ -114,13 +114,12 @@ def add_string_to_plugin(name, string_name, string_type, string_size, string_cal
     for document in cursor: 
         pprint(document)
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
-def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value, POI_binary_section,
+def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value,
                            function_call_address, function_destination_address, python_translation_code):
     function = {'Function Name': function_name,
                'Parameter Type and Order': parmeter_order_and_type,
                'Parameter Value': parameter_value,
                'Return Value': return_value,
-               'Binary Section': POI_binary_section,
                'Call From Address': function_call_address,
                'Destination Address': function_destination_address,
                'Python Translation Code': python_translation_code

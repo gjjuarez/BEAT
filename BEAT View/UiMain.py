@@ -911,12 +911,12 @@ class UiMain(UiView.Ui_BEAT):
         elif poi_detected == "Packet Protocol":
             protocol_name = self.poi_protocol_name_lineedit.text()
             field_name = self.poi_protocol_fieldname_lineedit.text()
-            field_type = self.poi_protocol_fieldtype_lineedit.text()
+            field_type = self.poi_prototype_fieldtype_lineedit.text()
             data_manager.add_packet_to_plugin(plugin, protocol_name, field_name, field_type)
 
             self.poi_protocol_name_lineedit.setText("")
             self.poi_protocol_fieldname_lineedit.setText("")
-            self.poi_protocol_fieldtype_lineedit.setText("")
+            self.poi_prototype_fieldtype_lineedit.setText("")
 
         elif poi_detected == "Struct":
             name = self.poi_struct_name_lineedit.text()

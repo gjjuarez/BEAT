@@ -25,7 +25,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-        ###########################
+        ###########################/home/hao/Team01_BEAT/BEAT View/UiMain.py
         # Resizing according to user's desktop
         ###########################
         self.geo = QtWidgets.QDesktopWidget().screenGeometry()

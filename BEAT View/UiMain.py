@@ -36,6 +36,15 @@ class UiMain(UiView.Ui_BEAT):
 
         BEAT.setMaximumSize(QtCore.QSize(16777215, 16777215))
 
+        #User cannot delete unselected project
+        self.delete_project_button.setDisabled(True)
+
+        #User cannot edit project fields without creating a new project
+        self.project_name_text.setDisabled(True)
+        self.project_desc_text.setDisabled(True)
+        self.file_path_lineedit.setDisabled(True)
+        self.save_project_button.setDisabled(True)
+
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
@@ -149,11 +158,15 @@ class UiMain(UiView.Ui_BEAT):
             "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
         if buttonReply == QMessageBox.Yes:
             data_manager.delete_project_given_name(name)
+            # clear page
+            self.clear_detailed_project_view()
             self.project_list.clear()
-            self.binary_file_properties_value_listwidget.clear()
             self.fill_projects()
             print("Done Removing Project:", name)
-            self.new_project()
+            # disable deletion
+            self.delete_project_button.setDisabled(True)
+
+
 
     # def plugin_deletion_message(self):
     #     listItems = self.plugin_view_plugin_listwidget.selectedItems()
@@ -172,6 +185,8 @@ class UiMain(UiView.Ui_BEAT):
         to_find = self.project_list.currentItem().text()
         name, desc, path, bin_info = data_manager.get_project_from_name(to_find)
         data_manager.update_current_project(name, desc, path, bin_info)
+        # enable deletion
+        self.delete_project_button.setDisabled(False)
         self.setCurrentProject()
 
     def setCurrentProject(self):
@@ -188,7 +203,7 @@ class UiMain(UiView.Ui_BEAT):
         self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
-        self.project_desc_text.setReadOnly(True)
+        self.project_desc_text.setReadOnly(False)
         # fill path text
         self.file_path_lineedit.setText(path)
         self.file_path_lineedit.setReadOnly(True)
@@ -198,6 +213,7 @@ class UiMain(UiView.Ui_BEAT):
         # fill binary info
         self.fill_binary_info(bin_info)
 
+
     '''
     Sets settings for new project viewer
     '''
@@ -205,21 +221,29 @@ class UiMain(UiView.Ui_BEAT):
     def new_project(self):
         # self.detailed_project_view_groupbox.show()
         # self.label.show()
+        self.clear_detailed_project_view()
 
-        self.project_name_text.setText("")
+        self.project_name_text.setDisabled(False)
         self.project_name_text.setReadOnly(False)
 
-        self.project_desc_text.setText("")
+        self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-        self.file_path_lineedit.setText("")
+        self.file_path_lineedit.setDisabled(False)
         self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
 
-        self.binary_file_properties_value_listwidget.clear()
 
+    '''
+    Clears all the input fields from the detailed project view
+    '''
+    def clear_detailed_project_view(self):
+        self.project_name_text.setText("")
+        self.project_desc_text.setText("")
+        self.file_path_lineedit.setText("")
+        self.binary_file_properties_value_listwidget.clear()
 
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project

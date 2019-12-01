@@ -360,6 +360,7 @@ class Ui_BEAT(object):
         font.setWeight(75)
         self.name_lineedit.setFont(font)
         self.name_lineedit.setAlignment(QtCore.Qt.AlignCenter)
+        self.name_lineedit.setReadOnly(True)
         self.name_lineedit.setObjectName("name_lineedit")
         self.gridLayout1.addWidget(self.name_lineedit, 5, 1, 1, 1, QtCore.Qt.AlignRight)
         self.value_lineedit = QtWidgets.QLineEdit(self.detailed_project_view_groupbox)
@@ -368,6 +369,7 @@ class Ui_BEAT(object):
         font.setWeight(75)
         self.value_lineedit.setFont(font)
         self.value_lineedit.setAlignment(QtCore.Qt.AlignCenter)
+        self.value_lineedit.setReadOnly(True)
         self.value_lineedit.setObjectName("value_lineedit")
         self.gridLayout1.addWidget(self.value_lineedit, 5, 2, 1, 1, QtCore.Qt.AlignLeft)
         self.binary_file_path_label = QtWidgets.QLabel(self.detailed_project_view_groupbox)
@@ -979,6 +981,7 @@ class Ui_BEAT(object):
         self.file_path_lineedit.setPalette(palette)
         self.file_path_lineedit.setText("")
         self.file_path_lineedit.setAlignment(QtCore.Qt.AlignCenter)
+        self.file_path_lineedit.setClearButtonEnabled(False)
         self.file_path_lineedit.setObjectName("file_path_lineedit")
         self.gridLayout1.addWidget(self.file_path_lineedit, 3, 1, 1, 2)
         self.gridLayout_4.addWidget(self.detailed_project_view_groupbox, 0, 1, 1, 1)
@@ -3344,7 +3347,7 @@ class Ui_BEAT(object):
         self.gridLayout_3.addWidget(self.tabWidget, 0, 1, 1, 1)
 
         self.retranslateUi(BEAT)
-        self.tabWidget.setCurrentIndex(4)
+        self.tabWidget.setCurrentIndex(0)
         self.Poi_stacked_Widget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(BEAT)
 

@@ -200,19 +200,20 @@ class UiMain(UiView.Ui_BEAT):
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
         # fill name text
         self.project_name_text.setText(name)
+        self.project_name_text.setStyleSheet("color: gray;")
         self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
         self.project_desc_text.setReadOnly(False)
         # fill path text
         self.file_path_lineedit.setText(path)
+        self.file_path_lineedit.setStyleSheet("color: gray;")
         self.file_path_lineedit.setReadOnly(True)
         # disable buttons
         self.save_project_button.setDisabled(True)
         self.file_browse_button.setDisabled(True)
         # fill binary info
         self.fill_binary_info(bin_info)
-
 
     '''
     Sets settings for new project viewer
@@ -320,6 +321,7 @@ class UiMain(UiView.Ui_BEAT):
                                                                    bi['nx'], bi['pic'],
                                                                    bi['relocs'], bi['relro'],
                                                                    bi['stripped']])
+            self.binary_file_properties_value_listwidget.setStyleSheet("color: gray;")
         except KeyError:
             print("Failed to add binary info")
             return

@@ -145,27 +145,83 @@ def extract_functions():
         funcAddr = attr[0]
 
         returnType = funcHeader[1]
+        # print(returnType)
+        # print(funcHeader)
         # make sure function has a return type
-        if returnType == funcName:
+        if returnType == funcName or funcName not in funcHeader:
             returnType = None
 
-        returnValue = rlocal.cmd("pdf~eax").strip("\n").split()
-        # check if return exists
-        if len(returnValue) < 1:
-            returnValue = " "
-        returnValue = returnValue[len(returnValue)-1]
-        #print("Return value: " + returnValue)
-        # (dr al) - to check return register value during dynamic
+        regValue = rlocal.cmd("pdf~eax").split("\n")
+        regValue = regValue[0:len(regValue) - 1]
+        # check if return exists in eax register
+        if len(regValue) > 0:
+            print("List")
+            print(regValue)
+            cols = regValue[len(regValue)-1].split()
+            lastCol = len(cols)-1
+            # if return value is determined at runtime use register value, should be 0x00 before running
+            if "[" in cols[lastCol]:
+                returnValue = rlocal.cmd("aer eax").split("\n")[0]
+            elif "eax" in cols[lastCol] or "mov" not in regValue[len(regValue)-1]:
+                returnValue = None
+            else:
+                returnValue = cols[lastCol]
+        else:
+            regValue = rlocal.cmd("pdf~rax,").split("\n")
+            regValue = regValue[0:len(regValue)-1]
+            print("List")
+            print(regValue)
+            if len(regValue) == 0:
+                returnValue = None
+            # if return value is determined at runtime use register value, should be 0x00 before running
+            elif "[" in regValue:
+                returnValue = rlocal.cmd("aer rax").split("\n")[1]
+            else:
+                cols = regValue[len(regValue)-1].split()
+                lastCol = len(cols) - 1
+                lastValue = len(regValue) - 1
+                print(regValue)
+                # make sure rax is used as return value
+                if "rax" in cols[lastCol]:
+                    returnValue = None
+                elif ";" in regValue[lastValue]:
+                    cols = regValue[lastValue].split(";")
+                    returnValue = cols[len(cols)-1]
+                elif "lea" not in regValue[lastValue]:
+                    returnValue = None
+                else:
+                    returnValue = cols[lastCol]
+
+        print("Return value: ")
+        print(returnValue)
+
+        # print("Return value: " + returnValue)
+        # (aer eax) or (aer rax) - to check return register value during dynamic
 
         # get return address of function
-        returnAddr = rlocal.cmd("pdf~ret[1]").strip("\n")
+        returnAddresses = rlocal.cmd("pdf~ret").split("\n")
+
+        returnAddr = None
+        # make sure return address exists
+        if len(returnAddresses) > 1:
+            returnAddrLine = returnAddresses[len(returnAddresses) - 2].split()
+            for item in returnAddrLine:
+                if "0x" in item:
+                    returnAddr = item
+                    break
 
         # get all xrefs TO the current function
         # include caller names, addresses, and reference types
-        callFrom = rlocal.cmd("axt @" + funcName + ";~[0-2]").split("\n")
+        callFromList = rlocal.cmd("axt @" + funcName + ";~[0-2]").split("\n")
+        # last item in list is always empty string, ignore it
+        callFromList = callFromList[0:len(callFromList)-1]
+
         # check if there are no calls
-        if len(callFrom) < 1:
-            callFrom = []
+        callFrom = []
+        for call in callFromList:
+            # calls are in format: main 0x5602c691e160 [CALL]
+            cols = call.split()
+            callFrom.append(cols[0] + " " + cols[1])
 
         # get parameter values if parameters exist
         # print(funcName)
@@ -173,10 +229,10 @@ def extract_functions():
         paramVal = []
         if len(params) > 0:
             values = rlocal.cmd("afvd~arg").split("\n")
-            #print(values)
+            # print(values)
 
             for val in values:
-                print(val)
+                # print(val)
                 if val == "":
                     continue
                 val = val.split()

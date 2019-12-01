@@ -59,3 +59,12 @@ def filter_function(name, ret_type, ret_value, address, dest_address, call_from=
         if valueInOrder:
             return True
     return False
+
+def filter_dll(name):
+    dll_poi = data_manager.get_pois_from_plugin_and_type("dll")
+    if dll_poi is None:
+        return True
+    for d in dll_poi:
+        if d["Library"] in name:
+            return True
+    return False

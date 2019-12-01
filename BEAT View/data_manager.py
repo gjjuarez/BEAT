@@ -268,7 +268,8 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Variable Name': POI_name,
                 'Variable Value': POI_value,
                 'Variable Type': POI_data_type,
-                'Address': address}
+                'Address': address,
+                'Comment': ""}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
@@ -338,6 +339,7 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Parameter Type': POI_parameter_type,
                 # 'Parameter Value': POI_parameter_value,
                 # 'Call From Address': POI_order_to_functions
+                'Comment': ""
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 
@@ -487,28 +489,18 @@ def delete_struct_collection():
     except:
         print("Drop struct collection error")
 
-# deprecated code (left for now as examples)
-def insert_data(data): #data needs to be in json format
-   document = collection.insert_one(data)
-   return document.inserted_id
+def add_comment(POI_name, comment):
+    global struct_collection
+    global variable_collection
+    global function_collection
+    global protocol_collection
+    global string_collection
 
-def update_or_create(document_id,data):
-    #avoids duplicates by by creating a new document if the same id does not exist
-    document = collection.update_one({'_id': ObjectId(document_id)},{"$set": data},upsert=True)
-    return document.acknowledged
-
-def update_existing(document_id,data):
-    document = collection.update_one({'_id': ObjectId(document_id)}, {"$set": data})
-    return document.acknowledged
-
-def remove_data(document_id):
-    document = collection.delete_one({'_id': ObjectId(document_id)})
-    return document.acknowledged #returns true if deleted
-
-# select a single piece of data to return from a collection(point of interest)
-def get_single_data(document_id):
-    data = collection.find_one({'_id': ObjectId(document_id)})
-    return data
+    variable_collection.update_one({"Variable Name": POI_name} ,{ "$set":{"Comment": comment}})
+    struct_collection.update_one({"Struct Name": POI_name}, {"$set": {"Comment": comment}})
+    function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
+    protocol_collection.update_one({"Protocol Name": POI_name}, {"$set": {"Comment": comment}})
+    string_collection.update_one({"String Name": POI_name}, {"$set": {"Comment": comment}})
 
 def end():
     # close the connection to the database

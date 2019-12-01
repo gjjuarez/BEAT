@@ -554,28 +554,45 @@ class UiMain(UiView.Ui_BEAT):
                 for pt in func["Parameter Type"]:
                     paramTypes = paramTypes + " " + pt
             except TypeError:
-                paramTypes = "n/a"
+                paramTypes = ""
 
             paramOrder = ""
             try:
                 for pt in func["Parameter Order"]:
                     paramOrder = paramOrder + " " + pt
             except TypeError:
-                paramOrder = "n/a"
+                paramOrder = ""
 
-            returnVal = "n/a"
+            paramValue = ""
+            try:
+                for pt in func["Parameter Value"]:
+                    paramValue = paramValue + " " + pt
+            except TypeError:
+                paramValue = ""
+
+            callFrom = ""
+            try:
+                for pt in func["Call From"]:
+                    callFrom = callFrom + " " + pt
+            except TypeError:
+                callFrom = ""
+
+            returnVal = ""
             if func['Return Value']:
                 returnVal = func['Return Value']
 
-            returnType = "n/a"
+            returnType = ""
             if func['Return Type']:
                 returnType = func['Return Type']
-
             item = QListWidgetItem("Function name: " + func['Function Name'] + "\n"
                                    + '\tReturn Type: ' + returnType + "\n"
                                    + '\tReturn Value: ' + returnVal + "\n"
                                    + '\tAddress: ' + func['Address'] + "\n"
-                                   + '\tParameter Order: ' + paramOrder)
+                                   + '\tParameter Order: ' + paramOrder + "\n"
+                                   + '\tParameter Type: ' + paramTypes + "\n"
+                                   + '\tParameter Value: ' + paramValue + "\n"
+                                   + '\tBinary Section: ' + func['Binary Section'] + "\n"
+                                   + '\tCalled From: ' + callFrom)
             # + '\tParameter Type' + paramTypes)
             self.detailed_points_of_interest_listWidget.addItem(item)
             # display all variables related to current function
@@ -589,9 +606,9 @@ class UiMain(UiView.Ui_BEAT):
         variables = data_manager.get_variables()
         for var in variables:
             if func_name == var["Function Name"]:
-                varItem = QListWidgetItem("\tVariable Name: " + var["Variable Name"] + "\n"
-                                          "\t\tVariable Type: " + var["Variable Type"] + "\n"
-                                          "\t\tVariable Value: " + var["Variable Value"] + "\n"
+                varItem = QListWidgetItem("\tLocal Variable Name: " + var["Variable Name"] + "\n"
+                                          "\t\tType: " + var["Variable Type"] + "\n"
+                                          "\t\tValue: " + var["Variable Value"] + "\n"
                                           "\t\tAddress: " + var["Address"])
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
 

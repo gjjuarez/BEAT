@@ -48,7 +48,7 @@ class UiMain(UiView.Ui_BEAT):
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
-        self.Poi_stacked_Widget.setCurrentIndex(3)
+        self.Poi_stacked_Widget.setCurrentIndex(2)
 
         # Fill the Project list from mongo
         self.fill_projects()
@@ -111,7 +111,7 @@ class UiMain(UiView.Ui_BEAT):
         Points of Interest Tab Listeners
         '''        
         self.detailed_point_of_interest_view_type_dropdown.clear()
-        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"])
+        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL"])
         #self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
 
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(self.poi_type_changed_in_poi)
@@ -134,8 +134,6 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.addItem("Functions")
         self.type_dropdown.addItem("Variables")
         self.type_dropdown.addItem("Strings")
-        self.type_dropdown.addItem("Sections")
-        self.type_dropdown.addItem("Structures")
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
         # runs dynamic analysis on breakpoints then updates ui
@@ -838,14 +836,6 @@ class UiMain(UiView.Ui_BEAT):
             dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
         except:
             dll = ""
-        try:
-            packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
-        except:
-            packets = ""
-        try:
-            structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
-        except:
-            structs = ""
 
 
         if strings is not None:
@@ -860,34 +850,24 @@ class UiMain(UiView.Ui_BEAT):
         if dll is not None:
             for d in dll:
                 self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
-        if packets is not None:
-            for p in packets:
-                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Packets:"+ str(p)))
-        if structs is not None:
-            for st in structs:
-                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Struct:"+ str(st)))
 
 
     def poi_type_changed_in_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
         # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
         if poi_detected == "Function":
-            self.Poi_stacked_Widget.setCurrentIndex(3)
+            self.Poi_stacked_Widget.setCurrentIndex(2)
         elif poi_detected == "String":
-            self.Poi_stacked_Widget.setCurrentIndex(5)
+            self.Poi_stacked_Widget.setCurrentIndex(3)
         elif poi_detected == "Variable":
             self.Poi_stacked_Widget.setCurrentIndex(0)
         elif poi_detected == "DLL":
-            self.Poi_stacked_Widget.setCurrentIndex(2)
-        elif poi_detected == "Packet Protocol":
             self.Poi_stacked_Widget.setCurrentIndex(1)
-        elif poi_detected == "Struct":
-            self.Poi_stacked_Widget.setCurrentIndex(4)
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
-        # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
+        # ["Function","String", "Variable", "DLL"]
         if poi_detected == "Function":
             name = self.poi_function_name_lineedit.text()
             type = self.poi_function_parameter_lineedit.text()
@@ -945,21 +925,6 @@ class UiMain(UiView.Ui_BEAT):
 
             self.poi_dll_libraryname_lineedit.setText("")
 
-        elif poi_detected == "Packet Protocol":
-            protocol_name = self.poi_protocol_name_lineedit.text()
-            field_name = self.poi_protocol_fieldname_lineedit.text()
-            field_type = self.poi_prototype_fieldtype_lineedit.text()
-            data_manager.add_packet_to_plugin(plugin, protocol_name, field_name, field_type)
-
-            self.poi_protocol_name_lineedit.setText("")
-            self.poi_protocol_fieldname_lineedit.setText("")
-            self.poi_prototype_fieldtype_lineedit.setText("")
-
-        elif poi_detected == "Struct":
-            name = self.poi_struct_name_lineedit.text()
-            data_manager.add_struct_to_plugin(plugin, name)
-            self.poi_struct_name_lineedit.setText("")
-
         #self.point_of_interest_content_area_textedit.clear()
         self.populate_pois_in_poi()
 
@@ -984,22 +949,12 @@ class UiMain(UiView.Ui_BEAT):
                 dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
             except:
                 dll = ""
-            try:
-                packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
-            except:
-                packets = ""
-            try:
-                structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
-            except:
-                structs = ""
 
             self.points_of_interest_list_textedit.clear()
             self.points_of_interest_list_textedit.append("Strings:"+ str(strings)+ "\n")
             self.points_of_interest_list_textedit.append("Functions:"+ str(functions)+ "\n")
             self.points_of_interest_list_textedit.append("Variables:"+ str(variables)+ "\n")
             self.points_of_interest_list_textedit.append("DLLs:"+ str(dll)+ "\n")
-            self.points_of_interest_list_textedit.append("Packets:"+ str(packets)+ "\n")
-            self.points_of_interest_list_textedit.append("structs"+ str(structs)+ "\n")
         except:
             return
 

@@ -8,10 +8,12 @@ int addition(int addVar) {
 int otherGlobal = 6;
 char myCharGlobal = 'Y';
 
-struct S1 {
-    int x;
-    int z;
-};
+char* stringFunction() {
+	return "this is a string";
+}
+
+void nothingFunction() {
+}
 
 int main(){
 	int myVar = 5;
@@ -20,5 +22,6 @@ int main(){
 	myCharGlobal = 'N';
 
 	myVar = addition(myVar);
+	char* myString = stringFunction();
 	return 8;
 }

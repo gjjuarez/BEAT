@@ -16,6 +16,8 @@ from PyQt5 import QtGui
 import data_manager
 import os.path
 from os import path
+import threading
+import time
 
 class UiMain(UiView.Ui_BEAT):
     global staticIsRun
@@ -25,6 +27,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
+
         ###########################
         # Resizing according to user's desktop
         ###########################
@@ -75,7 +78,8 @@ class UiMain(UiView.Ui_BEAT):
         Analysis Tab Listeners 
         '''
         # calls enable_dynamic_analysis after static_run_button is clicked
-        self.static_run_button.clicked.connect(self.enable_dynamic_analysis)
+        # self.static_run_button.clicked.connect(self.enable_dynamic_analysis)
+        #self.static_run_button.clicked.connect(self.analysis_running_frame.show)
         # calls analysis_result aft er analysis_result_button is clicked
         self.analysis_result_button.clicked.connect(self.analysis_result)
         # calls comment_view after comment_button is clicked
@@ -307,8 +311,8 @@ class UiMain(UiView.Ui_BEAT):
     Enables Run and Stop buttons for dynamic analysis
     '''
     def enable_dynamic_analysis(self):
-        ui.dynamic_run_button.setDisabled(False)
-        ui.dynamic_stop_button.setDisabled(False)
+        self.dynamic_run_button.setDisabled(False)
+        self.dynamic_stop_button.setDisabled(False)
     '''
     Opens Figure12AnalysisResultReview
     '''
@@ -392,22 +396,31 @@ class UiMain(UiView.Ui_BEAT):
                     f.write(line)
             f.truncate()
         self.ui.comment_textedit.clear()
+
+
+    def static_analysis(self):
+        radare_commands_interface.run_static_analysis()
+        self.process_window.close()
     '''
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        self.process_window = QtWidgets.QProgressDialog("Running Static Analysis...", None, 0,0)
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        radare_commands_interface.run_static_analysis()
-        # self.terminal.begin()
-        # self.stacked.setCurrentWidget(self.terminal)
-        # self.terminal.begin_static()
+
+        t = threading.Thread(target=self.static_analysis)
+        t.start()
+        self.process_window.exec()
+
         global staticIsRun
         staticIsRun = True
         # Check What box is check  
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
         self.display_POI(display_value)
+        self.enable_dynamic_analysis()
+
 
     def match_selected_POI(self):
         row = self.points_of_interest_list_widget.currentRow()

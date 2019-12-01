@@ -16,6 +16,8 @@ from PyQt5 import QtGui
 import data_manager
 import os.path
 from os import path
+import threading
+import time
 
 class UiMain(UiView.Ui_BEAT):
     global staticIsRun
@@ -25,15 +27,23 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
+
         ###########################
         # Resizing according to user's desktop
         ###########################
         self.geo = QtWidgets.QDesktopWidget().screenGeometry()
         BEAT.resize(self.geo.width(), self.geo.height())
 
- 
-
         BEAT.setMaximumSize(QtCore.QSize(16777215, 16777215))
+
+        #User cannot delete unselected project
+        self.delete_project_button.setDisabled(True)
+
+        #User cannot edit project fields without creating a new project
+        self.project_name_text.setDisabled(True)
+        self.project_desc_text.setDisabled(True)
+        self.file_path_lineedit.setDisabled(True)
+        self.save_project_button.setDisabled(True)
 
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
@@ -75,7 +85,8 @@ class UiMain(UiView.Ui_BEAT):
         Analysis Tab Listeners 
         '''
         # calls enable_dynamic_analysis after static_run_button is clicked
-        self.static_run_button.clicked.connect(self.enable_dynamic_analysis)
+        # self.static_run_button.clicked.connect(self.enable_dynamic_analysis)
+        #self.static_run_button.clicked.connect(self.analysis_running_frame.show)
         # calls analysis_result aft er analysis_result_button is clicked
         self.analysis_result_button.clicked.connect(self.analysis_result)
         # calls comment_view after comment_button is clicked
@@ -147,11 +158,15 @@ class UiMain(UiView.Ui_BEAT):
             "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
         if buttonReply == QMessageBox.Yes:
             data_manager.delete_project_given_name(name)
+            # clear page
+            self.clear_detailed_project_view()
             self.project_list.clear()
-            self.binary_file_properties_value_listwidget.clear()
             self.fill_projects()
             print("Done Removing Project:", name)
-            self.new_project()
+            # disable deletion
+            self.delete_project_button.setDisabled(True)
+
+
 
     # def plugin_deletion_message(self):
     #     listItems = self.plugin_view_plugin_listwidget.selectedItems()
@@ -170,6 +185,8 @@ class UiMain(UiView.Ui_BEAT):
         to_find = self.project_list.currentItem().text()
         name, desc, path, bin_info = data_manager.get_project_from_name(to_find)
         data_manager.update_current_project(name, desc, path, bin_info)
+        # enable deletion
+        self.delete_project_button.setDisabled(False)
         self.setCurrentProject()
 
     def setCurrentProject(self):
@@ -183,12 +200,14 @@ class UiMain(UiView.Ui_BEAT):
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
         # fill name text
         self.project_name_text.setText(name)
+        self.project_name_text.setStyleSheet("color: gray;")
         self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
-        self.project_desc_text.setReadOnly(True)
+        self.project_desc_text.setReadOnly(False)
         # fill path text
         self.file_path_lineedit.setText(path)
+        self.file_path_lineedit.setStyleSheet("color: gray;")
         self.file_path_lineedit.setReadOnly(True)
         # disable buttons
         self.save_project_button.setDisabled(True)
@@ -203,21 +222,29 @@ class UiMain(UiView.Ui_BEAT):
     def new_project(self):
         # self.detailed_project_view_groupbox.show()
         # self.label.show()
+        self.clear_detailed_project_view()
 
-        self.project_name_text.setText("")
+        self.project_name_text.setDisabled(False)
         self.project_name_text.setReadOnly(False)
 
-        self.project_desc_text.setText("")
+        self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-        self.file_path_lineedit.setText("")
+        self.file_path_lineedit.setDisabled(False)
         self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
 
-        self.binary_file_properties_value_listwidget.clear()
 
+    '''
+    Clears all the input fields from the detailed project view
+    '''
+    def clear_detailed_project_view(self):
+        self.project_name_text.setText("")
+        self.project_desc_text.setText("")
+        self.file_path_lineedit.setText("")
+        self.binary_file_properties_value_listwidget.clear()
 
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
@@ -294,6 +321,7 @@ class UiMain(UiView.Ui_BEAT):
                                                                    bi['nx'], bi['pic'],
                                                                    bi['relocs'], bi['relro'],
                                                                    bi['stripped']])
+            self.binary_file_properties_value_listwidget.setStyleSheet("color: gray;")
         except KeyError:
             print("Failed to add binary info")
             return
@@ -307,8 +335,8 @@ class UiMain(UiView.Ui_BEAT):
     Enables Run and Stop buttons for dynamic analysis
     '''
     def enable_dynamic_analysis(self):
-        ui.dynamic_run_button.setDisabled(False)
-        ui.dynamic_stop_button.setDisabled(False)
+        self.dynamic_run_button.setDisabled(False)
+        self.dynamic_stop_button.setDisabled(False)
     '''
     Opens Figure12AnalysisResultReview
     '''
@@ -392,22 +420,31 @@ class UiMain(UiView.Ui_BEAT):
                     f.write(line)
             f.truncate()
         self.ui.comment_textedit.clear()
+
+
+    def static_analysis(self):
+        radare_commands_interface.run_static_analysis()
+        self.process_window.close()
     '''
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        self.process_window = QtWidgets.QProgressDialog("Running Static Analysis...", None, 0,0)
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
-        radare_commands_interface.run_static_analysis()
-        # self.terminal.begin()
-        # self.stacked.setCurrentWidget(self.terminal)
-        # self.terminal.begin_static()
+
+        t = threading.Thread(target=self.static_analysis)
+        t.start()
+        self.process_window.exec()
+
         global staticIsRun
         staticIsRun = True
         # Check What box is check  
         # Switch Cases to see what method is called
         display_value = str(self.type_dropdown.currentText())
         self.display_POI(display_value)
+        self.enable_dynamic_analysis()
+
 
     def match_selected_POI(self):
         row = self.points_of_interest_list_widget.currentRow()
@@ -926,12 +963,12 @@ class UiMain(UiView.Ui_BEAT):
         elif poi_detected == "Packet Protocol":
             protocol_name = self.poi_protocol_name_lineedit.text()
             field_name = self.poi_protocol_fieldname_lineedit.text()
-            field_type = self.poi_protocol_fieldtype_lineedit.text()
+            field_type = self.poi_prototype_fieldtype_lineedit.text()
             data_manager.add_packet_to_plugin(plugin, protocol_name, field_name, field_type)
 
             self.poi_protocol_name_lineedit.setText("")
             self.poi_protocol_fieldname_lineedit.setText("")
-            self.poi_protocol_fieldtype_lineedit.setText("")
+            self.poi_prototype_fieldtype_lineedit.setText("")
 
         elif poi_detected == "Struct":
             name = self.poi_struct_name_lineedit.text()

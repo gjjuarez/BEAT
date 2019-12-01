@@ -70,8 +70,43 @@ def get_plugin_from_name(to_find):
                 return name, desc
         except KeyError:
             print("Key error")
+
 def delete_plugin_given_name(name):
-    plugin_collection.delete_one({'name': name})
+    try:
+        plugin_collection.delete_one({'name': name})
+    except:
+        print("Drop collection error")
+
+def delete_function_poi_by_name(poi_name):
+    try:
+        function_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI function error")
+
+def delete_string_poi_by_name(poi_name):
+    try:
+        string_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI string error")
+
+def delete_variable_poi_by_name(poi_name):
+    try:
+        variable_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI variable error")
+
+def delete_prototcol_poi_by_name(poi_name):
+    try:
+        protocol_collection.delete_one({'name': poi_name})
+        struct_collection.drop()
+    except:
+        print("Delete POI protocol error")
+
+def delete_struct_poi_by_name(poi_name):
+    try:
+        struct_collection.delete_one({'name': poi_name})
+    except:
+        print("Delete POI struct error")
 
 def add_string_to_plugin(name, string_name, string_type, string_size, string_call_address, string_destination_address,
                          section):
@@ -95,6 +130,7 @@ def add_string_to_plugin(name, string_name, string_type, string_size, string_cal
         pprint(document)
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
 def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value, # POI_binary_section,
+def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value,
                            function_call_address, function_destination_address, python_translation_code):
     function = {'Function Name': function_name,
                'Parameter Type and Order': parmeter_order_and_type,
@@ -249,7 +285,8 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Variable Name': POI_name,
                 'Variable Value': POI_value,
                 'Variable Type': POI_data_type,
-                'Address': address}
+                'Address': address,
+                'Comment': ""}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
@@ -347,6 +384,9 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Binary Section': binary_section,
                 'Parameter Value': POI_parameter_values,
                 'Call From': call_from  # either a function name or address
+                # 'Parameter Value': POI_parameter_value,
+                # 'Call From Address': POI_order_to_functions
+                'Comment': ""
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 
@@ -466,29 +506,48 @@ def delete_project_given_name(name):
     except:
         print("Drop collection error")
 
+def delete_function_collection():
+    try:
+        function_collection.drop()
+    except:
+        print("Drop function collection error")
 
-# deprecated code (left for now as examples)
-def insert_data(data): #data needs to be in json format
-   document = collection.insert_one(data)
-   return document.inserted_id
+def delete_string_collection():
+    try:
+        string_collection.drop()
+    except:
+        print("Drop string collection error")
 
-def update_or_create(document_id,data):
-    #avoids duplicates by by creating a new document if the same id does not exist
-    document = collection.update_one({'_id': ObjectId(document_id)},{"$set": data},upsert=True)
-    return document.acknowledged
+def delete_variable_collection():
+    try:
+        variable_collection.drop()
+    except:
+        print("Drop variable collection error")
 
-def update_existing(document_id,data):
-    document = collection.update_one({'_id': ObjectId(document_id)}, {"$set": data})
-    return document.acknowledged
+def delete_protocol_collection():
+    try:
+        protocol_collection.drop()
+    except:
+        print("Drop protocol collection error")
 
-def remove_data(document_id):
-    document = collection.delete_one({'_id': ObjectId(document_id)})
-    return document.acknowledged #returns true if deleted
+def delete_struct_collection():
+    try:
+        struct_collection.drop()
+    except:
+        print("Drop struct collection error")
 
-# select a single piece of data to return from a collection(point of interest)
-def get_single_data(document_id):
-    data = collection.find_one({'_id': ObjectId(document_id)})
-    return data
+def add_comment(POI_name, comment):
+    global struct_collection
+    global variable_collection
+    global function_collection
+    global protocol_collection
+    global string_collection
+
+    variable_collection.update_one({"Variable Name": POI_name} ,{ "$set":{"Comment": comment}})
+    struct_collection.update_one({"Struct Name": POI_name}, {"$set": {"Comment": comment}})
+    function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
+    protocol_collection.update_one({"Protocol Name": POI_name}, {"$set": {"Comment": comment}})
+    string_collection.update_one({"String Name": POI_name}, {"$set": {"Comment": comment}})
 
 def end():
     # close the connection to the database

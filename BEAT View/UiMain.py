@@ -34,14 +34,21 @@ class UiMain(UiView.Ui_BEAT):
         self.geo = QtWidgets.QDesktopWidget().screenGeometry()
         BEAT.resize(self.geo.width(), self.geo.height())
 
- 
-
         BEAT.setMaximumSize(QtCore.QSize(16777215, 16777215))
+
+        #User cannot delete unselected project
+        self.delete_project_button.setDisabled(True)
+
+        #User cannot edit project fields without creating a new project
+        self.project_name_text.setDisabled(True)
+        self.project_desc_text.setDisabled(True)
+        self.file_path_lineedit.setDisabled(True)
+        self.save_project_button.setDisabled(True)
 
         # User cannot run dynamic in the beginning of the program
         self.dynamic_run_button.setDisabled(True)
         self.dynamic_stop_button.setDisabled(True)
-        self.Poi_stacked_Widget.setCurrentIndex(3)
+        self.Poi_stacked_Widget.setCurrentIndex(2)
 
         # Fill the Project list from mongo
         self.fill_projects()
@@ -104,7 +111,7 @@ class UiMain(UiView.Ui_BEAT):
         Points of Interest Tab Listeners
         '''        
         self.detailed_point_of_interest_view_type_dropdown.clear()
-        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"])
+        self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL"])
         #self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
 
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(self.poi_type_changed_in_poi)
@@ -124,11 +131,9 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.currentIndexChanged.connect(self.change_displayed_POI)
         self.type_dropdown.clear()
         self.type_dropdown.addItem("All")
-        self.type_dropdown.addItem("Functions")
+        self.type_dropdown.addItem("Function Call")
         self.type_dropdown.addItem("Variables")
         self.type_dropdown.addItem("Strings")
-        self.type_dropdown.addItem("Sections")
-        self.type_dropdown.addItem("Structures")
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
         # runs dynamic analysis on breakpoints then updates ui
@@ -151,11 +156,15 @@ class UiMain(UiView.Ui_BEAT):
             "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
         if buttonReply == QMessageBox.Yes:
             data_manager.delete_project_given_name(name)
+            # clear page
+            self.clear_detailed_project_view()
             self.project_list.clear()
-            self.binary_file_properties_value_listwidget.clear()
             self.fill_projects()
             print("Done Removing Project:", name)
-            self.new_project()
+            # disable deletion
+            self.delete_project_button.setDisabled(True)
+
+
 
     # def plugin_deletion_message(self):
     #     listItems = self.plugin_view_plugin_listwidget.selectedItems()
@@ -174,6 +183,8 @@ class UiMain(UiView.Ui_BEAT):
         to_find = self.project_list.currentItem().text()
         name, desc, path, bin_info = data_manager.get_project_from_name(to_find)
         data_manager.update_current_project(name, desc, path, bin_info)
+        # enable deletion
+        self.delete_project_button.setDisabled(False)
         self.setCurrentProject()
 
     def setCurrentProject(self):
@@ -187,12 +198,14 @@ class UiMain(UiView.Ui_BEAT):
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
         # fill name text
         self.project_name_text.setText(name)
+        self.project_name_text.setStyleSheet("color: gray;")
         self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
-        self.project_desc_text.setReadOnly(True)
+        self.project_desc_text.setReadOnly(False)
         # fill path text
         self.file_path_lineedit.setText(path)
+        self.file_path_lineedit.setStyleSheet("color: gray;")
         self.file_path_lineedit.setReadOnly(True)
         # disable buttons
         self.save_project_button.setDisabled(True)
@@ -207,21 +220,29 @@ class UiMain(UiView.Ui_BEAT):
     def new_project(self):
         # self.detailed_project_view_groupbox.show()
         # self.label.show()
+        self.clear_detailed_project_view()
 
-        self.project_name_text.setText("")
+        self.project_name_text.setDisabled(False)
         self.project_name_text.setReadOnly(False)
 
-        self.project_desc_text.setText("")
+        self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-        self.file_path_lineedit.setText("")
+        self.file_path_lineedit.setDisabled(False)
         self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
 
-        self.binary_file_properties_value_listwidget.clear()
 
+    '''
+    Clears all the input fields from the detailed project view
+    '''
+    def clear_detailed_project_view(self):
+        self.project_name_text.setText("")
+        self.project_desc_text.setText("")
+        self.file_path_lineedit.setText("")
+        self.binary_file_properties_value_listwidget.clear()
 
     '''
     Removes a project after it has been selected and the Delete button is clicked in Project
@@ -298,6 +319,7 @@ class UiMain(UiView.Ui_BEAT):
                                                                    bi['nx'], bi['pic'],
                                                                    bi['relocs'], bi['relro'],
                                                                    bi['stripped']])
+            self.binary_file_properties_value_listwidget.setStyleSheet("color: gray;")
         except KeyError:
             print("Failed to add binary info")
             return
@@ -448,11 +470,11 @@ class UiMain(UiView.Ui_BEAT):
         elif display_value == "Function Call":
             self.read_and_display_all_functions()
         elif display_value == "Variables":
-            self.read_and_display_all_variables()
+            self.read_and_display_global_variables()
         elif display_value == "All":
             self.read_and_display_all_functions()
             # variables displayed with functions instead
-            # self.read_and_display_all_variables()
+            self.read_and_display_global_variables()
             # self.read_and_display_all_imports()
             self.read_and_display_all_strings()
 
@@ -564,30 +586,47 @@ class UiMain(UiView.Ui_BEAT):
             paramTypes = ""
             try:
                 for pt in func["Parameter Type"]:
-                    paramTypes = paramTypes + pt
+                    paramTypes = paramTypes + " " + pt
             except TypeError:
-                paramTypes = "n/a"
+                paramTypes = ""
 
             paramOrder = ""
             try:
-                for pt in func["Parameter Type"]:
-                    paramOrder = paramOrder + pt
+                for pt in func["Parameter Order"]:
+                    paramOrder = paramOrder + " " + pt
             except TypeError:
-                paramOrder = "n/a"
+                paramOrder = ""
 
-            returnVal = "n/a"
+            paramValue = ""
+            try:
+                for pt in func["Parameter Value"]:
+                    paramValue = paramValue + " " + pt
+            except TypeError:
+                paramValue = ""
+
+            callFrom = ""
+            try:
+                for pt in func["Call From"]:
+                    callFrom = callFrom + " " + pt
+            except TypeError:
+                callFrom = ""
+
+            returnVal = ""
             if func['Return Value']:
                 returnVal = func['Return Value']
 
-            returnType = "n/a"
+            returnType = ""
             if func['Return Type']:
-                returnVal = func['Return Type']
-
+                returnType = func['Return Type']
             item = QListWidgetItem("Function name: " + func['Function Name'] + "\n"
                                    + '\tReturn Type: ' + returnType + "\n"
                                    + '\tReturn Value: ' + returnVal + "\n"
+                                   + '\tAddress: ' + func['Address'] + "\n"
+                                   + '\tParameter Order: ' + paramOrder + "\n"
+                                   + '\tParameter Type: ' + paramTypes + "\n"
+                                   + '\tParameter Value: ' + paramValue + "\n"
                                    + '\tBinary Section: ' + func['Binary Section'] + "\n"
-                                   + '\tParameter Order: ' + paramOrder)
+                                   + '\tCalled From: ' + callFrom)
             # + '\tParameter Type' + paramTypes)
             self.detailed_points_of_interest_listWidget.addItem(item)
             # display all variables related to current function
@@ -601,9 +640,9 @@ class UiMain(UiView.Ui_BEAT):
         variables = data_manager.get_variables()
         for var in variables:
             if func_name == var["Function Name"]:
-                varItem = QListWidgetItem("\tVariable Name: " + var["Variable Name"] + "\n"
-                                          "\t\tVariable Type: " + var["Variable Type"] + "\n"
-                                          "\t\tVariabel Value: " + var["Variable Value"] + "\n"
+                varItem = QListWidgetItem("\tLocal Variable Name: " + var["Variable Name"] + "\n"
+                                          "\t\tType: " + var["Variable Type"] + "\n"
+                                          "\t\tValue: " + var["Variable Value"] + "\n"
                                           "\t\tAddress: " + var["Address"])
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
 
@@ -653,32 +692,27 @@ class UiMain(UiView.Ui_BEAT):
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
 
-    def read_and_display_all_variables(self):
-        variables = open("variables.txt", "r")
-        for line in variables.read().split("\n"):
-            item = QListWidgetItem(line)
+    def read_and_display_global_variables(self):
+        variables = data_manager.get_global_variables()
+
+        for var in variables:
+            item = QListWidgetItem("Variable name: " + var['Variable Name'] + "\n"
+                                   + '\tVariable Size: ' + var['Variable Size'] + "\n"
+                                   + '\tVariable Value: ' + var['Variable Value'] + "\n"
+                                   + '\tAddress: ' + var['Address'])
             self.detailed_points_of_interest_listWidget.addItem(item)
-        variables.close()
-        # No method for this yet
-        self.display_variables_in_left_column()
+        self.display_global_variables_in_left_column()
 
-    def display_variables_in_left_column(self):
-        variables = open("variables.txt", "r")
-        variables.readline()  # skip the title for variables
+    def display_global_variables_in_left_column(self):
+        variables = data_manager.get_global_variables()
 
-        # Start at the index 2 to the end get each line
-        for line in variables.read().split("\n")[:-1]:
-            # Separate by spaces and then get the last word
-            # line = line.split(" ", 1)[-1]
-            line = line.split(" ")[1]
-            item = QListWidgetItem(line)
+        for var in variables:
+            value = var["Variable Name"]
 
-            # Don't know if we need this following line
-            # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
+            item = QListWidgetItem(value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
-        variables.close()
 
     def search_POI(self):
         text = str(self.points_of_interest_line_edit.text())
@@ -751,6 +785,8 @@ class UiMain(UiView.Ui_BEAT):
     def populate_pois_in_poi(self):
         print("Populating POIs in POI tab")
         to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        # save current plugin name in data manager
+
         self.point_of_interest_view_listwidget.clear()
         if to_find == "": return
         try:
@@ -769,14 +805,6 @@ class UiMain(UiView.Ui_BEAT):
             dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
         except:
             dll = ""
-        try:
-            packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
-        except:
-            packets = ""
-        try:
-            structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
-        except:
-            structs = ""
 
 
         if strings is not None:
@@ -791,34 +819,24 @@ class UiMain(UiView.Ui_BEAT):
         if dll is not None:
             for d in dll:
                 self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
-        if packets is not None:
-            for p in packets:
-                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Packets:"+ str(p)))
-        if structs is not None:
-            for st in structs:
-                self.point_of_interest_view_listwidget.addItem(QListWidgetItem("Struct:"+ str(st)))
 
 
     def poi_type_changed_in_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
         # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
         if poi_detected == "Function":
-            self.Poi_stacked_Widget.setCurrentIndex(3)
+            self.Poi_stacked_Widget.setCurrentIndex(2)
         elif poi_detected == "String":
-            self.Poi_stacked_Widget.setCurrentIndex(5)
+            self.Poi_stacked_Widget.setCurrentIndex(3)
         elif poi_detected == "Variable":
             self.Poi_stacked_Widget.setCurrentIndex(0)
         elif poi_detected == "DLL":
-            self.Poi_stacked_Widget.setCurrentIndex(2)
-        elif poi_detected == "Packet Protocol":
             self.Poi_stacked_Widget.setCurrentIndex(1)
-        elif poi_detected == "Struct":
-            self.Poi_stacked_Widget.setCurrentIndex(4)
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
-        # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
+        # ["Function","String", "Variable", "DLL"]
         if poi_detected == "Function":
             name = self.poi_function_name_lineedit.text()
             type = self.poi_function_parameter_lineedit.text()
@@ -828,7 +846,8 @@ class UiMain(UiView.Ui_BEAT):
             destination = self.poi_function_destinationaddress_lineedit.text()
             translated_code = self.poi_function_pythontranslatedcode_lineedit.text()
 
-            data_manager.add_function_to_plugin(plugin, name, type, parameter_val, return_val, call_from, destination, translated_code)
+            data_manager.add_function_to_plugin(plugin, name, type, parameter_val,
+                                                return_val, call_from, destination, translated_code)
 
             self.poi_function_name_lineedit.setText("")
             self.poi_function_parameter_lineedit.setText("")
@@ -876,21 +895,6 @@ class UiMain(UiView.Ui_BEAT):
 
             self.poi_dll_libraryname_lineedit.setText("")
 
-        elif poi_detected == "Packet Protocol":
-            protocol_name = self.poi_protocol_name_lineedit.text()
-            field_name = self.poi_protocol_fieldname_lineedit.text()
-            field_type = self.poi_prototype_fieldtype_lineedit.text()
-            data_manager.add_packet_to_plugin(plugin, protocol_name, field_name, field_type)
-
-            self.poi_protocol_name_lineedit.setText("")
-            self.poi_protocol_fieldname_lineedit.setText("")
-            self.poi_prototype_fieldtype_lineedit.setText("")
-
-        elif poi_detected == "Struct":
-            name = self.poi_struct_name_lineedit.text()
-            data_manager.add_struct_to_plugin(plugin, name)
-            self.poi_struct_name_lineedit.setText("")
-
         #self.point_of_interest_content_area_textedit.clear()
         self.populate_pois_in_poi()
 
@@ -898,6 +902,7 @@ class UiMain(UiView.Ui_BEAT):
         #self.points_of_interest_list_textedit()
         try:
             to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+            data_manager.set_current_plugin(to_find)
 
             try:
                 strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
@@ -915,22 +920,12 @@ class UiMain(UiView.Ui_BEAT):
                 dll = data_manager.get_pois_from_plugin_and_type(to_find, "dll")
             except:
                 dll = ""
-            try:
-                packets = data_manager.get_pois_from_plugin_and_type(to_find, "packet")
-            except:
-                packets = ""
-            try:
-                structs = data_manager.get_pois_from_plugin_and_type(to_find, "struct")
-            except:
-                structs = ""
 
             self.points_of_interest_list_textedit.clear()
             self.points_of_interest_list_textedit.append("Strings:"+ str(strings)+ "\n")
             self.points_of_interest_list_textedit.append("Functions:"+ str(functions)+ "\n")
             self.points_of_interest_list_textedit.append("Variables:"+ str(variables)+ "\n")
             self.points_of_interest_list_textedit.append("DLLs:"+ str(dll)+ "\n")
-            self.points_of_interest_list_textedit.append("Packets:"+ str(packets)+ "\n")
-            self.points_of_interest_list_textedit.append("structs"+ str(structs)+ "\n")
         except:
             return
 

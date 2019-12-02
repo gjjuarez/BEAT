@@ -2,9 +2,9 @@
 
 import r2pipe
 import sys
+from . import filter
 sys.path.append("..")  # for data_manager
 import data_manager
-#import filter
 
 rlocal = None
 
@@ -55,6 +55,7 @@ def extract_vars_from_functions():
             if len(attr) < 1:
                 continue
 
+            # skip parameters
             if attr[0] != "var":
                 continue
             varName = attr[1]
@@ -64,7 +65,8 @@ def extract_vars_from_functions():
             for varTemp in variableTypes:
                 if varName in varTemp:
                     varType = varTemp.split()[1]
-            data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
+            if filter.filter_var(varName, varValue, varType, "", varAddr):
+                data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
 
     rlocal.cmd("s " + currentAddr)
 
@@ -91,30 +93,42 @@ def extract_global_vars():
         # remove any items that are not global
         elif globalString in item.split()[3]:
             newVars.append(item)
-
+    currentAddr = rlocal.cmd("s")
     # print(newVars)
     for v in newVars:
         attributes = v.split()
         address = attributes[2]
         size = attributes[5]
         name = attributes[6]
-        data_manager.save_global_variable("static", name, size, address)
+        value = "-1"
+        try:
+            rlocal.cmd("s " + str(address))
+            value = rlocal.cmd("pch~0x[0]:0").strip("\n")  # get the value
+        except:
+            print("Problem getting value of global variable")
+
+        if filter.filter_var(name, value, "", size, address):
+            data_manager.save_global_variable("static", name, size, address, value)
+
+    rlocal.cmd("s " + currentAddr)  # revert to previous address
 
 
 def extract_functions():
     global rlocal
     print("Entered extract functions!")
     funcs = rlocal.cmd("afl").split("\n")
+    currentAddr = rlocal.cmd("s")
     # go through every function and add to database
     for func in funcs:
         if func == "":
-            print("Empty line")
+            # print("Empty line")
             continue
         # print("Function: " + func)
         attr = func.split()
         # print(attr)
 
         funcName = attr[len(attr) - 1]
+
         rlocal.cmd("s " + funcName)
         funcHeader = rlocal.cmd("pdf~" + funcName + ":1").split()
         paramList = rlocal.cmd("afvr").split("\n")
@@ -127,26 +141,141 @@ def extract_functions():
             params.append(p.split()[2])
             # add types of params
             paramType.append(p.split()[1])
+
         funcAddr = attr[0]
+
         returnType = funcHeader[1]
+        # print(returnType)
+        # print(funcHeader)
         # make sure function has a return type
-        if returnType == funcName:
+        if returnType == funcName or funcName not in funcHeader:
             returnType = None
-        returnValue = None  # don't know the value of return until running dynamic
-        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr, params, paramType)
-        # funcDict = {"name": funcName, "address": funcAddr}
-        # print(funcDict)
-        # functioncol.insert_one(funcDict)
+
+        regValue = rlocal.cmd("pdf~eax").split("\n")
+        regValue = regValue[0:len(regValue) - 1]
+        # check if return exists in eax register
+        if len(regValue) > 0:
+            print("List")
+            print(regValue)
+            cols = regValue[len(regValue)-1].split()
+            lastCol = len(cols)-1
+            # if return value is determined at runtime use register value, should be 0x00 before running
+            if "[" in cols[lastCol]:
+                returnValue = rlocal.cmd("aer eax").split("\n")[0]
+            elif "eax" in cols[lastCol] or "mov" not in regValue[len(regValue)-1]:
+                returnValue = None
+            else:
+                returnValue = cols[lastCol]
+        else:
+            regValue = rlocal.cmd("pdf~rax,").split("\n")
+            regValue = regValue[0:len(regValue)-1]
+            print("List")
+            print(regValue)
+            if len(regValue) == 0:
+                returnValue = None
+            # if return value is determined at runtime use register value, should be 0x00 before running
+            elif "[" in regValue:
+                returnValue = rlocal.cmd("aer rax").split("\n")[1]
+            else:
+                cols = regValue[len(regValue)-1].split()
+                lastCol = len(cols) - 1
+                lastValue = len(regValue) - 1
+                print(regValue)
+                # make sure rax is used as return value
+                if "rax" in cols[lastCol]:
+                    returnValue = None
+                elif ";" in regValue[lastValue]:
+                    cols = regValue[lastValue].split(";")
+                    returnValue = cols[len(cols)-1]
+                elif "lea" not in regValue[lastValue]:
+                    returnValue = None
+                else:
+                    returnValue = cols[lastCol]
+
+        print("Return value: ")
+        print(returnValue)
+
+        # print("Return value: " + returnValue)
+        # (aer eax) or (aer rax) - to check return register value during dynamic
+
+        # get return address of function
+        returnAddresses = rlocal.cmd("pdf~ret").split("\n")
+
+        returnAddr = None
+        # make sure return address exists
+        if len(returnAddresses) > 1:
+            returnAddrLine = returnAddresses[len(returnAddresses) - 2].split()
+            for item in returnAddrLine:
+                if "0x" in item:
+                    returnAddr = item
+                    break
+
+        # get all xrefs TO the current function
+        # include caller names, addresses, and reference types
+        callFromList = rlocal.cmd("axt @" + funcName + ";~[0-2]").split("\n")
+        # last item in list is always empty string, ignore it
+        callFromList = callFromList[0:len(callFromList)-1]
+
+        # check if there are no calls
+        callFrom = []
+        for call in callFromList:
+            # calls are in format: main 0x5602c691e160 [CALL]
+            cols = call.split()
+            callFrom.append(cols[0] + " " + cols[1])
+
+        # get parameter values if parameters exist
+        # print(funcName)
+        # print(params)
+        paramVal = []
+        if len(params) > 0:
+            values = rlocal.cmd("afvd~arg").split("\n")
+            # print(values)
+
+            for val in values:
+                # print(val)
+                if val == "":
+                    continue
+                val = val.split()
+
+                # get value of param
+                # use px [numBytes] @[rsi/rdi/rax] to get value during dynamic
+                hexVal = val[len(val)-1]
+
+                # check if value is given for param in radare2 or empty
+                if "=" == hexVal:  # no value exists, radare2 can't get a value
+                    paramVal.append("n/a")
+                    continue
+                elif "0x" not in hexVal:  # value is at different index
+                    hexVal = val[4]  # should be value in hex
+                paramVal.append(hexVal)
+                # print("Parameter Value: " + hexVal)
+
+        # get section in binary
+        # in format of:
+        # Nm Paddr       Size Vaddr           Memsz Perms    Checksum    Name
+        # 00 0x00001050   417 0x556ae87f9050   417  -r-x      0x1234    .text
+        # Checksum is usually empty
+        section = rlocal.cmd("iS.~:2").strip("\n")
+        if len(section) < 1:
+            sectionName = "n/a"
+        else:
+            sectionArray = section.split()
+            sectionName = sectionArray[len(sectionArray)-1]
+        # print(sectionName)
+
+        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr,
+                                    params, paramType, returnAddr, callFrom, paramVal, sectionName)
+    rlocal.cmd("s " + currentAddr)
 
 def extract_strings():
     global rlocal
     strings = rlocal.cmd("iz").split("\n")
+
     for strg in strings[2:]:
         if strg == "":
             print("Empty string")
             continue
         attr = strg.split()
-
         # save entire string value
         strValue = ""
         for value in attr[7:]:
@@ -154,7 +283,9 @@ def extract_strings():
 
         strSection = attr[5]
         strAddr = attr[2]
-        data_manager.save_strings("static", strValue, strSection, strAddr)
+        # filter out strings
+        if filter.filter_string(strValue, strSection, strAddr):
+            data_manager.save_strings("static", strValue, strSection, strAddr)
 
 def extract_imports():
     global rlocal

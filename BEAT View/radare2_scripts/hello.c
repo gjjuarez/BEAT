@@ -1,20 +1,27 @@
 #include <stdio.h>
 
 int myGlobal = 11;
-void addition(int addVar) {
+int addition(int addVar) {
 	addVar++;
+	return addVar;
 }
 int otherGlobal = 6;
+char myCharGlobal = 'Y';
 
-struct S1 {
-    int x;
-    int z;
-};
+char* stringFunction() {
+	return "this is a string";
+}
+
+void nothingFunction() {
+}
 
 int main(){
 	int myVar = 5;
 	printf("hello world");
 	addition(myVar);
-	struct S1 myStruct = {12, 3};
-	return 0;
+	myCharGlobal = 'N';
+
+	myVar = addition(myVar);
+	char* myString = stringFunction();
+	return 8;
 }

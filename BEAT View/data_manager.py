@@ -26,12 +26,27 @@ Plugin functions
 #################################################################################
 '''
 
+current_plugin_name = ""
+
+def set_current_plugin(name):
+    global current_plugin_name
+    current_plugin_name = name
+
 def get_pois_from_plugin_and_type(plugin, type):
     pois = []
     for c in plugin_collection.find():
         if c['name'] == plugin:
             return list(c[type])
 
+def get_pois_from_plugin_and_type(type):
+    pois = []
+    plugin = current_plugin_name
+    for c in plugin_collection.find():
+        try:
+            if c['name'] == plugin:
+                return list(c[type])
+        except:
+            return None
 
 def get_plugin_names():
     plugins = []
@@ -273,14 +288,22 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
-def save_global_variable(analysis_run, POI_name, POI_size, address, comment=""):
+def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="-1", comment=""):
     global global_var_collection
     document = {'Analysis Run': analysis_run,
                 'Variable Name': POI_name,
+                'Variable Value': POI_value,
                 'Variable Size': POI_size,
                 'Address': address,
                 'Comment': comment}
     global_var_collection.replace_one({'Variable Name': POI_name}, document, upsert=True)
+
+def get_global_variables():
+    global global_var_collection
+    variables = []
+    for var in global_var_collection.find():
+        variables.append(var)
+    return variables
 
 def get_variables():
     global variable_collection
@@ -315,6 +338,19 @@ def get_strings():
         strings.append(strg)
     return strings
 
+def get_all_plugin_strings():
+    global current_plugin_name
+    for c in plugin_collection.find():
+        try:
+            if (c["name"] == current_plugin_name):
+                strings = []
+                for s in c["strings"]:
+                    strings.append(c["strings"])
+                return strings
+        except KeyError:
+            print("Key error")
+
+
 def get_string_from_name(find_string):
     name = ""
     for c in string_collection.find():
@@ -325,21 +361,30 @@ def get_string_from_name(find_string):
         except KeyError:
             print("Key error")
 
-def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_binary_section, POI_parameter_order, POI_parameter_type):
+def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_address,
+                   POI_parameter_order, POI_parameter_type, dest_address, call_from=None,
+                   POI_parameter_values=None, binary_section="", comment=""):
+    if call_from is None:
+        call_from = []
+    if POI_parameter_values is None:
+        POI_parameter_values = []
     global function_collection
     document = {'Analysis Run': analysis_run,
                 'Function Name': POI_name,
                 # 'Function Value': POI_value,
                 'Return Type': POI_return_type,
                 'Return Value': POI_return_value,
-                # 'Destination Address': POI_destination_address,
-                'Binary Section': POI_binary_section,
+                'Destination Address': dest_address,
+                'Address': POI_address,
                 # 'Library Name': POI_name,
                 'Parameter Order': POI_parameter_order,
                 'Parameter Type': POI_parameter_type,
+                'Binary Section': binary_section,
+                'Parameter Value': POI_parameter_values,
+                'Call From': call_from,  # either a function name or address
                 # 'Parameter Value': POI_parameter_value,
                 # 'Call From Address': POI_order_to_functions
-                'Comment': ""
+                'Comment': comment
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 

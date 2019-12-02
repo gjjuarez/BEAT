@@ -32,14 +32,18 @@ def set_current_plugin(name):
     global current_plugin_name
     current_plugin_name = name
 
+
 def get_pois_from_plugin_and_type(plugin, type):
+    print("in get_poits_from_plugin_and__type")
     pois = []
+    print("Looking for POI from plugin:", plugin, "of type:",type)
     for c in plugin_collection.find():
         if c['name'] == plugin:
             return list(c[type])
 
-def get_pois_from_plugin_and_type(type):
+def get_pois_from_type(type):
     pois = []
+    print("Shouldnt be here")
     plugin = current_plugin_name
     for c in plugin_collection.find():
         try:
@@ -95,27 +99,10 @@ def delete_variable_poi_by_name(poi_name):
     except:
         print("Delete POI variable error")
 
-def delete_prototcol_poi_by_name(poi_name):
-    try:
-        protocol_collection.delete_one({'name': poi_name})
-        struct_collection.drop()
-    except:
-        print("Delete POI protocol error")
 
-def delete_struct_poi_by_name(poi_name):
-    try:
-        struct_collection.delete_one({'name': poi_name})
-    except:
-        print("Delete POI struct error")
+def add_string_to_plugin(name, string_name):
+    string = {'String Value': string_name
 
-def add_string_to_plugin(name, string_name, string_type, string_size, string_call_address, string_destination_address,
-                         section):
-    string = {'String Name': string_name,
-             'String Type': string_type,
-             'String Size': string_size,
-             'Call from Address': string_call_address,
-             'Address': string_destination_address,
-             'Section': section
             }
     plugin_collection.find_one_and_update(
     {'name' : name},
@@ -129,15 +116,10 @@ def add_string_to_plugin(name, string_name, string_type, string_size, string_cal
     for document in cursor: 
         pprint(document)
     #plugin_collection.findOneAndUpdate({name}.insert_one({string: 'whatever'}))
-def add_function_to_plugin(name, function_name, parmeter_order_and_type, parameter_value, return_value,
-                           function_call_address, function_destination_address, python_translation_code):
+def add_function_to_plugin(name, function_name, parmeter_order_and_type, return_value):
     function = {'Function Name': function_name,
                'Parameter Type and Order': parmeter_order_and_type,
-               'Parameter Value': parameter_value,
-               'Return Value': return_value,
-               'Call From Address': function_call_address,
-               'Destination Address': function_destination_address,
-               'Python Translation Code': python_translation_code
+               'Return Type': return_value,
                }
     plugin_collection.find_one_and_update(
     {'name' : name},
@@ -145,12 +127,9 @@ def add_function_to_plugin(name, function_name, parmeter_order_and_type, paramet
         {"function": function}
     },upsert=True
     )
-def add_variable_to_plugin(name, variable_name, variable_value, variable_type, variable_size, variable_call_address ):
+def add_variable_to_plugin(name, variable_name,variable_type):
     variable = {'Variable Name': variable_name,
-                'Variable Value': variable_value,
                 'Variable Type': variable_type,
-                'Variable Size': variable_size,
-                'Call From Address': variable_call_address
                 }
     plugin_collection.find_one_and_update(
     {'name' : name},
@@ -168,27 +147,6 @@ def add_dll_to_plugin(name, libaray_name):
         {"dll": dll}
     },upsert=True
     )
-def add_packet_to_plugin(name, protocol_name, field_name, field_type):
-    packet = {'Protocol Name': protocol_name,
-              'Field Name': field_name,
-              'Field Type': field_type
-              }
-    plugin_collection.find_one_and_update(
-    {'name' : name},
-    {"$push":
-        {"packet": packet}
-    },upsert=True
-    )
-def add_struct_to_plugin(name, struct_name):
-    struct = {'Struct Name': struct_name
-              }
-    plugin_collection.find_one_and_update(
-    {'name' : name},
-    {"$push":
-        {"struct": struct}
-    },upsert=True
-    )
-
 '''
 #################################################################################
 Project functions
@@ -198,24 +156,18 @@ Project functions
 variable_collection = None
 string_collection = None
 function_collection = None  #libraries (imports) included in this collection
-protocol_collection = None
-struct_collection = None
 global_var_collection = None
 
 def initialize_POI_collections(project_name):
     global variable_collection
     global string_collection
     global function_collection
-    global protocol_collection
-    global struct_collection
     global global_var_collection
     global database
 
     varName = project_name + "Variables"
     stringName = project_name + "Strings"
     functionName = project_name + "Functions"
-    protocolName = project_name + "Protocols"
-    structName = project_name + "Structs"
     globalVarName = project_name + "GlobalVars"
 
     if varName not in database.list_collection_names():
@@ -229,14 +181,6 @@ def initialize_POI_collections(project_name):
     if functionName not in database.list_collection_names():
         database.create_collection(functionName)
     function_collection = database[functionName]
-
-    if protocolName not in database.list_collection_names():
-        database.create_collection(protocolName)
-    protocol_collection = database[protocolName]
-
-    if structName not in database.list_collection_names():
-        database.create_collection(structName)
-    struct_collection = database[structName]
 
     if globalVarName not in database.list_collection_names():
         database.create_collection(globalVarName)
@@ -261,13 +205,6 @@ def get_Function_POIs():
     data = function_collection.find()
     return list(data)
 
-def get_protocol_POIs():
-    data = protocol_collection.find()
-    return list(data)
-
-def get_struct_POIs():
-    data = struct_collection.find()
-    return list(data)
 
 def save_project(name, desc, path, binary_info):
     project_dict = {"name": name,
@@ -284,7 +221,8 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Variable Value': POI_value,
                 'Variable Type': POI_data_type,
                 'Address': address,
-                'Comment': ""}
+                'Comment': "",
+                'Analysis Name': ""}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
@@ -295,7 +233,8 @@ def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="-
                 'Variable Value': POI_value,
                 'Variable Size': POI_size,
                 'Address': address,
-                'Comment': comment}
+                'Comment': comment,
+                'Analysis Name': ""}
     global_var_collection.replace_one({'Variable Name': POI_name}, document, upsert=True)
 
 def get_global_variables():
@@ -328,7 +267,8 @@ def save_strings(analysis_run, POI_value, section, address, comment=''):
                 'String Value': POI_value,
                 'Section': section,
                 'Address': address,
-                'Comment': comment}
+                'Comment': comment,
+                'Analysis Name': ""}
     string_collection.replace_one({'String Value': POI_value}, document, upsert=True)
 
 def get_strings():
@@ -355,8 +295,8 @@ def get_string_from_name(find_string):
     name = ""
     for c in string_collection.find():
         try:
-            if (c["String Name"] == find_string):
-                name = c["String Name"]
+            if (c["String Value"] == find_string):
+                name = c["String Value"]
                 return name
         except KeyError:
             print("Key error")
@@ -382,9 +322,8 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Binary Section': binary_section,
                 'Parameter Value': POI_parameter_values,
                 'Call From': call_from,  # either a function name or address
-                # 'Parameter Value': POI_parameter_value,
-                # 'Call From Address': POI_order_to_functions
-                'Comment': comment
+                'Comment': comment,
+                'Analysis Name': ""
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 
@@ -454,8 +393,6 @@ def delete_project_given_name(name):
         function_collection.drop()
         string_collection.drop()
         variable_collection.drop()
-        protocol_collection.drop()
-        struct_collection.drop()
     except:
         print("Drop collection error")
 
@@ -477,33 +414,62 @@ def delete_variable_collection():
     except:
         print("Drop variable collection error")
 
-def delete_protocol_collection():
-    try:
-        protocol_collection.drop()
-    except:
-        print("Drop protocol collection error")
 
-def delete_struct_collection():
-    try:
-        struct_collection.drop()
-    except:
-        print("Drop struct collection error")
-
+#adds a comment to all the POI based on the POI_name given to the method
 def add_comment(POI_name, comment):
-    global struct_collection
     global variable_collection
     global function_collection
-    global protocol_collection
     global string_collection
 
     variable_collection.update_one({"Variable Name": POI_name} ,{ "$set":{"Comment": comment}})
-    struct_collection.update_one({"Struct Name": POI_name}, {"$set": {"Comment": comment}})
     function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
-    protocol_collection.update_one({"Protocol Name": POI_name}, {"$set": {"Comment": comment}})
-    string_collection.update_one({"String Name": POI_name}, {"$set": {"Comment": comment}})
+    string_collection.update_one({"String Value": POI_name}, {"$set": {"Comment": comment}})
 
-def end():
+#finds all POIs without an analysis assigned to them and gives them the analysis_name
+def add_analysis_name(analysis_name):
+    name =""
+    global variable_collection
+    global function_collection
+    global string_collection
+
+    for c in variable_collection.find():
+        variable_collection.update_one({'Analysis Name': name} ,{ "$set":{'Analysis Name': analysis_name}})
+    for d in function_collection.find():
+        function_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+    for e in string_collection.find():
+        string_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+
+#gets the all POIs based on the analysis_name given (if given an empty string will return all POIs not assigned to an analysis)
+def find_analysis(analysis_name):
+        global variable_collection
+        global function_collection
+        global string_collection
+
+        for c in variable_collection.find():
+            variable = variable_collection.find({'Analysis Name': analysis_name})
+        for d in variable_collection.find():
+            function = function_collection.find({'Analysis Name': analysis_name})
+        for e in variable_collection.find():
+            string = string_collection.find({'Analysis Name': analysis_name})
+
+        return variable, function, string
+
+#sets all POIs with the defined analysis name to a blank string to be either renamed or removed from the analysis
+def delete_analysis_by_name(analysis_name):
+    name =""
+    global variable_collection
+    global function_collection
+    global string_collection
+
+    for c in variable_collection.find():
+        variable_collection.update_one({'Analysis Name': analysis_name} ,{ "$set":{'Analysis Name': name}})
+    for d in variable_collection.find():
+        function_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+    for e in variable_collection.find():
+        string_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+
     # close the connection to the database
+def end():
     connection.close()
 
 # test code##############################################################################################

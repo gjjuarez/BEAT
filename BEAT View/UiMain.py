@@ -4,7 +4,6 @@ import UiView
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 
-from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from ArchitectureError import Ui_ArchitectureError
@@ -27,7 +26,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-
+        #self.file_path_lineedit.setEd
         ###########################
         # Resizing according to user's desktop
         ###########################
@@ -91,8 +90,6 @@ class UiMain(UiView.Ui_BEAT):
         self.analysis_result_button.clicked.connect(self.analysis_result)
         # calls comment_view after comment_button is clicked
         self.comment_button.clicked.connect(self.comment_view)
-        # calls output_field after output_field_button is clicked
-        self.output_field_button.clicked.connect(self.output_field)
 
         '''
         Plugin Management Tab Listeners
@@ -116,6 +113,8 @@ class UiMain(UiView.Ui_BEAT):
 
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(self.poi_type_changed_in_poi)
         self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
+
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
         '''
         Documentation Tab Listeners
         '''
@@ -228,7 +227,7 @@ class UiMain(UiView.Ui_BEAT):
         self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-        self.file_path_lineedit.setDisabled(False)
+       # self.file_path_lineedit.setDisabled(False)
         self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
@@ -427,6 +426,14 @@ class UiMain(UiView.Ui_BEAT):
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        try:
+            x,y,z =data_manager.getCurrentProjectInfo()
+
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Project Error", "There must be a project set to run static analysis", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+
         self.process_window = QtWidgets.QProgressDialog("Running Static Analysis...", None, 0,0)
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
@@ -791,7 +798,7 @@ class UiMain(UiView.Ui_BEAT):
         if not listItems: return
         for item in listItems:
            self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
-           data_manager.delete_plugin_given_name(item)
+           data_manager.delete_plugin_given_name(item.text())
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''
@@ -831,12 +838,16 @@ class UiMain(UiView.Ui_BEAT):
         print("Populating POIs in POI tab")
         to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
         # save current plugin name in data manager
+        print("--to_find", to_find)
 
         self.point_of_interest_view_listwidget.clear()
+
         if to_find == "": return
         try:
+            print("Lookinf for strings")
             strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
         except:
+            print("no strings found")
             strings = ""
         try:
             functions = data_manager.get_pois_from_plugin_and_type(to_find, "function")
@@ -868,7 +879,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def poi_type_changed_in_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
-        # ["Function","String", "Variable", "DLL", "Packet Protocol", "Struct"]
+        # ["Function","String", "Variable", "DLL"]
         if poi_detected == "Function":
             self.Poi_stacked_Widget.setCurrentIndex(2)
         elif poi_detected == "String":
@@ -878,6 +889,11 @@ class UiMain(UiView.Ui_BEAT):
         elif poi_detected == "DLL":
             self.Poi_stacked_Widget.setCurrentIndex(1)
 
+    def change_plugin_in_poi(self):
+        self.populate_pois_in_poi()
+        
+
+
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
@@ -885,52 +901,30 @@ class UiMain(UiView.Ui_BEAT):
         if poi_detected == "Function":
             name = self.poi_function_name_lineedit.text()
             type = self.poi_function_parameter_lineedit.text()
-            parameter_val = self.poi_function_paramtervalue_lineedit.text()
-            return_val = self.poi_function_returnvalue_lineedit.text()
-            call_from = self.poi_function_callfromaddress_lineedit.text()
-            destination = self.poi_function_destinationaddress_lineedit.text()
-            translated_code = self.poi_function_pythontranslatedcode_lineedit.text()
+            
+            return_val = self.poi_function_returntype_lineedit.text()
 
-            data_manager.add_function_to_plugin(plugin, name, type, parameter_val,
-                                                return_val, call_from, destination, translated_code)
+            data_manager.add_function_to_plugin(plugin, name, type, return_val)
 
             self.poi_function_name_lineedit.setText("")
             self.poi_function_parameter_lineedit.setText("")
-            self.poi_function_paramtervalue_lineedit.setText("")
-            self.poi_function_returnvalue_lineedit.setText("")
-            self.poi_function_callfromaddress_lineedit.setText("")
-            self.poi_function_destinationaddress_lineedit.setText("")
-            self.poi_function_pythontranslatedcode_lineedit.setText("")
+            self.poi_function_returntype_lineedit.setText("")
 
         elif poi_detected == "String":
             name = self.poi_string_name_lineedit.text()
-            str_type = self.poi_string_type_lineedit.text()
-            size = self.poi_string_size_lineedit.text()
-            call_from = self.poi_string_callfromaddress_lineedit.text()
-            destination = self.poi_string_destinationaddress_lineedit.text()
-            section = self.poi_string_section_lineedit.text()
-            data_manager.add_string_to_plugin(plugin,name,str_type,size,call_from,destination,section)
+
+            data_manager.add_string_to_plugin(plugin,name)
 
             self.poi_string_name_lineedit.setText("")
-            self.poi_string_type_lineedit.setText("")
-            self.poi_string_size_lineedit.setText("")
-            self.poi_string_callfromaddress_lineedit.setText("")
-            self.poi_string_destinationaddress_lineedit.setText("")
-            self.poi_string_section_lineedit.setText("")
+
 
         elif poi_detected == "Variable":
             name = self.poi_variable_name_lineedit.text()
-            value = self.poi_variable_value_lineedit.text()
             var_type = self.poi_variable_type_lineedit.text()
-            size = self.poi_variable_size_lineedit.text()
-            address = self.poi_variable_callfromaddress_lineedit.text()
-            data_manager.add_variable_to_plugin(plugin,name, value, var_type, size, address)
+            data_manager.add_variable_to_plugin(plugin,name, var_type)
 
             self.poi_variable_name_lineedit.setText("")
-            self.poi_variable_value_lineedit.setText("")
             self.poi_variable_type_lineedit.setText("")
-            self.poi_variable_size_lineedit.setText("")
-            self.poi_variable_callfromaddress_lineedit.setText("")
 
         elif poi_detected == "DLL":
             print("geting dlllllllllllllllllllllllll :D")
@@ -982,6 +976,6 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    ui.new_project()
+    #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

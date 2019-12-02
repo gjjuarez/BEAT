@@ -398,51 +398,6 @@ def get_function_from_name(find_function):
         except KeyError:
             print("Key error")
 
-def save_protocols(analysis_run, POI_name, POI_structure, POI_section_size, POI_section_value,
-                      POI_binary_section, POI_call_address, comment=''):
-    global project_collection
-    document = {'Protocol Name': POI_name,
-                'Call From Address': POI_call_address,
-                'Structure': POI_structure,
-                'Section Size': POI_section_size,
-                'Section Value': POI_section_value,
-                'Binary Section': POI_binary_section,
-                'Comment': comment}
-    function_collection.replace_one({"Protocol Name": POI_name}, document, upsert=True)
-
-def get_protocol_from_name(find_protocol):
-    name = ""
-    for c in protocol_collection.find():
-        try:
-            if (c["Protocol Name"] == find_protocol):
-                name = c["Protocol Name"]
-                return name
-        except KeyError:
-            print("Key error")
-
-def save_structs(analysis_run, POI_name, POI_structure, POI_member_order, POI_member_type, POI_member_value,
-                    POI_binary_section, POI_call_address, comment=''):
-    global struct_collection
-    document = {'Struct Name': POI_name,
-                'Call From Address': POI_call_address,
-                'Structure': POI_structure,
-                'Member Order': POI_member_order,
-                'Member Type': POI_member_type,
-                'Member Value': POI_member_value,
-                'Binary Section': POI_binary_section,
-                'Comment': comment}
-    function_collection.replace_one({"Struct Name": POI_name}, document, upsert=True)
-
-def get_struct_from_name(find_struct):
-    name = ""
-    for c in struct_collection.find():
-        try:
-            if (c["Struct Name"] == find_struct):
-                name = c["Struct Name"]
-                return name
-        except KeyError:
-            print("Key error")
-
 def get_functions():
     global function_collection
     functions = []

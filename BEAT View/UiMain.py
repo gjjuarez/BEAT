@@ -427,7 +427,7 @@ class UiMain(UiView.Ui_BEAT):
     '''
     def analyze_and_display_POI(self):
         try:
-            x,y,z =data_manager.getCurrentProjectInfo()
+            x, y, z, a = data_manager.getCurrentProjectInfo()
 
         except:
             self.msg_error = QMessageBox(QMessageBox.Question, "No Project Error", "There must be a project set to run static analysis", QMessageBox.Ok)

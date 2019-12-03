@@ -38,6 +38,8 @@ class UiMain(UiView.Ui_BEAT):
         #User cannot delete unselected project
         self.delete_project_button.setDisabled(True)
 
+        self.run_button.setDisabled(True)
+
         #User cannot edit project fields without creating a new project
         self.project_name_text.setDisabled(True)
         self.project_desc_text.setDisabled(True)
@@ -90,6 +92,8 @@ class UiMain(UiView.Ui_BEAT):
         self.analysis_result_button.clicked.connect(self.analysis_result)
         # calls comment_view after comment_button is clicked
         self.comment_button.clicked.connect(self.comment_view)
+
+        self.run_button.clicked.connect(self.run_command_from_cmd)
 
         '''
         Plugin Management Tab Listeners
@@ -426,6 +430,7 @@ class UiMain(UiView.Ui_BEAT):
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        self.run_button.setDisabled(False)
         try:
             x,y,z =data_manager.getCurrentProjectInfo()
 
@@ -892,7 +897,13 @@ class UiMain(UiView.Ui_BEAT):
     def change_plugin_in_poi(self):
         self.populate_pois_in_poi()
         
-
+    def run_command_from_cmd(self):
+        cmd = self.terminal_input.text()
+        if cmd  == "":
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Command Error", "A command must be given to run", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        radare_commands_interface.run_cmd(cmd)
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())

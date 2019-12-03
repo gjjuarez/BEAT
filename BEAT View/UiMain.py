@@ -116,6 +116,8 @@ class UiMain(UiView.Ui_BEAT):
 
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(self.poi_type_changed_in_poi)
         self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
+
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
         '''
         Documentation Tab Listeners
         '''
@@ -881,6 +883,11 @@ class UiMain(UiView.Ui_BEAT):
             self.Poi_stacked_Widget.setCurrentIndex(0)
         elif poi_detected == "DLL":
             self.Poi_stacked_Widget.setCurrentIndex(1)
+
+    def change_plugin_in_poi(self):
+        self.populate_pois_in_poi()
+        
+
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())

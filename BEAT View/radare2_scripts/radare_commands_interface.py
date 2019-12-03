@@ -35,17 +35,97 @@ def run_static_analysis():
         pass  # fail quietly, almost always gives error when reading
     extract_all()
 
-def run_dynamic_analysis():
+def dynamicAnalysis():
     global rlocal
-    try:
-        #rlocal = r2pipe.open("/home/osboxes/Documents/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])  # open radare2 in debug mode
-        rlocal.cmd("aaa")
-    except:
-        pass  # fail quietly, almost always gives error when reading
-    extract_all()
-    run_dynamic_and_update()
 
-def extract_vars_from_functions():
+    numRuns = 0
+
+    breakpoints = get_all_breakpoints()
+    progress = []
+    for b in breakpoints:
+        print("Running dynamic")
+        output = rlocal.cmd("dc")
+        if output != "":
+            progress.append(output)
+        rlocal.cmd("2ds")
+        # rlocal.cmd("aaa")
+        # update_functions_and_local_variables()
+        extract_functions(numRuns)
+        extract_vars_from_functions(numRuns)
+        numRuns += 1
+
+    return progress
+
+"""
+def update_functions_and_local_variables():
+    global numRuns
+    print("Updating functions")
+    functions = data_manager.get_functions()
+    for func in functions:
+        if func["Analysis Run"] != "static":
+            continue
+        rlocal.cmd("s " + func["Function Name"])
+        # get parameter values if parameters exist
+        paramVal = []
+        if len(func["Parameter Value"]) > 0:
+            values = rlocal.cmd("afvd~arg").split("\n")
+            # print(values)
+            for val in values:
+                # print(val)
+                if val == "":
+                    continue
+                val = val.split()
+
+                # get value of param
+                # use px [numBytes] @[rsi/rdi/rax] to get value during dynamic
+                hexVal = val[len(val) - 1]
+
+                # check if value is given for param in radare2 or empty
+                if "=" != hexVal and "0x" in hexVal:  # no value exists, radare2 can't get a value
+                    paramVal.append(hexVal)
+                # print("Parameter Value: " + hexVal)
+        returnValue = find_function_value()
+
+        data_manager.save_functions("dynamic" + str(numRuns), func["Function Name"], func["Return Type"], returnValue,
+                                    func["Address"], func["Parameter Order"], func["Parameter Type"], func["Destination Address"],
+                                    func["hasBreakpoint"], func["Call From"], paramVal, func["Binary Section"])
+        update_local_variable_in_function(func["Function Name"])
+        """
+"""
+def update_local_variable_in_function(funcName):
+    global numRuns
+    print("Updating local variables")
+    allVariables = data_manager.get_local_variables_from_function(funcName)
+    variables = []
+    for var in allVariables:
+        if var["Analysis Run"] == "static":
+            variables.append(var)
+    if len(variables) == 0:
+        return
+    # update variables
+    rlocal.cmd("s " + funcName)
+    variableValList = rlocal.cmd("afvd").split("\n")
+    values = []
+    for val in variableValList:
+        attr = val.split()
+        if len(attr) == 0:
+            continue
+
+        # skip parameters
+        if attr[0] != "var":
+            continue
+        varValue = attr[5]
+        values.append(varValue)
+    print(values)
+    print(variables)
+
+    for index in range(0, len(variables)):
+        print(values[index], variables[index])
+        data_manager.save_variables("dynamic" + str(numRuns), funcName, variables[index]["Variable Name"],
+                                    values[index], variables[index]["Variable Type"], variables[index]["Address"])
+"""
+
+def extract_vars_from_functions(numRun=-1):
     global rlocal
     currentAddr = rlocal.cmd("s")  # dont lose original position
     functions = data_manager.get_functions()
@@ -70,12 +150,14 @@ def extract_vars_from_functions():
                 if varName in varTemp:
                     varType = varTemp.split()[1]
             if filter.filter_var(varName, varType):
-                data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
+                if numRun != -1:
+                    data_manager.save_variables("dynamic" + str(numRun), funcName, varName, varValue, varType, varAddr)
+                else:
+                    data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
 
     rlocal.cmd("s " + currentAddr)
 
 def extract_all():
-    # TODO: filter the search somehow
     extract_functions()
     extract_strings()
     # extract_imports()
@@ -117,11 +199,10 @@ def extract_global_vars():
     rlocal.cmd("s " + currentAddr)  # revert to previous address
 
 
-def extract_functions():
+def extract_functions(numRun=-1):
     global rlocal
     print("Entered extract functions!")
     funcs = rlocal.cmd("afl").split("\n")
-    currentAddr = rlocal.cmd("s")
     # go through every function and add to database
     for func in funcs:
         if func == "":
@@ -155,49 +236,7 @@ def extract_functions():
         if returnType == funcName or funcName not in funcHeader:
             returnType = None
 
-        regValue = rlocal.cmd("pdf~eax").split("\n")
-        regValue = regValue[0:len(regValue) - 1]
-        # check if return exists in eax register
-        if len(regValue) > 0:
-            # print("List")
-            # print(regValue)
-            cols = regValue[len(regValue)-1].split()
-            lastCol = len(cols)-1
-            # if return value is determined at runtime use register value, should be 0x00 before running
-            if "[" in cols[lastCol]:
-                returnValue = rlocal.cmd("aer eax").split("\n")[0]
-            elif "eax" in cols[lastCol] or "mov" not in regValue[len(regValue)-1]:
-                returnValue = None
-            else:
-                returnValue = cols[lastCol]
-        else:
-            regValue = rlocal.cmd("pdf~rax,").split("\n")
-            regValue = regValue[0:len(regValue)-1]
-            # print("List")
-            # print(regValue)
-            if len(regValue) == 0:
-                returnValue = None
-            # if return value is determined at runtime use register value, should be 0x00 before running
-            elif "[" in regValue:
-                returnValue = rlocal.cmd("aer rax").split("\n")[1]
-            else:
-                cols = regValue[len(regValue)-1].split()
-                lastCol = len(cols) - 1
-                lastValue = len(regValue) - 1
-                # print(regValue)
-                # make sure rax is used as return value
-                if "rax" in cols[lastCol]:
-                    returnValue = None
-                elif ";" in regValue[lastValue]:
-                    cols = regValue[lastValue].split(";")
-                    returnValue = cols[len(cols)-1]
-                elif "lea" not in regValue[lastValue]:
-                    returnValue = None
-                else:
-                    returnValue = cols[lastCol]
-
-        #print("Return value: ")
-        #print(returnValue)
+        returnValue = find_function_value()
 
         # print("Return value: " + returnValue)
         # (aer eax) or (aer rax) - to check return register value during dynamic
@@ -246,12 +285,10 @@ def extract_functions():
                 hexVal = val[len(val)-1]
 
                 # check if value is given for param in radare2 or empty
-                if "=" == hexVal:  # no value exists, radare2 can't get a value
+                if "=" == hexVal or "0x" not in hexVal:  # no value exists, radare2 can't get a value
                     paramVal.append("n/a")
-                    continue
-                elif "0x" not in hexVal:  # value is at different index
-                    hexVal = val[4]  # should be value in hex
-                paramVal.append(hexVal)
+                else:
+                    paramVal.append(hexVal)
                 # print("Parameter Value: " + hexVal)
 
         # get section in binary
@@ -266,10 +303,55 @@ def extract_functions():
             sectionArray = section.split()
             sectionName = sectionArray[len(sectionArray)-1]
         # print(sectionName)
+        # if filter.filter_function(funcName, returnType, returnValue, funcAddr, returnAddr):
+        if numRun != -1:
+            data_manager.save_functions("dynamic" + str(numRun), funcName, returnType, returnValue, funcAddr,
+                                        params, paramType, returnAddr, True, callFrom, paramVal, sectionName)
+        else:
+            data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr,
+                                        params, paramType, returnAddr, True, callFrom, paramVal, sectionName)
+            # set necessary breakpoints
+            set_breakpoint_at_address(funcAddr)
 
-        data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr,
-                                    params, paramType, returnAddr, callFrom, paramVal, sectionName)
-    rlocal.cmd("s " + currentAddr)
+def find_function_value():
+    global rlocal
+
+    regValue = rlocal.cmd("pdf~eax").split("\n")
+    regValue = regValue[0:len(regValue) - 1]
+    # check if return exists in eax register
+    if len(regValue) > 0:
+        cols = regValue[len(regValue) - 1].split()
+        lastCol = len(cols) - 1
+        # if return value is determined at runtime use register value, should be 0x00 before running
+        if "[" in cols[lastCol]:
+            returnValue = rlocal.cmd("aer eax").split("\n")[0]
+        elif "eax" in cols[lastCol] or "mov" not in regValue[len(regValue) - 1]:
+            returnValue = None
+        else:
+            returnValue = cols[lastCol]
+    else:
+        regValue = rlocal.cmd("pdf~rax,").split("\n")
+        regValue = regValue[0:len(regValue) - 1]
+        if len(regValue) == 0:
+            returnValue = None
+        # if return value is determined at runtime use register value, should be 0x00 before running
+        elif "[" in regValue:
+            returnValue = rlocal.cmd("aer rax").split("\n")[1]
+        else:
+            cols = regValue[len(regValue) - 1].split()
+            lastCol = len(cols) - 1
+            lastValue = len(regValue) - 1
+            # make sure rax is used as return value
+            if "rax" in cols[lastCol]:
+                returnValue = None
+            elif ";" in regValue[lastValue]:
+                cols = regValue[lastValue].split(";")
+                returnValue = cols[len(cols) - 1]
+            elif "lea" not in regValue[lastValue]:
+                returnValue = None
+            else:
+                returnValue = cols[lastCol]
+    return returnValue
 
 def extract_strings():
     global rlocal
@@ -291,46 +373,19 @@ def extract_strings():
         if filter.filter_string(strValue):
             data_manager.save_strings("static", strValue, strSection, strAddr)
 
-def extract_imports():
+def set_breakpoint_at_address(address):
     global rlocal
     try:
-        rlocal.cmd("ii > imports.txt")
+        rlocal.cmd("db " + address)
     except:
-        print("Error extracting string")
+        print("Error setting breakpoint at: " + address)
 
-def run_dynamic_and_update():
-    rlocal.cmd("dc")
-    extract_strings()
-    extract_functions()
-    extract_vars_from_functions()
-
-def set_breakpoint_at_function(func_name):
+def remove_breakpoint_at_address(addres):
+    global rlocal
     try:
-        rlocal.cmd("db " + func_name)
-        print("Function breakpoint successfully set at: " + func_name)
+        rlocal.cmd("db- " + addres)
     except:
-        print("Error setting breakpoint at function address: " + func_name)
-
-def remove_breakpoint_at_function(func_name):
-    try:
-        rlocal.cmd("db- " + func_name)
-        print("Function breakpoint successfully removed at: " + func_name)
-    except:
-        print("Error removing breakpoint at function address: " + func_name)
-
-def set_breakpoint_at_strings(string_addr):
-    try:
-        rlocal.cmd("db " + string_addr)
-        print("String breakpoint successfully set at: " + string_addr)
-    except:
-        print("Error setting breakpoint at string address: " + string_addr)
-
-def set_breakpoint_for_var_inside_function(var_address):
-    try:
-        rlocal.cmd("db " + var_address)
-        print("Var breakpoint successfully set at: " + var_address)
-    except:
-        print("Error setting breakpoint at var address: " + var_address)
+        print("Error removing breakpoint at: " + addres)
 
 def get_all_breakpoints():
     global rlocal
@@ -346,45 +401,7 @@ def get_all_breakpoints():
         print("Error getting all breakpoints")
     return bp
 
-def display_POI_in_points_of_interest():
-    print("Test")
 
-def dynamicAnalysis():
-    functions = data_manager.get_functions()
-    # infile = r2pipe.open(filePath, ['-d', '-e', 'dbg.profile=profile.rr2']) #open file, will do only once
-    global rlocal
-    #rlocal= r2pipe.open("/home/krunkcoco/PycharmProjects/Team01_BEAT/BEAT View/radare2_scripts/hello", flags=['-d'])
-    # infile.cmd('e dbg.profile=robot.rr2')  # this line should configure things properly should input be required
-    #rlocal.cmd("aaa") # entire analysis is needed for full functionality
-    progress = [] # empty list to attach things too
-    #rlocal.cmd("ood")
-    for func in functions: # iterate over list of functions
-        curntFunc = func['Function Name']
-        progress.append("Function Name:")
-        progress.append(curntFunc)
-        rlocal.cmd("s " + curntFunc)
-        # rlocal.cmd("ood")   # open in debug mode
-        breakpointString = "db " + str(curntFunc)
-        rlocal.cmd(breakpointString) # first set the breakpoint
-        rlocal.cmd("dc")    # continue to run until breakpoint is hit, there may be some input required which still not sure where to pass it
-        progress.append("Hit breakpoint @ " + curntFunc)
-        argsnvar = rlocal.cmd("afvd")   # get args and local vars at this point
-        progress.append("----------Initial Values of Args and Variables----------")
-        progress.append(argsnvar)   # put args on list
-        # rlocal.cmd("dcr")   # continue execution until return call
-        returnvals = rlocal.cmd("afvd")#values at the end
-        progress.append("----------Final Values of Args and Variables----------")
-        progress.append(returnvals)     # end values
-        stack = rlocal.cmd("x@rsp")     # peek in the stack, some other values may be elswhere will have to modify
-        # progress.append("----------STACK----------")
-        # progress.append(stack)  # add stack to list
-        rax = rlocal.cmd("dr rax")#return value
-        progress.append("----------RETURN VALUE----------")
-        progress.append(rax)    # put in list
-        progress.append("--------------------------------")
-        # at this point process is done so the breakpoint needs to be removed for next thing
-        # rlocal.cmd("db-*")  # remove all breakpoints
-    return progress
 
 if __name__ == "__main__":
     #pass

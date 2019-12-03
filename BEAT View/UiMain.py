@@ -880,7 +880,8 @@ class UiMain(UiView.Ui_BEAT):
             self.msg_error = QMessageBox(QMessageBox.Question, "No Command Error", "A command must be given to run", QMessageBox.Ok)
             self.msg_error.exec()
             return
-        radare_commands_interface.run_cmd(cmd)
+        result = radare_commands_interface.run_cmd(cmd).split('{}')
+        self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())

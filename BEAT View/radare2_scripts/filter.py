@@ -3,7 +3,7 @@ sys.path.append("..")  # for data_manager
 import data_manager
 
 def filter_string(value, section, address):
-    strings_poi = data_manager.get_pois_from_plugin_and_type("string")
+    strings_poi = data_manager.get_pois_from_type("string")
     if strings_poi is None:
         return True
     for s in strings_poi:
@@ -14,7 +14,7 @@ def filter_string(value, section, address):
     return False
 
 def filter_var(name, value, vartype, size, address):
-    vars_poi = data_manager.get_pois_from_plugin_and_type("variable")
+    vars_poi = data_manager.get_pois_from_type("variable")
     if vars_poi is None:
         return True
     for v in vars_poi:
@@ -27,7 +27,7 @@ def filter_var(name, value, vartype, size, address):
     return False
 
 def filter_function(name, ret_type, ret_value, address, dest_address, call_from="", param_order=[], param_values=[]):
-    functions = data_manager.get_pois_from_plugin_and_type("function")
+    functions = data_manager.get_pois_from_type("function")
     if functions is None:
         return True
     for func in functions:
@@ -61,7 +61,7 @@ def filter_function(name, ret_type, ret_value, address, dest_address, call_from=
     return False
 
 def filter_dll(name):
-    dll_poi = data_manager.get_pois_from_plugin_and_type("dll")
+    dll_poi = data_manager.get_pois_from_type("dll")
     if dll_poi is None:
         return True
     for d in dll_poi:

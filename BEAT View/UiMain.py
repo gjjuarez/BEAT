@@ -1,8 +1,10 @@
 from PyQt5 import QtCore
 
 import UiView
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
+from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtWidgets import QInputDialog, QApplication, QLineEdit, QMainWindow, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
+
+from PyQt5.QtCore import QDir
 
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
@@ -357,38 +359,25 @@ class UiMain(UiView.Ui_BEAT):
     if the comment exists
     '''
     def comment_view(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_Figure11CommentView()
-        self.ui.setupUi(self.window)
-        self.window.show()
-
+        from PyQt5 import QtGui
         current_item = self.points_of_interest_list_widget.currentItem()
-        print(str(current_item.text()))
+        current_item_text = str(current_item.text())
+        print(current_item_text)
 
-        # This looks for if comments already exits for a line
+        # retrieves comment and poi type
+        comment, poi_type = data_manager.get_comment_from_name(current_item_text)
 
-        if path.exists("comment.txt"):
-            comment = open("comment.txt", "r+")
-            looking_for_comment = self.points_of_interest_list_widget.currentRow()
-            for line in comment:
-                comment_number = line.split(" ", 1)[0]
-                if comment_number == str(looking_for_comment):
-                    print("something there")
-                    self.ui.comment_textedit.setText(line)
-        comment.close()
-        self.ui.save_button.clicked.connect(self.save_comment)
-        self.ui.clear_button.clicked.connect(self.clear_comment)
+        comment_title = "Comment for POI " + current_item_text
 
-    '''
-    Saves comments to text file
-    '''
-    def save_comment(self):
-        comment = open("comment.txt", "a+")
-        text = self.ui.comment_textedit.toPlainText()
-        comment.write("%d " % self.points_of_interest_list_widget.currentRow())
-        comment.write(text + "\n")
-        print(text)
-        comment.close()
+        if not comment:
+            comment = " "
+
+        updated_comment, save = QInputDialog().getMultiLineText(BEAT, comment_title,
+                                          "Comment:", comment)
+        if save:
+            print(updated_comment)
+            data_manager.add_comment(current_item_text, poi_type, updated_comment)
+
 
     '''
     Works with save_comment to overwrite a comment that has already been placed 
@@ -406,18 +395,6 @@ class UiMain(UiView.Ui_BEAT):
             out.writelines(lines)
             out.close()'''
 
-    '''
-    Clears a comment from the POI
-    '''
-    def clear_comment(self):
-        with open("comment.txt", "r+") as f:
-            new_f = f.readlines()
-            f.seek(0)
-            for line in new_f:
-                if self.ui.comment_textedit.toPlainText() not in line:
-                    f.write(line)
-            f.truncate()
-        self.ui.comment_textedit.clear()
 
 
     def static_analysis(self):

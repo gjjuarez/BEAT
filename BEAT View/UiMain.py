@@ -59,6 +59,9 @@ class UiMain(UiView.Ui_BEAT):
         # Fill the Project list from mongo
         self.fill_projects()
 
+        # User cannot delete an unselected POI from the POI Tab
+        self.detailed_point_of_interest_view_delete_button.setDisabled(True)
+
         self.update_plugin_list()
 
         self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
@@ -130,6 +133,9 @@ class UiMain(UiView.Ui_BEAT):
         self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
 
         self.detailed_point_of_interest_view_delete_button.clicked.connect(self.delete_poi)
+
+        self.point_of_interest_view_listwidget.itemClicked.connect(self.poi_in_poitab_selected)
+
         '''
         Documentation Tab Listeners
         '''
@@ -878,21 +884,6 @@ class UiMain(UiView.Ui_BEAT):
         self.detailed_point_of_interest_view_existing_plugin_dropdown.clear()
         self.detailed_point_of_interest_view_existing_plugin_dropdown.addItems(plugins)
 
-    '''
-        def project_deletion_message(self):
-        name = self.project_list.currentItem().text()
-        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
-            "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
-        if buttonReply == QMessageBox.Yes:
-            data_manager.delete_project_given_name(name)
-            # clear page
-            self.clear_detailed_project_view()
-            self.project_list.clear()
-            self.fill_projects()
-            print("Done Removing Project:", name)
-            # disable deletion
-            self.delete_project_button.setDisabled(True)
-    '''
 
     '''
     Removes a selected plugin from the plugin list within Plugin Management 
@@ -1025,22 +1016,66 @@ class UiMain(UiView.Ui_BEAT):
         result = radare_commands_interface.run_cmd(cmd).split('{}')
         self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
 
+
+    '''
+        def project_deletion_message(self):
+        name = self.project_list.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            data_manager.delete_project_given_name(name)
+            # clear page
+            self.clear_detailed_project_view()
+            self.project_list.clear()
+            self.fill_projects()
+            print("Done Removing Project:", name)
+            # disable deletion
+            self.delete_project_button.setDisabled(True)
+    '''
+
+    def poi_in_poitab_selected(self):
+        self.detailed_point_of_interest_view_delete_button.setDisabled(False)
+
+
     def delete_poi(self):
-        try:
+        buttonReply = QMessageBox.question(BEAT, 'POI Deletion Warning',
+                                           "Are you sure you want to permanently delete these Points of Interest?",
+                                           QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
             name = self.point_of_interest_view_listwidget.currentItem().text()
-        except:
-            self.msg_error = QMessageBox(QMessageBox.Question, "No POI to Delete Error",
-                                     "Please select a POI to delete", QMessageBox.Ok)
-            self.msg_error.exec()
-            return
-        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
-        a = name.split(":")
-        print(a)
-        type = a[0]
-        poi = a[2].strip(" ',}")
-        print(plugin, type, poi)
-        data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
-        self.populate_pois_in_poi()
+            plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+            a = name.split(":")
+            print(a)
+            type = a[0]
+            poi = a[2].strip(" ',}")
+            print(plugin, type, poi)
+            data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
+            self.populate_pois_in_poi()
+            self.detailed_point_of_interest_view_delete_button.setDisabled(True)
+
+
+
+
+    def delete_pois(self):
+        buttonReply = QMessageBox.question(BEAT, 'POI Deletion Warning',
+                                           "Are you sure you want to permanently delete these Points of Interest?",
+                                           QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            try:
+                name = self.point_of_interest_view_listwidget.currentItem().text()
+            except:
+                self.msg_error = QMessageBox(QMessageBox.Question, "No POI to Delete Error",
+                                         "Please select a POI to delete", QMessageBox.Ok)
+                self.msg_error.exec()
+                return
+            plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+            a = name.split(":")
+            print(a)
+            type = a[0]
+            poi = a[2].strip(" ',}")
+            print(plugin, type, poi)
+            data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
+            self.populate_pois_in_poi()
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())

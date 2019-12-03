@@ -676,7 +676,7 @@ class UiMain(UiView.Ui_BEAT):
         variables = data_manager.get_variables()
         # display all variables related to current function
         for var in variables:
-            if func_name == var["Function Name"]:
+            if func_name == var["Function Name"] and var["Analysis Run"] == "static":
 
                 value = " " + var["Variable Name"]
                 # Checking if poi has a comment
@@ -693,6 +693,8 @@ class UiMain(UiView.Ui_BEAT):
         no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         functions = data_manager.get_functions()
         for func in functions:
+            if func["Analysis Run"] != "static":
+                continue
             value = func["Function Name"]
 
             if not func["Comment"] or func["Comment"] != ' ':

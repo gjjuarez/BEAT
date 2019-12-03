@@ -1,3 +1,36 @@
+==================================POI===================================
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pointsOfInterest>
+
+    <variable>
+        <VariableName>var name</VariableName>
+        <VariableType>var type</VariableType>
+    </variable>
+
+    <dll>
+        <Library>dll library</Library>
+    </dll>
+
+    <function>
+        <FunctionName>function name</FunctionName>
+        <ParameterOrderAndType>Parameter order/type</ParameterOrderAndType>
+        <ReturnType>function return type</ReturnType>
+    </function>
+    <function>
+        <FunctionName>function name2</FunctionName>
+        <ParameterOrderAndType>Param2eter order/type</ParameterOrderAndType>
+        <ReturnType>function retur2n type</ReturnType>
+    </function>
+
+    <string>
+        <StringName>name of string</StringName>
+    </string>
+
+</pointsOfInterest>
+
+=============================PLUGIN=====================================
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin>
@@ -9,10 +42,7 @@
 
 		<variable>
 			<VariableName>var name</VariableName>
-			<VariableValue>var value</VariableValue>
 			<VariableType>var type</VariableType>
-			<VariableSize>var size</VariableSize>
-			<CallFromAddress>var call from address</CallFromAddress>
 		</variable>
 
 		<dll>
@@ -22,41 +52,17 @@
 		<function>
 			<FunctionName>function name</FunctionName>
 			<ParameterOrderAndType>Parameter order/type</ParameterOrderAndType>
-			<ParameterValue>p val</ParameterValue>
-			<ReturnValue>function return</ReturnValue>
-			<BinarySection>secition of binary</BinarySection>
-			<CallFromAddress>call from address</CallFromAddress>
-			<DestinationAddress>dastination address</DestinationAddress>
-			<PythonTranslationCode>python translation code</PythonTranslationCode>
+			<ReturnType>function return type</ReturnType>
 		</function>
 		<function>
 			<FunctionName>function name2</FunctionName>
 			<ParameterOrderAndType>Param2eter order/type</ParameterOrderAndType>
-			<ParameterValue>p val2</ParameterValue>
-			<ReturnValue>function retur2n</ReturnValue>
-			<BinarySection>seci2tion of binary</BinarySection>
-			<CallFromAddress>cal2l from address</CallFromAddress>
-			<DestinationAddress>da2stination address</DestinationAddress>
-			<PythonTranslationCode>p2ython translation code</PythonTranslationCode>
+			<ReturnType>function retur2n type</ReturnType>
 		</function>
 
 		<string>
 			<StringName>name of string</StringName>
-			<StringType>type of string</StringType>
-			<StringSize>size of string</StringSize>
-			<CallFromAddress>address called from</CallFromAddress>
-			<Address>the address</Address>
-			<Section>section of</Section>
 		</string>
-		
-		<struct>
-			<StructName>name of struct</StructName>
-		</struct>
-		
-		<packet>
-			<ProtocolName>protocol name</ProtocolName>
-			<FieldName>the name of field</FieldName>
-			<FieldType>the type of field</FieldType>
-		</packet>
+
 	</pointsOfInterest>
 </plugin>

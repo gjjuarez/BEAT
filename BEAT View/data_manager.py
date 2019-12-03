@@ -69,7 +69,7 @@ def get_plugin_from_name(to_find):
     for c in plugin_collection.find():
         print(c["name"])
         try :
-            if(c["name"] == to_find()):
+            if(c["name"] == to_find):
                 name = c["name"]
                 desc = c["desc"]
                 return name, desc
@@ -252,9 +252,10 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Comment': "",
                 'Analysis Name': ""}
     variable_collection.replace_one({'Function Name': function_name,
-                                     'Variable Name': POI_name}, document, upsert=True)
+                                     'Variable Name': POI_name,
+                                     'Analysis Run': analysis_run}, document, upsert=True)
 
-def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="-1", comment=""):
+def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="", comment=""):
     global global_var_collection
     document = {'Analysis Run': analysis_run,
                 'Variable Name': POI_name,
@@ -288,6 +289,14 @@ def get_variable_from_name(find_variable):
                     return name
             except KeyError:
                 print("Key error")
+
+
+def get_local_variables_from_function(func_name):
+    localVars = []
+    query = {"Function Name": func_name}
+    for c in variable_collection.find(query):
+        localVars.append(c)
+    return localVars
 
 def save_strings(analysis_run, POI_value, section, address, comment=''):
     global string_collection
@@ -330,7 +339,7 @@ def get_string_from_name(find_string):
             print("Key error")
 
 def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, POI_address,
-                   POI_parameter_order, POI_parameter_type, dest_address, call_from=None,
+                   POI_parameter_order, POI_parameter_type, dest_address, hasBreakpoint, call_from=None,
                    POI_parameter_values=None, binary_section="", comment=""):
     if call_from is None:
         call_from = []
@@ -351,9 +360,10 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Parameter Value': POI_parameter_values,
                 'Call From': call_from,  # either a function name or address
                 'Comment': comment,
+                'Breakpoint': hasBreakpoint,  # boolean value
                 'Analysis Name': ""
                 }
-    function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
+    function_collection.replace_one({"Function Name": POI_name, 'Analysis Run': analysis_run}, document, upsert=True)
 
 def get_function_from_name(find_function):
     name = ""

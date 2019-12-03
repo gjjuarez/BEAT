@@ -29,6 +29,8 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
+        self.document_view_listwidget.clear()
+        self.document_view_listwidget.addItems(['README', 'BEAT Documentation', 'XML Structures', 'Tab Guide'])
         #self.file_path_lineedit.setEd
         ###########################
         # Resizing according to user's desktop
@@ -165,9 +167,9 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.addItem("Variables")
         self.type_dropdown.addItem("Strings")
         # sets breakpoints on currently checked items
-        self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
+        # self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
         # runs dynamic analysis on breakpoints then updates ui
-        self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        # self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
         self.dynamic_run_button.clicked.connect(self.display_dynamic_info)
         # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
         #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
@@ -602,6 +604,8 @@ class UiMain(UiView.Ui_BEAT):
         functions = data_manager.get_functions()
 
         for func in functions:
+            if func["Analysis Run"] != "static":
+                continue
             # item = QListWidgetItem("Function name: " + func['Function Name'])
             paramTypes = ""
             try:
@@ -659,7 +663,7 @@ class UiMain(UiView.Ui_BEAT):
         # display all variables related to current function
         variables = data_manager.get_variables()
         for var in variables:
-            if func_name == var["Function Name"]:
+            if func_name == var["Function Name"] and var["Analysis Run"] == "static":
                 varItem = QListWidgetItem("\tLocal Variable Name: " + var["Variable Name"] + "\n"
                                           "\t\tType: " + var["Variable Type"] + "\n"
                                           "\t\tValue: " + var["Variable Value"] + "\n"
@@ -673,7 +677,7 @@ class UiMain(UiView.Ui_BEAT):
         variables = data_manager.get_variables()
         # display all variables related to current function
         for var in variables:
-            if func_name == var["Function Name"]:
+            if func_name == var["Function Name"] and var["Analysis Run"] == "static":
 
                 value = " " + var["Variable Name"]
                 # Checking if poi has a comment
@@ -690,6 +694,8 @@ class UiMain(UiView.Ui_BEAT):
         no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         functions = data_manager.get_functions()
         for func in functions:
+            if func["Analysis Run"] != "static":
+                continue
             value = func["Function Name"]
 
             if not func["Comment"] or func["Comment"] != ' ':
@@ -842,7 +848,6 @@ class UiMain(UiView.Ui_BEAT):
             return
 
         else:
-            print("1234")
             name = self.plugin_name_lineedit.text()
             desc = self.plugin_description_textedit.toPlainText()
             self.plugin_view_plugin_listwidget.addItem(name)
@@ -952,7 +957,8 @@ class UiMain(UiView.Ui_BEAT):
 
         self.point_of_interest_view_listwidget.clear()
 
-        if to_find == "": return
+        if to_find == "":
+            return
         try:
             print("Lookinf for strings")
             strings = data_manager.get_pois_from_plugin_and_type(to_find, "string")
@@ -987,16 +993,11 @@ class UiMain(UiView.Ui_BEAT):
                 self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
 
     def populate_name_and_description(self):
-        print("HERE")
         try:
             to_find = self.plugin_view_plugin_listwidget.currentItem().text()
-            print(to_find)
             name, desc = data_manager.get_plugin_from_name(to_find)
-            print("zxcvbnm")
-            print(name)
-            print(desc)
-            # self.plugin_name_lineedit.setText(name)
-            # self.plugin_description_textedit.clear(desc)
+            self.plugin_name_lineedit.setText(name)
+            self.plugin_description_textedit.setText(desc)
         except:
             return
 
@@ -1213,14 +1214,35 @@ class UiMain(UiView.Ui_BEAT):
     def display_Plugin(self):
         self.document_content_area_textedit.setText(self.Plugin_document('Plugin'))
 
+    def display_documentation(self):
+        self.document_content_area_textedit.setText(self.documentation("BEAT Documentation"))
+
+    def documentation(self, filename):
+        if filename in 'BEAT Documentation':
+            with open('beat_documentation.txt', 'r') as plugin:
+                pluginString = plugin.read()
+        return pluginString
+
+    def display_tab_guide(self):
+        self.document_content_area_textedit.setText(self.tab_doc("Tab Guide"))
+
+    def tab_doc(self, filename):
+        if filename in 'Tab Guide':
+            with open('tab_guide.txt', 'r') as tab:
+                pluginString = tab.read()
+        return pluginString
+
     def change_doc(self):
-        doc = self.project_list.currentItem().text()
+        # ['README', 'BEAT Documentation', 'XML Structures', 'Tab Guide']
+        doc = self.document_view_listwidget.currentItem().text()
         if doc == "README":
             self.display_ReadMe()
         if doc == "BEAT Documentation":
-            self.display
-        if doc == "         Plugin Structure":
+            self.display_documentation()
+        if doc == "XML Structures":
             self.display_Plugin()
+        if doc == "Tab Guide":
+            self.display_tab_guide()
 
 if __name__ == "__main__":
     import sys
@@ -1229,7 +1251,7 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    ui.fill_documents()
+    #ui.fill_documents()
     #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

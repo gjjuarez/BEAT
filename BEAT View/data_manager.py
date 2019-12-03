@@ -59,6 +59,7 @@ def get_plugin_names():
     return plugins
 
 def save_plugin(name, desc):
+    print("in save plugin")
     plugin_dict = {"name": name,
                    "desc": desc}
     plugin_collection.insert_one(plugin_dict)
@@ -67,6 +68,7 @@ def get_plugin_from_name(to_find):
     name = ""
     desc = ""
     for c in plugin_collection.find():
+        print(c["name"])
         try :
             if(c["name"] == to_find()):
                 name = c["name"]

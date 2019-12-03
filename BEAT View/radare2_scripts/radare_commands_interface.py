@@ -7,6 +7,10 @@ sys.path.append("..")  # for data_manager
 import data_manager
 
 rlocal = None
+def run_cmd(cmd):
+    print("running cmd", cmd)
+    global rlocal
+    return rlocal.cmd(cmd)
 
 def parse_binary(path):
     global rlocal
@@ -390,4 +394,3 @@ if __name__ == "__main__":
         run_static_analysis()
     if(sys.argv[1] == 'dynamic'):
         run_dynamic_analysis()
-

@@ -2,41 +2,32 @@ import sys
 sys.path.append("..")  # for data_manager
 import data_manager
 
-def filter_string(value, section, address):
+def filter_string(value):
     strings_poi = data_manager.get_pois_from_type("string")
     if strings_poi is None:
         return True
     for s in strings_poi:
-        if s["String Name"] in value\
-                or s["Section"] in section\
-                or s["Address"] == address:
+        if s["String Name"] in value:
             return True
     return False
 
-def filter_var(name, value, vartype, size, address):
+def filter_var(name, vartype):
     vars_poi = data_manager.get_pois_from_type("variable")
     if vars_poi is None:
         return True
     for v in vars_poi:
         if v["Variable Name"] in name\
-                or v["Variable Value"] in value\
-                or v["Call From Address"] == address\
-                or v["Variable Type"] in vartype\
-                or v["Variable Size"] == size:
+                or v["Variable Type"] in vartype:
             return True
     return False
 
-def filter_function(name, ret_type, ret_value, address, dest_address, call_from="", param_order=[], param_values=[]):
+def filter_function(name, ret_type, param_order=[]):
     functions = data_manager.get_pois_from_type("function")
     if functions is None:
         return True
     for func in functions:
         if func["Function Name"] in name\
-                or func["Return Type"] in ret_type\
-                or func["Return Value"] == ret_value\
-                or func["Address"] == address\
-                or func["Call From"] in call_from\
-                or func["Destination Address"] == dest_address:
+                or func["Return Type"] in ret_type:
             return True
         inOrder = True
         # check if plugin parameters match gien parameters
@@ -48,16 +39,7 @@ def filter_function(name, ret_type, ret_value, address, dest_address, call_from=
                 break
         if inOrder:
             return True
-        valueInOrder = False
-        # check if plugin param values match given parameters
-        for func_type, plugin_type in param_values, func["Parameter Values"]:
-            # values need to match exactly
-            # Ex: 8 shouldn't match 81
-            if func_type != plugin_type:
-                valueInOrder = False
-                break
-        if valueInOrder:
-            return True
+
     return False
 
 def filter_dll(name):

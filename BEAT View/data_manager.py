@@ -43,7 +43,6 @@ def get_pois_from_plugin_and_type(plugin, type):
 
 def get_pois_from_type(type):
     pois = []
-    print("Shouldnt be here")
     plugin = current_plugin_name
     for c in plugin_collection.find():
         try:
@@ -103,7 +102,7 @@ def delete_variable_poi_by_name(poi_name):
 
 
 def add_string_to_plugin(name, string_name):
-    string = {'String Name': string_name
+    string = {'String Value': string_name
 
             }
     plugin_collection.find_one_and_update(
@@ -297,8 +296,8 @@ def get_string_from_name(find_string):
     name = ""
     for c in string_collection.find():
         try:
-            if (c["String Name"] == find_string):
-                name = c["String Name"]
+            if (c["String Value"] == find_string):
+                name = c["String Value"]
                 return name
         except KeyError:
             print("Key error")
@@ -324,8 +323,6 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Binary Section': binary_section,
                 'Parameter Value': POI_parameter_values,
                 'Call From': call_from,  # either a function name or address
-                # 'Parameter Value': POI_parameter_value,
-                # 'Call From Address': POI_order_to_functions
                 'Comment': comment,
                 'Analysis Name': ""
                 }
@@ -340,7 +337,6 @@ def get_function_from_name(find_function):
                 return name
         except KeyError:
             print("Key error")
-
 
 def get_functions():
     global function_collection
@@ -419,16 +415,62 @@ def delete_variable_collection():
     except:
         print("Drop variable collection error")
 
+def add_comment(POI_name, poi_type, comment):
 
-#adds a comment to all the POI based on the POI_name given to the method
-def add_comment(POI_name, comment):
-    global variable_collection
-    global function_collection
-    global string_collection
+    if poi_type == "function":
+        global function_collection
+        function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
+    if poi_type == "struct":
+        global struct_collection
+        struct_collection.update_one({"Struct Name": POI_name}, {"$set": {"Comment": comment}})
+    if poi_type == "variable":
+        global variable_collection
+        variable_collection.update_one({"Variable Name": POI_name}, {"$set": {"Comment": comment}})
+    if poi_type == "protocol":
+        global protocol_collection
+        protocol_collection.update_one({"Protocol Name": POI_name}, {"$set": {"Comment": comment}})
+    if poi_type == "string":
+        global string_collection
+        string_collection.update_one({"String Value": POI_name}, {"$set": {"Comment": comment}})
 
-    variable_collection.update_one({"Variable Name": POI_name} ,{ "$set":{"Comment": comment}})
-    function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
-    string_collection.update_one({"String Name": POI_name}, {"$set": {"Comment": comment}})
+
+# This function is brute forced. At the moment I coul not find a function that would let me
+# know the type of POI selected, only its name
+def get_comment_from_name(POI_name):
+    comment = ""
+    functions = get_functions()
+    for func in functions:
+        try:
+            print(str(func["Function Name"]))
+            if (func["Function Name"] == POI_name):
+                comment = str(func["Comment"])
+                return comment, "function"
+        except KeyError:
+            print("Key error")
+            print("in function")
+
+    variables = get_variables()
+    for var in variables:
+        try:
+            print(str(var["Variable Name"]))
+            if (var["Variable Name"] == POI_name):
+                comment = str(var["Comment"])
+                return comment, "variable"
+        except KeyError:
+            print("Key error")
+            print("in var")
+
+    strings = get_strings()
+    for s in strings:
+        try:
+            if (s["String Value"] == POI_name):
+                comment = str(s["Comment"])
+                return comment, "string"
+        except KeyError:
+            print("Key error")
+            print("in string")
+
+    return "", "function"
 
 #finds all POIs without an analysis assigned to them and gives them the analysis_name
 def add_analysis_name(analysis_name):
@@ -437,9 +479,12 @@ def add_analysis_name(analysis_name):
     global function_collection
     global string_collection
 
-    variable_collection.update_one({'Analysis Name': name} ,{ "$set":{'Analysis Name': analysis_name}})
-    function_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
-    string_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+    for c in variable_collection.find():
+        variable_collection.update_one({'Analysis Name': name} ,{ "$set":{'Analysis Name': analysis_name}})
+    for d in function_collection.find():
+        function_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+    for e in string_collection.find():
+        string_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
 
 #gets the all POIs based on the analysis_name given (if given an empty string will return all POIs not assigned to an analysis)
 def find_analysis(analysis_name):
@@ -447,9 +492,12 @@ def find_analysis(analysis_name):
         global function_collection
         global string_collection
 
-        variable = variable_collection.find({'Analysis Name': analysis_name})
-        function = function_collection.find({'Analysis Name': analysis_name})
-        string = string_collection.find({'Analysis Name': analysis_name})
+        for c in variable_collection.find():
+            variable = variable_collection.find({'Analysis Name': analysis_name})
+        for d in variable_collection.find():
+            function = function_collection.find({'Analysis Name': analysis_name})
+        for e in variable_collection.find():
+            string = string_collection.find({'Analysis Name': analysis_name})
 
         return variable, function, string
 
@@ -460,9 +508,12 @@ def delete_analysis_by_name(analysis_name):
     global function_collection
     global string_collection
 
-    variable_collection.update_one({'Analysis Name': analysis_name} ,{ "$set":{'Analysis Name': name}})
-    function_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
-    string_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+    for c in variable_collection.find():
+        variable_collection.update_one({'Analysis Name': analysis_name} ,{ "$set":{'Analysis Name': name}})
+    for d in variable_collection.find():
+        function_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+    for e in variable_collection.find():
+        string_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
 
     # close the connection to the database
 def end():

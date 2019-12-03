@@ -1,10 +1,11 @@
 from PyQt5 import QtCore
 
 import UiView
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
+from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtWidgets import QInputDialog, QApplication, QLineEdit, QMainWindow, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
 
-from Figure10OutputFieldView import Ui_Figure10OutputFieldView
+from PyQt5.QtCore import QDir
+
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from ArchitectureError import Ui_ArchitectureError
@@ -38,6 +39,8 @@ class UiMain(UiView.Ui_BEAT):
 
         #User cannot delete unselected project
         self.delete_project_button.setDisabled(True)
+
+        self.run_button.setDisabled(True)
 
         #User cannot edit project fields without creating a new project
         self.project_name_text.setDisabled(True)
@@ -91,8 +94,8 @@ class UiMain(UiView.Ui_BEAT):
         self.analysis_result_button.clicked.connect(self.analysis_result)
         # calls comment_view after comment_button is clicked
         self.comment_button.clicked.connect(self.comment_view)
-        # calls output_field after output_field_button is clicked
-        self.output_field_button.clicked.connect(self.output_field)
+
+        self.run_button.clicked.connect(self.run_command_from_cmd)
 
         '''
         Plugin Management Tab Listeners
@@ -363,38 +366,25 @@ class UiMain(UiView.Ui_BEAT):
     if the comment exists
     '''
     def comment_view(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_Figure11CommentView()
-        self.ui.setupUi(self.window)
-        self.window.show()
-
+        from PyQt5 import QtGui
         current_item = self.points_of_interest_list_widget.currentItem()
-        print(str(current_item.text()))
+        current_item_text = str(current_item.text())
+        print(current_item_text)
 
-        # This looks for if comments already exits for a line
+        # retrieves comment and poi type
+        comment, poi_type = data_manager.get_comment_from_name(current_item_text)
 
-        if path.exists("comment.txt"):
-            comment = open("comment.txt", "r+")
-            looking_for_comment = self.points_of_interest_list_widget.currentRow()
-            for line in comment:
-                comment_number = line.split(" ", 1)[0]
-                if comment_number == str(looking_for_comment):
-                    print("something there")
-                    self.ui.comment_textedit.setText(line)
-        comment.close()
-        self.ui.save_button.clicked.connect(self.save_comment)
-        self.ui.clear_button.clicked.connect(self.clear_comment)
+        comment_title = "Comment for POI " + current_item_text
 
-    '''
-    Saves comments to text file
-    '''
-    def save_comment(self):
-        comment = open("comment.txt", "a+")
-        text = self.ui.comment_textedit.toPlainText()
-        comment.write("%d " % self.points_of_interest_list_widget.currentRow())
-        comment.write(text + "\n")
-        print(text)
-        comment.close()
+        if not comment:
+            comment = " "
+
+        updated_comment, save = QInputDialog().getMultiLineText(BEAT, comment_title,
+                                          "Comment:", comment)
+        if save:
+            print(updated_comment)
+            data_manager.add_comment(current_item_text, poi_type, updated_comment)
+
 
     '''
     Works with save_comment to overwrite a comment that has already been placed 
@@ -412,18 +402,6 @@ class UiMain(UiView.Ui_BEAT):
             out.writelines(lines)
             out.close()'''
 
-    '''
-    Clears a comment from the POI
-    '''
-    def clear_comment(self):
-        with open("comment.txt", "r+") as f:
-            new_f = f.readlines()
-            f.seek(0)
-            for line in new_f:
-                if self.ui.comment_textedit.toPlainText() not in line:
-                    f.write(line)
-            f.truncate()
-        self.ui.comment_textedit.clear()
 
 
     def static_analysis(self):
@@ -433,6 +411,15 @@ class UiMain(UiView.Ui_BEAT):
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        self.run_button.setDisabled(False)
+        try:
+            x, y, z, a = data_manager.getCurrentProjectInfo()
+
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Project Error", "There must be a project set to run static analysis", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+
         self.process_window = QtWidgets.QProgressDialog("Running Static Analysis...", None, 0,0)
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
@@ -488,6 +475,7 @@ class UiMain(UiView.Ui_BEAT):
         display_value = str(self.type_dropdown.currentText())
 
         if display_value == "All":
+            print("Have to do things here")
             self.set_auto_breakpoint_at_string()
         elif display_value == "Strings":
             self.set_auto_breakpoint_at_string()
@@ -732,6 +720,29 @@ class UiMain(UiView.Ui_BEAT):
             for item in range(self.points_of_interest_list_widget.count()):
                 self.points_of_interest_list_widget.item(item).setHidden(False)
 
+    # this method highlights the searched POI but breaks the program because it somehow calls the remove breakpoints method with the current listener it has
+    # def search_POI(self):
+    #     # clear background in left column
+    #     for i in range(self.points_of_interest_list_widget.count()):
+    #         self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+    #     # clear background for detailed view
+    #     for i in range(self.detailed_points_of_interest_listWidget.count()):
+    #         self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
+    #
+    #     display_value = str(self.points_of_interest_line_edit.text())
+    #     # don't search if empty string
+    #     if display_value == "":
+    #         return
+    #     # highlights search in left column
+    #     search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
+    #     if len(search_result) > 0:
+    #         for item in search_result:
+    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
+    #     # highlights search in detailed view
+    #     search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
+    #     if len(search_result) > 0:
+    #         for item in search_result:
+    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
 
     #########################################################################################
     # Plugin Management Tab Functions
@@ -834,7 +845,28 @@ class UiMain(UiView.Ui_BEAT):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
+    # def add_poi_to_plugin(self):
+    #     print("Populating POIs in Plugin tab")
+    #     plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+    #     poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
+    #     to_add = self.point_of_interest_content_area_textedit.toPlainText()
+    #     if poi_type == "Function":
+    #         data_manager.add_function_to_plugin(plugin,to_add)
+    #     elif poi_type == "String":
+    #         data_manager.add_string_to_plugin(plugin,to_add)
+    #     elif poi_type == "Variable":
+    #         data_manager.add_variable_to_plugin(plugin,to_add)
+    #     elif poi_type == "DLL":
+    #         data_manager.add_dll_to_plugin(plugin,to_add)
+    #     elif poi_type == "Packet Protocol":
+    #         data_manager.add_packet_to_plugin(plugin,to_add)
+    #     elif poi_type == "Struct":
+    #         data_manager.add_struct_to_plugin(plugin,to_add)
+    #
+    #     self.point_of_interest_content_area_textedit.clear()
+    #     self.populate_pois_in_poi()
 
+        #data_manager.add_string_to_plugin(plugin,poi_type)
     def populate_pois_in_poi(self):
         print("Populating POIs in POI tab")
         to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
@@ -906,7 +938,14 @@ class UiMain(UiView.Ui_BEAT):
     def change_plugin_in_poi(self):
         self.populate_pois_in_poi()
         
-
+    def run_command_from_cmd(self):
+        cmd = self.terminal_input.text()
+        if cmd  == "":
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Command Error", "A command must be given to run", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        result = radare_commands_interface.run_cmd(cmd).split('{}')
+        self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
@@ -941,7 +980,7 @@ class UiMain(UiView.Ui_BEAT):
             self.poi_variable_type_lineedit.setText("")
 
         elif poi_detected == "DLL":
-            print("Getting dll")
+            print("geting dlllllllllllllllllllllllll :D")
             name = self.poi_dll_libraryname_lineedit.text()
             print(name)
             data_manager.add_dll_to_plugin(plugin, name)
@@ -990,6 +1029,6 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    ui.new_project()
+    #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

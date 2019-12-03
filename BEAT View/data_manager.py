@@ -227,7 +227,7 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                                      'Variable Name': POI_name,
                                      'Analysis Run': analysis_run}, document, upsert=True)
 
-def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="-1", comment=""):
+def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="", comment=""):
     global global_var_collection
     document = {'Analysis Run': analysis_run,
                 'Variable Name': POI_name,
@@ -335,7 +335,7 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Breakpoint': hasBreakpoint,  # boolean value
                 'Analysis Name': ""
                 }
-    function_collection.replace_one({"Function Name": POI_name, "Analysis Run": analysis_run}, document, upsert=True)
+    function_collection.replace_one({"Function Name": POI_name, 'Analysis Run': analysis_run}, document, upsert=True)
 
 def get_function_from_name(find_function):
     name = ""

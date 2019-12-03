@@ -32,33 +32,40 @@ def run_static_analysis():
     extract_all()
 
 def dynamicAnalysis():
+    global rlocal
 
     numRuns = 0
-    while numRuns < 5:
-        try:
-            rlocal.cmd("dc")
-            rlocal.cmd("ds")
-        except:
-            break
-        rlocal.cmd("aaa")
-        update_functions_and_local_variables(numRuns)
+
+    breakpoints = get_all_breakpoints()
+    progress = []
+    for b in breakpoints:
+        print("Running dynamic")
+        output = rlocal.cmd("dc")
+        if output != "":
+            progress.append(output)
+        rlocal.cmd("2ds")
+        # rlocal.cmd("aaa")
+        # update_functions_and_local_variables()
+        extract_functions(numRuns)
+        extract_vars_from_functions(numRuns)
         numRuns += 1
 
+    return progress
 
-    return ""
-
-def update_functions_and_local_variables(numRuns):
+"""
+def update_functions_and_local_variables():
+    global numRuns
+    print("Updating functions")
     functions = data_manager.get_functions()
     for func in functions:
+        if func["Analysis Run"] != "static":
+            continue
         rlocal.cmd("s " + func["Function Name"])
-        funcHeader = rlocal.cmd("pdf~" + func["Function Name"] + ":1").split()
-        paramList = rlocal.cmd("afvr").split("\n")
         # get parameter values if parameters exist
         paramVal = []
-        if len(func["Parameter Order"]) > 0:
+        if len(func["Parameter Value"]) > 0:
             values = rlocal.cmd("afvd~arg").split("\n")
             # print(values)
-
             for val in values:
                 # print(val)
                 if val == "":
@@ -70,22 +77,20 @@ def update_functions_and_local_variables(numRuns):
                 hexVal = val[len(val) - 1]
 
                 # check if value is given for param in radare2 or empty
-                if "=" == hexVal:  # no value exists, radare2 can't get a value
-                    paramVal.append("n/a")
-                    continue
-                elif "0x" not in hexVal:  # value is at different index
-                    hexVal = val[4]  # should be value in hex
-                paramVal.append(hexVal)
+                if "=" != hexVal and "0x" in hexVal:  # no value exists, radare2 can't get a value
+                    paramVal.append(hexVal)
                 # print("Parameter Value: " + hexVal)
-
-                returnValue = find_function_value()
+        returnValue = find_function_value()
 
         data_manager.save_functions("dynamic" + str(numRuns), func["Function Name"], func["Return Type"], returnValue,
                                     func["Address"], func["Parameter Order"], func["Parameter Type"], func["Destination Address"],
-                                    func["Call From"], paramVal, func["Binary Section"])
-        update_local_variable_in_function(func["Function Name"], numRuns)
-
-def update_local_variable_in_function(funcName, numRun):
+                                    func["hasBreakpoint"], func["Call From"], paramVal, func["Binary Section"])
+        update_local_variable_in_function(func["Function Name"])
+        """
+"""
+def update_local_variable_in_function(funcName):
+    global numRuns
+    print("Updating local variables")
     allVariables = data_manager.get_local_variables_from_function(funcName)
     variables = []
     for var in allVariables:
@@ -112,11 +117,11 @@ def update_local_variable_in_function(funcName, numRun):
 
     for index in range(0, len(variables)):
         print(values[index], variables[index])
-        data_manager.save_variables("dynamic" + str(numRun), funcName, variables[index]["Variable Name"],
+        data_manager.save_variables("dynamic" + str(numRuns), funcName, variables[index]["Variable Name"],
                                     values[index], variables[index]["Variable Type"], variables[index]["Address"])
+"""
 
-
-def extract_vars_from_functions():
+def extract_vars_from_functions(numRun=-1):
     global rlocal
     currentAddr = rlocal.cmd("s")  # dont lose original position
     functions = data_manager.get_functions()
@@ -140,8 +145,10 @@ def extract_vars_from_functions():
             for varTemp in variableTypes:
                 if varName in varTemp:
                     varType = varTemp.split()[1]
-
-            data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
+            if numRun != -1:
+                data_manager.save_variables("dynamic" + str(numRun), funcName, varName, varValue, varType, varAddr)
+            else:
+                data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
 
     rlocal.cmd("s " + currentAddr)
 
@@ -187,7 +194,7 @@ def extract_global_vars():
     rlocal.cmd("s " + currentAddr)  # revert to previous address
 
 
-def extract_functions():
+def extract_functions(numRun=-1):
     global rlocal
     print("Entered extract functions!")
     funcs = rlocal.cmd("afl").split("\n")
@@ -225,9 +232,6 @@ def extract_functions():
             returnType = None
 
         returnValue = find_function_value()
-
-        print("Return value: ")
-        print(returnValue)
 
         # print("Return value: " + returnValue)
         # (aer eax) or (aer rax) - to check return register value during dynamic
@@ -276,12 +280,10 @@ def extract_functions():
                 hexVal = val[len(val)-1]
 
                 # check if value is given for param in radare2 or empty
-                if "=" == hexVal:  # no value exists, radare2 can't get a value
+                if "=" == hexVal or "0x" not in hexVal:  # no value exists, radare2 can't get a value
                     paramVal.append("n/a")
-                    continue
-                elif "0x" not in hexVal:  # value is at different index
-                    hexVal = val[4]  # should be value in hex
-                paramVal.append(hexVal)
+                else:
+                    paramVal.append(hexVal)
                 # print("Parameter Value: " + hexVal)
 
         # get section in binary
@@ -296,9 +298,13 @@ def extract_functions():
             sectionArray = section.split()
             sectionName = sectionArray[len(sectionArray)-1]
         # print(sectionName)
-        if filter.filter_function(funcName, returnType, returnValue, funcAddr, returnAddr):
+        # if filter.filter_function(funcName, returnType, returnValue, funcAddr, returnAddr):
+        if numRun != -1:
+            data_manager.save_functions("dynamic" + str(numRun), funcName, returnType, returnValue, funcAddr,
+                                        params, paramType, returnAddr, True, callFrom, paramVal, sectionName)
+        else:
             data_manager.save_functions("static", funcName, returnType, returnValue, funcAddr,
-                                        params, paramType, returnAddr, callFrom, paramVal, sectionName)
+                                        params, paramType, returnAddr, True, callFrom, paramVal, sectionName)
             # set necessary breakpoints
             set_breakpoint_at_address(funcAddr)
 

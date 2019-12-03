@@ -7,6 +7,10 @@ sys.path.append("..")  # for data_manager
 import data_manager
 
 rlocal = None
+def run_cmd(cmd):
+    print("running cmd", cmd)
+    global rlocal
+    return rlocal.cmd(cmd)
 
 def parse_binary(path):
     global rlocal
@@ -145,10 +149,11 @@ def extract_vars_from_functions(numRun=-1):
             for varTemp in variableTypes:
                 if varName in varTemp:
                     varType = varTemp.split()[1]
-            if numRun != -1:
-                data_manager.save_variables("dynamic" + str(numRun), funcName, varName, varValue, varType, varAddr)
-            else:
-                data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
+            if filter.filter_var(varName, varType):
+                if numRun != -1:
+                    data_manager.save_variables("dynamic" + str(numRun), funcName, varName, varValue, varType, varAddr)
+                else:
+                    data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
 
     rlocal.cmd("s " + currentAddr)
 
@@ -188,7 +193,7 @@ def extract_global_vars():
         except:
             print("Problem getting value of global variable")
 
-        if filter.filter_var(name, value, "", size, address):
+        if filter.filter_var(name, ""):
             data_manager.save_global_variable("static", name, size, address, value)
 
     rlocal.cmd("s " + currentAddr)  # revert to previous address
@@ -365,7 +370,7 @@ def extract_strings():
         strSection = attr[5]
         strAddr = attr[2]
         # filter out strings
-        if filter.filter_string(strValue, strSection, strAddr):
+        if filter.filter_string(strValue):
             data_manager.save_strings("static", strValue, strSection, strAddr)
 
 def set_breakpoint_at_address(address):
@@ -406,4 +411,3 @@ if __name__ == "__main__":
         run_static_analysis()
     if(sys.argv[1] == 'dynamic'):
         run_dynamic_analysis()
-

@@ -1,17 +1,20 @@
 from PyQt5 import QtCore
 
 import UiView
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
+from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtWidgets import QInputDialog, QApplication, QLineEdit, QMainWindow, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
+
+from PyQt5.QtCore import QDir
 
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from ArchitectureError import Ui_ArchitectureError
 from PyQt5.QtWidgets import QListWidgetItem
 from Terminal import EmbTerminalLinux
 
 from radare2_scripts import radare_commands_interface
-from PyQt5 import QtGui
+from PyQt5.QtGui import QIcon, QPixmap
 import data_manager
 import os.path
 from os import path
@@ -37,6 +40,8 @@ class UiMain(UiView.Ui_BEAT):
 
         #User cannot delete unselected project
         self.delete_project_button.setDisabled(True)
+
+        self.run_button.setDisabled(True)
 
         #User cannot edit project fields without creating a new project
         self.project_name_text.setDisabled(True)
@@ -91,6 +96,8 @@ class UiMain(UiView.Ui_BEAT):
         # calls comment_view after comment_button is clicked
         self.comment_button.clicked.connect(self.comment_view)
 
+        self.run_button.clicked.connect(self.run_command_from_cmd)
+
         '''
         Plugin Management Tab Listeners
         '''
@@ -103,6 +110,10 @@ class UiMain(UiView.Ui_BEAT):
         # calls browse_plugin_dataset if plugin_predefined_data_set_browse_button is clicked
         self.plugin_predefined_data_set_browse_button.clicked.connect(self.browse_plugin_dataset)
         self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_pois_in_plugin)
+        self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_name_and_description)
+
+        #Allows you to create a new plugin
+        self.plugin_view_new_button.clicked.connect(self.new_plugin)
 
         '''
         Points of Interest Tab Listeners
@@ -115,9 +126,29 @@ class UiMain(UiView.Ui_BEAT):
         self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
 
         self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
+
+        self.detailed_point_of_interest_view_delete_button.clicked.connect(self.delete_poi)
         '''
         Documentation Tab Listeners
         '''
+        self.point_of_interest_view_search_button.clicked.connect(self.search_POI_View)
+        self.point_of_interest_view_search_lineedit.returnPressed.connect(self.search_POI_View)
+        self.document_view_listwidget.itemClicked.connect(self.change_doc)
+        #self.document_view_listwidget.itemClicked.connect(self.display_ReadMe)
+        # Listens if Plugin Structure name is clicked.
+        #self.document_view_listwidget.itemSelectionChanged.connect(self.display_Plugin)
+        # searches Project in the left column
+        self.project_view_search_button.clicked.connect(self.search_Project)
+        self.project_search_lineedit.returnPressed.connect(self.search_Project)
+        # searches Plugin in the left column
+        self.plugin_view_search_button.clicked.connect(self.search_Plugin)
+        self.plugin_view_search_lineedit.returnPressed.connect(self.search_Plugin)
+        # searches POI View in the left column
+        self.point_of_interest_view_search_button.clicked.connect(self.search_POI_View)
+        self.point_of_interest_view_search_lineedit.returnPressed.connect(self.search_POI_View)
+        # searches Document in the left column
+        self.document_view_search_button.clicked.connect(self.search_Document)
+        self.document_view_search_lineedit.returnPressed.connect(self.search_Document)
         '''
         Analysis Run Tab Listeners
         '''
@@ -184,6 +215,7 @@ class UiMain(UiView.Ui_BEAT):
         data_manager.update_current_project(name, desc, path, bin_info)
         # enable deletion
         self.delete_project_button.setDisabled(False)
+
         self.setCurrentProject()
 
     def setCurrentProject(self):
@@ -197,15 +229,15 @@ class UiMain(UiView.Ui_BEAT):
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
         # fill name text
         self.project_name_text.setText(name)
-        self.project_name_text.setStyleSheet("color: gray;")
-        self.project_name_text.setReadOnly(True)
+        self.project_name_text.setDisabled(True)
+        #self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
+        self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
         # fill path text
         self.file_path_lineedit.setText(path)
-        self.file_path_lineedit.setStyleSheet("color: gray;")
-        self.file_path_lineedit.setReadOnly(True)
+        self.file_path_lineedit.setDisabled(True)
         # disable buttons
         self.save_project_button.setDisabled(True)
         self.file_browse_button.setDisabled(True)
@@ -222,13 +254,13 @@ class UiMain(UiView.Ui_BEAT):
         self.clear_detailed_project_view()
 
         self.project_name_text.setDisabled(False)
-        self.project_name_text.setReadOnly(False)
+        #self.project_name_text.setReadOnly(False)
 
         self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-       # self.file_path_lineedit.setDisabled(False)
-        self.file_path_lineedit.setReadOnly(False)
+        self.file_path_lineedit.setDisabled(False)
+        # self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
@@ -356,38 +388,29 @@ class UiMain(UiView.Ui_BEAT):
     if the comment exists
     '''
     def comment_view(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_Figure11CommentView()
-        self.ui.setupUi(self.window)
-        self.window.show()
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
 
         current_item = self.points_of_interest_list_widget.currentItem()
-        print(str(current_item.text()))
+        current_item_text = str(current_item.text())
 
-        # This looks for if comments already exits for a line
+        # retrieves comment and poi type
+        comment, poi_type = data_manager.get_comment_from_name(current_item_text)
 
-        if path.exists("comment.txt"):
-            comment = open("comment.txt", "r+")
-            looking_for_comment = self.points_of_interest_list_widget.currentRow()
-            for line in comment:
-                comment_number = line.split(" ", 1)[0]
-                if comment_number == str(looking_for_comment):
-                    print("something there")
-                    self.ui.comment_textedit.setText(line)
-        comment.close()
-        self.ui.save_button.clicked.connect(self.save_comment)
-        self.ui.clear_button.clicked.connect(self.clear_comment)
+        comment_title = "Comment for POI " + current_item_text
 
-    '''
-    Saves comments to text file
-    '''
-    def save_comment(self):
-        comment = open("comment.txt", "a+")
-        text = self.ui.comment_textedit.toPlainText()
-        comment.write("%d " % self.points_of_interest_list_widget.currentRow())
-        comment.write(text + "\n")
-        print(text)
-        comment.close()
+        if not comment:
+          comment = " "
+
+        updated_comment, save = QInputDialog().getMultiLineText(BEAT, comment_title,
+                                          "Comment:", comment)
+        if save:
+            data_manager.add_comment(current_item_text, poi_type, updated_comment)
+            if not updated_comment or updated_comment == ' ':
+                self.points_of_interest_list_widget.currentItem().setIcon(no_comment_icon)
+            else:
+                self.points_of_interest_list_widget.currentItem().setIcon(comment_icon)
+
 
     '''
     Works with save_comment to overwrite a comment that has already been placed 
@@ -405,18 +428,6 @@ class UiMain(UiView.Ui_BEAT):
             out.writelines(lines)
             out.close()'''
 
-    '''
-    Clears a comment from the POI
-    '''
-    def clear_comment(self):
-        with open("comment.txt", "r+") as f:
-            new_f = f.readlines()
-            f.seek(0)
-            for line in new_f:
-                if self.ui.comment_textedit.toPlainText() not in line:
-                    f.write(line)
-            f.truncate()
-        self.ui.comment_textedit.clear()
 
 
     def static_analysis(self):
@@ -426,6 +437,7 @@ class UiMain(UiView.Ui_BEAT):
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        self.run_button.setDisabled(False)
         try:
             x, y, z, a = data_manager.getCurrentProjectInfo()
 
@@ -575,8 +587,9 @@ class UiMain(UiView.Ui_BEAT):
         self.display_imports_in_left_column()
 
     def display_imports_in_left_column(self):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         imports = open("imports.txt", "r")
-
         # Start at the index 2 to the end get each line
         for line in imports.read().split("\n")[2:-1]:
             # Separate by spaces and then get the last word
@@ -657,20 +670,35 @@ class UiMain(UiView.Ui_BEAT):
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
 
     def read_and_display_variables_with_functions_left_column(self, func_name):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
+
         variables = data_manager.get_variables()
         # display all variables related to current function
         for var in variables:
-            if func_name == var["Function Name"] and var["Analysis Run"] == "static":
-                varItem = QListWidgetItem("   " + var["Variable Name"])
+            if func_name == var["Function Name"]:
+
+                value = " " + var["Variable Name"]
+                # Checking if poi has a comment
+                if not var["Comment"] or var["Comment"] != ' ':
+                    varItem = QListWidgetItem(no_comment_icon, value)
+                else:
+                    varItem = QListWidgetItem(comment_icon, value)
+
                 self.points_of_interest_list_widget.addItem(varItem)
 
     def display_functions_in_left_column(self):
         # breakPoints = radare_commands_interface.get_all_breakpoints()
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         functions = data_manager.get_functions()
         for func in functions:
-            if func["Analysis Run"] != "static":
-                continue
-            item = QListWidgetItem(func["Function Name"])
+            value = func["Function Name"]
+
+            if not func["Comment"] or func["Comment"] != ' ':
+                item = QListWidgetItem(no_comment_icon, value)
+            else:
+                item = QListWidgetItem(comment_icon, value)
 
             # Don't know if we need this following line
             # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
@@ -694,12 +722,17 @@ class UiMain(UiView.Ui_BEAT):
         self.display_strings_in_left_column()
 
     def display_strings_in_left_column(self):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         strings = data_manager.get_strings()
 
         for strg in strings:
             value = strg["String Value"]
 
-            item = QListWidgetItem(value)
+            if not strg["Comment"] or strg["Comment"] != ' ':
+                item = QListWidgetItem(no_comment_icon, value)
+            else:
+                item = QListWidgetItem(comment_icon, value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
@@ -716,12 +749,19 @@ class UiMain(UiView.Ui_BEAT):
         self.display_global_variables_in_left_column()
 
     def display_global_variables_in_left_column(self):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
+
         variables = data_manager.get_global_variables()
 
         for var in variables:
             value = var["Variable Name"]
 
-            item = QListWidgetItem(value)
+            # Checking if poi has a comment
+            if not var["Comment"] or var["Comment"] != ' ':
+                item = QListWidgetItem(no_comment_icon, value)
+            else:
+                item = QListWidgetItem(comment_icon, value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
@@ -767,21 +807,62 @@ class UiMain(UiView.Ui_BEAT):
     #########################################################################################
 
     '''
+    Allows you to add new plugins
+    '''
+    def new_plugin(self):
+        self.plugin_structure_filepath_lineedit.setReadOnly(False)
+        self.plugin_predefined_data_set_lineedit.setReadOnly(False)
+        self.plugin_name_lineedit.setReadOnly(False)
+        self.plugin_description_textedit.setReadOnly(False)
+        self.points_of_interest_list_textedit.setReadOnly(False)
+
+    '''
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
         print('in save plugin')
-        if self.plugin_predefined_data_set_lineedit.text() != "":
+        if self.plugin_name_lineedit.text() == "" or self.plugin_description_textedit.toPlainText() == "":
+            print('error')
+            self.msg_error = QMessageBox(QMessageBox.Question, "Name and Description Error",
+                                         "Plugin name or description are empty", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        elif self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() == "":
             print('about to call xmlparser')
             import xmlparser
+            xmlparser.parse_xml_plugin(self.plugin_structure_filepath_lineedit.text())
 
-            xmlparser.parse_xml(self.plugin_predefined_data_set_lineedit.text())
+        elif self.plugin_predefined_data_set_lineedit.text() != "" and self.plugin_structure_filepath_lineedit.text() == "":
+            print('about to call xmlparser')
+            import xmlparser
+            xmlparser.parse_xml_poi(self.plugin_predefined_data_set_lineedit.text(), self.plugin_name_lineedit.text(), self.plugin_description_textedit.toPlainText())
+
+        elif self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() != "":
+            print('error')
+            self.msg_error = QMessageBox(QMessageBox.Question, "Unclear plugin type Error",
+                                         "Too many fields are filled out", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+
         else:
+            print("1234")
             name = self.plugin_name_lineedit.text()
             desc = self.plugin_description_textedit.toPlainText()
             self.plugin_view_plugin_listwidget.addItem(name)
             data_manager.save_plugin(name,desc)
         self.update_plugin_list()
+
+        self.plugin_structure_filepath_lineedit.clear()
+        self.plugin_predefined_data_set_lineedit.clear()
+        self.plugin_name_lineedit.clear()
+        self.plugin_description_textedit.clear()
+        self.points_of_interest_list_textedit.clear()
+
+        self.plugin_structure_filepath_lineedit.setReadOnly(True)
+        self.plugin_predefined_data_set_lineedit.setReadOnly(True)
+        self.plugin_name_lineedit.setReadOnly(True)
+        self.plugin_description_textedit.setReadOnly(True)
+        self.points_of_interest_list_textedit.setReadOnly(True)
 
     def update_plugin_list(self):
         plugins = data_manager.get_plugin_names()
@@ -794,15 +875,43 @@ class UiMain(UiView.Ui_BEAT):
 
         self.detailed_point_of_interest_view_existing_plugin_dropdown.clear()
         self.detailed_point_of_interest_view_existing_plugin_dropdown.addItems(plugins)
+
+    '''
+        def project_deletion_message(self):
+        name = self.project_list.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            data_manager.delete_project_given_name(name)
+            # clear page
+            self.clear_detailed_project_view()
+            self.project_list.clear()
+            self.fill_projects()
+            print("Done Removing Project:", name)
+            # disable deletion
+            self.delete_project_button.setDisabled(True)
+    '''
+
     '''
     Removes a selected plugin from the plugin list within Plugin Management 
     '''
     def remove_plugin(self):
         listItems = self.plugin_view_plugin_listwidget.selectedItems()
         if not listItems: return
-        for item in listItems:
-           self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
-           data_manager.delete_plugin_given_name(item.text())
+
+        buttonReply = QMessageBox.question(BEAT, 'Plugin Deletion Warning',
+            "Are you sure you want to permanently delete this plugin?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            for item in listItems:
+               self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
+               data_manager.delete_plugin_given_name(item.text())
+
+            self.plugin_structure_filepath_lineedit.clear()
+            self.plugin_predefined_data_set_lineedit.clear()
+            self.plugin_name_lineedit.clear()
+            self.plugin_description_textedit.clear()
+            self.points_of_interest_list_textedit.clear()
+
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''
@@ -881,6 +990,19 @@ class UiMain(UiView.Ui_BEAT):
             for d in dll:
                 self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
 
+    def populate_name_and_description(self):
+        print("HERE")
+        try:
+            to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+            print(to_find)
+            name, desc = data_manager.get_plugin_from_name(to_find)
+            print("zxcvbnm")
+            print(name)
+            print(desc)
+            # self.plugin_name_lineedit.setText(name)
+            # self.plugin_description_textedit.clear(desc)
+        except:
+            return
 
     def poi_type_changed_in_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
@@ -897,7 +1019,31 @@ class UiMain(UiView.Ui_BEAT):
     def change_plugin_in_poi(self):
         self.populate_pois_in_poi()
         
+    def run_command_from_cmd(self):
+        cmd = self.terminal_input.text()
+        if cmd  == "":
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Command Error", "A command must be given to run", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        result = radare_commands_interface.run_cmd(cmd).split('{}')
+        self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
 
+    def delete_poi(self):
+        try:
+            name = self.point_of_interest_view_listwidget.currentItem().text()
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No POI to Delete Error",
+                                     "Please select a POI to delete", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        a = name.split(":")
+        print(a)
+        type = a[0]
+        poi = a[2].strip(" ',}")
+        print(plugin, type, poi)
+        data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
+        self.populate_pois_in_poi()
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
@@ -972,7 +1118,113 @@ class UiMain(UiView.Ui_BEAT):
             self.points_of_interest_list_textedit.append("DLLs:"+ str(dll)+ "\n")
         except:
             return
+    def document_deletion_message(self):
+        name = self.document_view_listwidget.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this document?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            self.document_view_listwidget.clear()
+            print("Done Removing Document:", name)
+    def new_document(self):
+        self.textbox = QLineEdit(self)
+        self.textbox.move(20, 20)
+        self.textbox.resize(280,40)
+        os.path.join('./', filename + "." + 'txt')
+        open(filename, 'a').close()
+        self.document_view_listwidget.addItem(filename)
+    def remove_document(self):
+        os.remove(self.document_view_listwidget.itemClicked)
+        os.removed("Test")
+    def search_Project(self):
+        text = str(self.project_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.project_list.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.project_list.count()):
+                self.project_list.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.project_list.count()):
+                self.project_list.item(item).setHidden(False)
 
+
+    def fill_documents(self):
+        for file in os.listdir("./"):
+            if file.endswith(".txt"):
+                txt_list = os.path.join("", file)
+                stripped_txt_list = os.path.splitext(file)[0]
+                self.document_view_listwidget.addItem(stripped_txt_list)
+    def save_document(self):
+        document = open("README.txt", "a")
+        document.write(self.document_content_area_textedit.textChanged.connect(self.document_save_button))
+
+    def search_Plugin(self):
+        text = str(self.plugin_view_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.plugin_view_plugin_listwidget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.plugin_view_plugin_listwidget.count()):
+                self.plugin_view_plugin_listwidget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.points_of_interest_list_widget.count()):
+                self.points_of_interest_list_widget.item(item).setHidden(False)
+            for item in range(self.plugin_view_plugin_listwidget.count()):
+                self.plugin_view_plugin_listwidget.item(item).setHidden(False)
+
+    def search_POI_View(self):
+        text = str(self.point_of_interest_view_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.point_of_interest_view_listwidget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.point_of_interest_view_listwidget.count()):
+                self.point_of_interest_view_listwidget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.point_of_interest_view_listwidget.count()):
+                self.point_of_interest_view_search_lineedit.item(item).setHidden(False)
+
+    def search_Document(self):
+        text = str(self.document_view_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.document_view_listwidget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.document_view_listwidget.count()):
+                self.document_view_listwidget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.document_view_listwidget.count()):
+                self.document_view_listwidget.item(item).setHidden(False)
+
+    # This prints the contents of the documentation files found in the Document View.
+    def README_document(self, filename):
+        # This prints the BEAT Documentation Content as a README.
+        if filename in 'README':
+            with open('README.txt', 'r') as readMe:
+                ReadMeString = readMe.read()
+        return ReadMeString
+
+    def Plugin_document(self, filename):
+        # This prints the BEAT Documentation Content as a README.
+        if filename in 'Plugin':
+            with open('test_plugin.txt', 'r') as plugin:
+                pluginString = plugin.read()
+        return pluginString
+
+    def display_ReadMe(self):
+        self.document_content_area_textedit.setText(self.README_document('README'))
+
+    def display_Plugin(self):
+        self.document_content_area_textedit.setText(self.Plugin_document('Plugin'))
+
+    def change_doc(self):
+        doc = self.project_list.currentItem().text()
+        if doc == "README":
+            self.display_ReadMe()
+        if doc == "BEAT Documentation":
+            self.display
+        if doc == "         Plugin Structure":
+            self.display_Plugin()
 
 if __name__ == "__main__":
     import sys
@@ -981,6 +1233,7 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
+    ui.fill_documents()
     #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

@@ -125,6 +125,8 @@ class UiMain(UiView.Ui_BEAT):
         self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
 
         self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
+
+        self.detailed_point_of_interest_view_delete_button.clicked.connect(self.delete_poi)
         '''
         Documentation Tab Listeners
         '''
@@ -946,6 +948,23 @@ class UiMain(UiView.Ui_BEAT):
             return
         result = radare_commands_interface.run_cmd(cmd).split('{}')
         self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
+
+    def delete_poi(self):
+        try:
+            name = self.point_of_interest_view_listwidget.currentItem().text()
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No POI to Delete Error",
+                                     "Please select a POI to delete", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        a = name.split(":")
+        print(a)
+        type = a[0]
+        poi = a[2].strip(" ',}")
+        print(plugin, type, poi)
+        data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
+        self.populate_pois_in_poi()
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())

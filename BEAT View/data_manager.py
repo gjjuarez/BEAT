@@ -148,6 +148,33 @@ def add_dll_to_plugin(name, libaray_name):
         {"dll": dll}
     },upsert=True
     )
+
+def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
+    print("in get_poits_from_plugin_and__type")
+    pois = []
+    print("Looking for POI from plugin:", plugin, "of type:",type)
+
+    if True:
+        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
+        plugin_collection.update(
+            {'name': plugin},
+            {'$pull':
+                 {'dll': {'Library': poi}}
+             }
+        )
+
+    for c in plugin_collection.find():
+        if c['name'] == plugin:
+            if type == "dll":
+
+                c[plugin][type].find_one_and_delete({'Library': poi})
+            if type == "variable":
+                c[plugin][type].find_one_and_delete({'Variable Name': poi})
+            if type == "function":
+                c[plugin][type].find_one_and_delete({'Function Name': poi})
+            if type == "string":
+                c[plugin][type].find_one_and_delete({'String Value' : poi})
+
 '''
 #################################################################################
 Project functions

@@ -8,12 +8,13 @@ from PyQt5.QtCore import QDir
 
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
+from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from ArchitectureError import Ui_ArchitectureError
 from PyQt5.QtWidgets import QListWidgetItem
 from Terminal import EmbTerminalLinux
 
 from radare2_scripts import radare_commands_interface
-from PyQt5 import QtGui
+from PyQt5.QtGui import QIcon, QPixmap
 import data_manager
 import os.path
 from os import path
@@ -190,6 +191,7 @@ class UiMain(UiView.Ui_BEAT):
         data_manager.update_current_project(name, desc, path, bin_info)
         # enable deletion
         self.delete_project_button.setDisabled(False)
+
         self.setCurrentProject()
 
     def setCurrentProject(self):
@@ -203,15 +205,15 @@ class UiMain(UiView.Ui_BEAT):
             BEAT.setWindowTitle("BEAT - [PROJECT]: " + name + "    [BINARY]: " + path.split("/")[-1])
         # fill name text
         self.project_name_text.setText(name)
-        self.project_name_text.setStyleSheet("color: gray;")
-        self.project_name_text.setReadOnly(True)
+        self.project_name_text.setDisabled(True)
+        #self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
+        self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
         # fill path text
         self.file_path_lineedit.setText(path)
-        self.file_path_lineedit.setStyleSheet("color: gray;")
-        self.file_path_lineedit.setReadOnly(True)
+        self.file_path_lineedit.setDisabled(True)
         # disable buttons
         self.save_project_button.setDisabled(True)
         self.file_browse_button.setDisabled(True)
@@ -228,13 +230,13 @@ class UiMain(UiView.Ui_BEAT):
         self.clear_detailed_project_view()
 
         self.project_name_text.setDisabled(False)
-        self.project_name_text.setReadOnly(False)
+        #self.project_name_text.setReadOnly(False)
 
         self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-       # self.file_path_lineedit.setDisabled(False)
-        self.file_path_lineedit.setReadOnly(False)
+        self.file_path_lineedit.setDisabled(False)
+        # self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
         self.file_browse_button.setDisabled(False)
@@ -362,10 +364,11 @@ class UiMain(UiView.Ui_BEAT):
     if the comment exists
     '''
     def comment_view(self):
-        from PyQt5 import QtGui
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
+
         current_item = self.points_of_interest_list_widget.currentItem()
         current_item_text = str(current_item.text())
-        print(current_item_text)
 
         # retrieves comment and poi type
         comment, poi_type = data_manager.get_comment_from_name(current_item_text)
@@ -373,13 +376,16 @@ class UiMain(UiView.Ui_BEAT):
         comment_title = "Comment for POI " + current_item_text
 
         if not comment:
-            comment = " "
+          comment = " "
 
         updated_comment, save = QInputDialog().getMultiLineText(BEAT, comment_title,
                                           "Comment:", comment)
         if save:
-            print(updated_comment)
             data_manager.add_comment(current_item_text, poi_type, updated_comment)
+            if not updated_comment or updated_comment == ' ':
+                self.points_of_interest_list_widget.currentItem().setIcon(no_comment_icon)
+            else:
+                self.points_of_interest_list_widget.currentItem().setIcon(comment_icon)
 
 
     '''
@@ -557,8 +563,9 @@ class UiMain(UiView.Ui_BEAT):
         self.display_imports_in_left_column()
 
     def display_imports_in_left_column(self):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         imports = open("imports.txt", "r")
-
         # Start at the index 2 to the end get each line
         for line in imports.read().split("\n")[2:-1]:
             # Separate by spaces and then get the last word
@@ -637,18 +644,35 @@ class UiMain(UiView.Ui_BEAT):
                 self.detailed_points_of_interest_listWidget.addItem(varItem)
 
     def read_and_display_variables_with_functions_left_column(self, func_name):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
+
         variables = data_manager.get_variables()
         # display all variables related to current function
         for var in variables:
             if func_name == var["Function Name"]:
-                varItem = QListWidgetItem("   " + var["Variable Name"])
+
+                value = " " + var["Variable Name"]
+                # Checking if poi has a comment
+                if not var["Comment"] or var["Comment"] != ' ':
+                    varItem = QListWidgetItem(no_comment_icon, value)
+                else:
+                    varItem = QListWidgetItem(comment_icon, value)
+
                 self.points_of_interest_list_widget.addItem(varItem)
 
     def display_functions_in_left_column(self):
         # breakPoints = radare_commands_interface.get_all_breakpoints()
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         functions = data_manager.get_functions()
         for func in functions:
-            item = QListWidgetItem(func["Function Name"])
+            value = func["Function Name"]
+
+            if not func["Comment"] or func["Comment"] != ' ':
+                item = QListWidgetItem(no_comment_icon, value)
+            else:
+                item = QListWidgetItem(comment_icon, value)
 
             # Don't know if we need this following line
             # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
@@ -672,12 +696,17 @@ class UiMain(UiView.Ui_BEAT):
         self.display_strings_in_left_column()
 
     def display_strings_in_left_column(self):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
         strings = data_manager.get_strings()
 
         for strg in strings:
             value = strg["String Value"]
 
-            item = QListWidgetItem(value)
+            if not strg["Comment"] or strg["Comment"] != ' ':
+                item = QListWidgetItem(no_comment_icon, value)
+            else:
+                item = QListWidgetItem(comment_icon, value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)
@@ -694,12 +723,19 @@ class UiMain(UiView.Ui_BEAT):
         self.display_global_variables_in_left_column()
 
     def display_global_variables_in_left_column(self):
+        comment_icon = QIcon.fromTheme("accessories-dictionary")
+        no_comment_icon = QIcon.fromTheme("accessories-text-editor")
+
         variables = data_manager.get_global_variables()
 
         for var in variables:
             value = var["Variable Name"]
 
-            item = QListWidgetItem(value)
+            # Checking if poi has a comment
+            if not var["Comment"] or var["Comment"] != ' ':
+                item = QListWidgetItem(no_comment_icon, value)
+            else:
+                item = QListWidgetItem(comment_icon, value)
 
             # item.setCheckState(QtCore.Qt.Unchecked)
             self.points_of_interest_list_widget.addItem(item)

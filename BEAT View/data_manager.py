@@ -337,7 +337,6 @@ def get_function_from_name(find_function):
         except KeyError:
             print("Key error")
 
-
 def get_functions():
     global function_collection
     functions = []
@@ -476,22 +475,7 @@ def end():
 # test code##############################################################################################
 #initialize_POI_collections("project 1")
 
-
 #save_variables("static", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")
 
-#save_variables("static", "Function", "integer 2", 256, "integer", "here lies a binary address")
-#save_variables("dynamic", "Function_1", "integer 7", 246, "integer", "here lies a binary address")
-
-#add_analysis_name("burritos")
-
-#name = "integer 2"
-#comment = "shy"
-#add_comment(name, comment)
-#name = "integer 7"
-#comment = "bye"
-#add_comment(name, comment)
-
-#print(find_analysis("burritos"))
-
-#delete_analysis_by_name("burritos")
-
+#save_variables("static", "integer 2", 254, "integer", 256, "some random section in binary", "here lies a binary address")
+#save_variables("dynamic", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")

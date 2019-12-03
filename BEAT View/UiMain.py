@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QInputDialog, QApplication, QLineEdit, QMainWindow, 
 
 from PyQt5.QtCore import QDir
 
-from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from ArchitectureError import Ui_ArchitectureError
@@ -29,7 +28,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-
+        #self.file_path_lineedit.setEd
         ###########################
         # Resizing according to user's desktop
         ###########################
@@ -93,8 +92,6 @@ class UiMain(UiView.Ui_BEAT):
         self.analysis_result_button.clicked.connect(self.analysis_result)
         # calls comment_view after comment_button is clicked
         self.comment_button.clicked.connect(self.comment_view)
-        # calls output_field after output_field_button is clicked
-        self.output_field_button.clicked.connect(self.output_field)
 
         '''
         Plugin Management Tab Listeners
@@ -118,6 +115,8 @@ class UiMain(UiView.Ui_BEAT):
 
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(self.poi_type_changed_in_poi)
         self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
+
+        self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
         '''
         Documentation Tab Listeners
         '''
@@ -230,7 +229,7 @@ class UiMain(UiView.Ui_BEAT):
         self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-        self.file_path_lineedit.setDisabled(False)
+       # self.file_path_lineedit.setDisabled(False)
         self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)
@@ -404,6 +403,14 @@ class UiMain(UiView.Ui_BEAT):
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        try:
+            x, y, z, a = data_manager.getCurrentProjectInfo()
+
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Project Error", "There must be a project set to run static analysis", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+
         self.process_window = QtWidgets.QProgressDialog("Running Static Analysis...", None, 0,0)
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
@@ -859,6 +866,11 @@ class UiMain(UiView.Ui_BEAT):
         elif poi_detected == "DLL":
             self.Poi_stacked_Widget.setCurrentIndex(1)
 
+    def change_plugin_in_poi(self):
+        self.populate_pois_in_poi()
+        
+
+
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
@@ -941,6 +953,6 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    ui.new_project()
+    #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

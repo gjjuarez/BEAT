@@ -3021,13 +3021,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="output_field_button">
-            <property name="text">
-             <string>Output Field</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QPushButton" name="comment_button">
             <property name="text">
              <string>Comment</string>
@@ -4104,6 +4097,13 @@
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_10">
+          <item row="2" column="3" rowspan="2" alignment="Qt::AlignLeft">
+           <widget class="QPushButton" name="plugin_predefined_data_set_browse_button">
+            <property name="text">
+             <string>Browse</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="2">
            <widget class="QLineEdit" name="plugin_structure_filepath_lineedit">
             <property name="palette">
@@ -4991,23 +4991,6 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="default_output_field_label">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Default Output Field</string>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::NoTextInteraction</set>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="3" alignment="Qt::AlignLeft">
            <widget class="QPushButton" name="plugin_structure_browse_button">
             <property name="text">
@@ -5109,7 +5092,7 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="points_of_interest_label">
             <property name="font">
              <font>
@@ -5123,13 +5106,6 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="textInteractionFlags">
              <set>Qt::NoTextInteraction</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3" rowspan="2" alignment="Qt::AlignLeft">
-           <widget class="QPushButton" name="plugin_predefined_data_set_browse_button">
-            <property name="text">
-             <string>Browse</string>
             </property>
            </widget>
           </item>
@@ -5578,24 +5554,8 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="9" column="2">
+          <item row="8" column="2">
            <widget class="QTextEdit" name="points_of_interest_list_textedit"/>
-          </item>
-          <item row="7" column="2">
-           <widget class="QComboBox" name="output_field_dropdown">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <item>
-             <property name="text">
-              <string>Output Field</string>
-             </property>
-            </item>
-           </widget>
           </item>
          </layout>
         </widget>

@@ -43,7 +43,6 @@ def get_pois_from_plugin_and_type(plugin, type):
 
 def get_pois_from_type(type):
     pois = []
-    print("Shouldnt be here")
     plugin = current_plugin_name
     for c in plugin_collection.find():
         try:
@@ -59,6 +58,7 @@ def get_plugin_names():
     return plugins
 
 def save_plugin(name, desc):
+    print("in save plugin")
     plugin_dict = {"name": name,
                    "desc": desc}
     plugin_collection.insert_one(plugin_dict)
@@ -67,6 +67,7 @@ def get_plugin_from_name(to_find):
     name = ""
     desc = ""
     for c in plugin_collection.find():
+        print(c["name"])
         try :
             if(c["name"] == to_find()):
                 name = c["name"]
@@ -147,6 +148,33 @@ def add_dll_to_plugin(name, libaray_name):
         {"dll": dll}
     },upsert=True
     )
+
+def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
+    print("in get_poits_from_plugin_and__type")
+    pois = []
+    print("Looking for POI from plugin:", plugin, "of type:",type)
+
+    if True:
+        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
+        plugin_collection.update(
+            {'name': plugin},
+            {'$pull':
+                 {'dll': {'Library': poi}}
+             }
+        )
+
+    for c in plugin_collection.find():
+        if c['name'] == plugin:
+            if type == "dll":
+
+                c[plugin][type].find_one_and_delete({'Library': poi})
+            if type == "variable":
+                c[plugin][type].find_one_and_delete({'Variable Name': poi})
+            if type == "function":
+                c[plugin][type].find_one_and_delete({'Function Name': poi})
+            if type == "string":
+                c[plugin][type].find_one_and_delete({'String Value' : poi})
+
 '''
 #################################################################################
 Project functions

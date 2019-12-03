@@ -110,6 +110,10 @@ class UiMain(UiView.Ui_BEAT):
         # calls browse_plugin_dataset if plugin_predefined_data_set_browse_button is clicked
         self.plugin_predefined_data_set_browse_button.clicked.connect(self.browse_plugin_dataset)
         self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_pois_in_plugin)
+        self.plugin_view_plugin_listwidget.itemClicked.connect(self.populate_name_and_description)
+
+        #Allows you to create a new plugin
+        self.plugin_view_new_button.clicked.connect(self.new_plugin)
 
         '''
         Points of Interest Tab Listeners
@@ -122,6 +126,8 @@ class UiMain(UiView.Ui_BEAT):
         self.detailed_point_of_interest_view_save_button.clicked.connect(self.save_poi)
 
         self.detailed_point_of_interest_view_existing_plugin_dropdown.currentIndexChanged.connect(self.change_plugin_in_poi)
+
+        self.detailed_point_of_interest_view_delete_button.clicked.connect(self.delete_poi)
         '''
         Documentation Tab Listeners
         '''
@@ -781,21 +787,62 @@ class UiMain(UiView.Ui_BEAT):
     #########################################################################################
 
     '''
+    Allows you to add new plugins
+    '''
+    def new_plugin(self):
+        self.plugin_structure_filepath_lineedit.setReadOnly(False)
+        self.plugin_predefined_data_set_lineedit.setReadOnly(False)
+        self.plugin_name_lineedit.setReadOnly(False)
+        self.plugin_description_textedit.setReadOnly(False)
+        self.points_of_interest_list_textedit.setReadOnly(False)
+
+    '''
     Adds a plugin name to the plugin list in Plugin Management 
     '''
     def save_plugin(self):
         print('in save plugin')
-        if self.plugin_predefined_data_set_lineedit.text() != "":
+        if self.plugin_name_lineedit.text() == "" or self.plugin_description_textedit.toPlainText() == "":
+            print('error')
+            self.msg_error = QMessageBox(QMessageBox.Question, "Name and Description Error",
+                                         "Plugin name or description are empty", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        elif self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() == "":
             print('about to call xmlparser')
             import xmlparser
+            xmlparser.parse_xml_plugin(self.plugin_structure_filepath_lineedit.text())
 
-            xmlparser.parse_xml(self.plugin_predefined_data_set_lineedit.text())
+        elif self.plugin_predefined_data_set_lineedit.text() != "" and self.plugin_structure_filepath_lineedit.text() == "":
+            print('about to call xmlparser')
+            import xmlparser
+            xmlparser.parse_xml_poi(self.plugin_predefined_data_set_lineedit.text(), self.plugin_name_lineedit.text(), self.plugin_description_textedit.toPlainText())
+
+        elif self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() != "":
+            print('error')
+            self.msg_error = QMessageBox(QMessageBox.Question, "Unclear plugin type Error",
+                                         "Too many fields are filled out", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+
         else:
+            print("1234")
             name = self.plugin_name_lineedit.text()
             desc = self.plugin_description_textedit.toPlainText()
             self.plugin_view_plugin_listwidget.addItem(name)
             data_manager.save_plugin(name,desc)
         self.update_plugin_list()
+
+        self.plugin_structure_filepath_lineedit.clear()
+        self.plugin_predefined_data_set_lineedit.clear()
+        self.plugin_name_lineedit.clear()
+        self.plugin_description_textedit.clear()
+        self.points_of_interest_list_textedit.clear()
+
+        self.plugin_structure_filepath_lineedit.setReadOnly(True)
+        self.plugin_predefined_data_set_lineedit.setReadOnly(True)
+        self.plugin_name_lineedit.setReadOnly(True)
+        self.plugin_description_textedit.setReadOnly(True)
+        self.points_of_interest_list_textedit.setReadOnly(True)
 
     def update_plugin_list(self):
         plugins = data_manager.get_plugin_names()
@@ -817,6 +864,12 @@ class UiMain(UiView.Ui_BEAT):
         for item in listItems:
            self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
            data_manager.delete_plugin_given_name(item.text())
+
+        self.plugin_structure_filepath_lineedit.clear()
+        self.plugin_predefined_data_set_lineedit.clear()
+        self.plugin_name_lineedit.clear()
+        self.plugin_description_textedit.clear()
+        self.points_of_interest_list_textedit.clear()
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''
@@ -894,6 +947,19 @@ class UiMain(UiView.Ui_BEAT):
             for d in dll:
                 self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
 
+    def populate_name_and_description(self):
+        print("HERE")
+        try:
+            to_find = self.plugin_view_plugin_listwidget.currentItem().text()
+            print(to_find)
+            name, desc = data_manager.get_plugin_from_name(to_find)
+            print("zxcvbnm")
+            print(name)
+            print(desc)
+            # self.plugin_name_lineedit.setText(name)
+            # self.plugin_description_textedit.clear(desc)
+        except:
+            return
 
     def poi_type_changed_in_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
@@ -916,7 +982,25 @@ class UiMain(UiView.Ui_BEAT):
             self.msg_error = QMessageBox(QMessageBox.Question, "No Command Error", "A command must be given to run", QMessageBox.Ok)
             self.msg_error.exec()
             return
-        radare_commands_interface.run_cmd(cmd)
+        result = radare_commands_interface.run_cmd(cmd).split('{}')
+        self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
+
+    def delete_poi(self):
+        try:
+            name = self.point_of_interest_view_listwidget.currentItem().text()
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No POI to Delete Error",
+                                     "Please select a POI to delete", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+        plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
+        a = name.split(":")
+        print(a)
+        type = a[0]
+        poi = a[2].strip(" ',}")
+        print(plugin, type, poi)
+        data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
+        self.populate_pois_in_poi()
 
     def save_poi(self):
         poi_detected = str(self.detailed_point_of_interest_view_type_dropdown.currentText())

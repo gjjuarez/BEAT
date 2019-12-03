@@ -1430,6 +1430,8 @@ class Ui_BEAT(object):
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.Window, brush)
         self.detailed_points_of_interest_dynamic_info_listWidget.setPalette(palette)
+        self.detailed_points_of_interest_dynamic_info_listWidget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.detailed_points_of_interest_dynamic_info_listWidget.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.detailed_points_of_interest_dynamic_info_listWidget.setObjectName("detailed_points_of_interest_dynamic_info_listWidget")
         self.verticalLayout_2.addWidget(self.detailed_points_of_interest_dynamic_info_listWidget)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
@@ -3064,7 +3066,7 @@ class Ui_BEAT(object):
         self.gridLayout_3.addWidget(self.tabWidget, 0, 1, 1, 1)
 
         self.retranslateUi(BEAT)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(1)
         self.Poi_stacked_Widget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(BEAT)
 

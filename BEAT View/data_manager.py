@@ -221,7 +221,8 @@ def save_variables(analysis_run, function_name, POI_name, POI_value, POI_data_ty
                 'Variable Value': POI_value,
                 'Variable Type': POI_data_type,
                 'Address': address,
-                'Comment': ""}
+                'Comment': "",
+                'Analysis Name': ""}
     variable_collection.replace_one({'Function Name': function_name,
                                      'Variable Name': POI_name}, document, upsert=True)
 
@@ -232,7 +233,8 @@ def save_global_variable(analysis_run, POI_name, POI_size, address, POI_value="-
                 'Variable Value': POI_value,
                 'Variable Size': POI_size,
                 'Address': address,
-                'Comment': comment}
+                'Comment': comment,
+                'Analysis Name': ""}
     global_var_collection.replace_one({'Variable Name': POI_name}, document, upsert=True)
 
 def get_global_variables():
@@ -265,7 +267,8 @@ def save_strings(analysis_run, POI_value, section, address, comment=''):
                 'String Value': POI_value,
                 'Section': section,
                 'Address': address,
-                'Comment': comment}
+                'Comment': comment,
+                'Analysis Name': ""}
     string_collection.replace_one({'String Value': POI_value}, document, upsert=True)
 
 def get_strings():
@@ -321,7 +324,8 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Call From': call_from,  # either a function name or address
                 # 'Parameter Value': POI_parameter_value,
                 # 'Call From Address': POI_order_to_functions
-                'Comment': comment
+                'Comment': comment,
+                'Analysis Name': ""
                 }
     function_collection.replace_one({"Function Name": POI_name}, document, upsert=True)
 
@@ -414,7 +418,7 @@ def delete_variable_collection():
         print("Drop variable collection error")
 
 
-
+#adds a comment to all the POI based on the POI_name given to the method
 def add_comment(POI_name, comment):
     global variable_collection
     global function_collection
@@ -424,8 +428,42 @@ def add_comment(POI_name, comment):
     function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
     string_collection.update_one({"String Name": POI_name}, {"$set": {"Comment": comment}})
 
-def end():
+#finds all POIs without an analysis assigned to them and gives them the analysis_name
+def add_analysis_name(analysis_name):
+    name =""
+    global variable_collection
+    global function_collection
+    global string_collection
+
+    variable_collection.update_one({'Analysis Name': name} ,{ "$set":{'Analysis Name': analysis_name}})
+    function_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+    string_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+
+#gets the all POIs based on the analysis_name given (if given an empty string will return all POIs not assigned to an analysis)
+def find_analysis(analysis_name):
+        global variable_collection
+        global function_collection
+        global string_collection
+
+        variable = variable_collection.find({'Analysis Name': analysis_name})
+        function = function_collection.find({'Analysis Name': analysis_name})
+        string = string_collection.find({'Analysis Name': analysis_name})
+
+        return variable, function, string
+
+#sets all POIs with the defined analysis name to a blank string to be either renamed or removed from the analysis
+def delete_analysis_by_name(analysis_name):
+    name =""
+    global variable_collection
+    global function_collection
+    global string_collection
+
+    variable_collection.update_one({'Analysis Name': analysis_name} ,{ "$set":{'Analysis Name': name}})
+    function_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+    string_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+
     # close the connection to the database
+def end():
     connection.close()
 
 # test code##############################################################################################

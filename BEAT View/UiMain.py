@@ -429,6 +429,14 @@ class UiMain(UiView.Ui_BEAT):
     Runs analysis and displayss results
     '''
     def analyze_and_display_POI(self):
+        try:
+            x,y,z =data_manager.getCurrentProjectInfo()
+
+        except:
+            self.msg_error = QMessageBox(QMessageBox.Question, "No Project Error", "There must be a project set to run static analysis", QMessageBox.Ok)
+            self.msg_error.exec()
+            return
+
         self.process_window = QtWidgets.QProgressDialog("Running Static Analysis...", None, 0,0)
         self.detailed_points_of_interest_listWidget.clear()
         self.points_of_interest_list_widget.clear()
@@ -971,6 +979,6 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    ui.new_project()
+    #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

@@ -101,7 +101,7 @@ def delete_variable_poi_by_name(poi_name):
 
 
 def add_string_to_plugin(name, string_name):
-    string = {'String Name': string_name
+    string = {'String Value': string_name
 
             }
     plugin_collection.find_one_and_update(
@@ -295,8 +295,8 @@ def get_string_from_name(find_string):
     name = ""
     for c in string_collection.find():
         try:
-            if (c["String Name"] == find_string):
-                name = c["String Name"]
+            if (c["String Value"] == find_string):
+                name = c["String Value"]
                 return name
         except KeyError:
             print("Key error")
@@ -322,8 +322,6 @@ def save_functions(analysis_run, POI_name, POI_return_type, POI_return_value, PO
                 'Binary Section': binary_section,
                 'Parameter Value': POI_parameter_values,
                 'Call From': call_from,  # either a function name or address
-                # 'Parameter Value': POI_parameter_value,
-                # 'Call From Address': POI_order_to_functions
                 'Comment': comment,
                 'Analysis Name': ""
                 }
@@ -426,7 +424,7 @@ def add_comment(POI_name, comment):
 
     variable_collection.update_one({"Variable Name": POI_name} ,{ "$set":{"Comment": comment}})
     function_collection.update_one({"Function Name": POI_name}, {"$set": {"Comment": comment}})
-    string_collection.update_one({"String Name": POI_name}, {"$set": {"Comment": comment}})
+    string_collection.update_one({"String Value": POI_name}, {"$set": {"Comment": comment}})
 
 #finds all POIs without an analysis assigned to them and gives them the analysis_name
 def add_analysis_name(analysis_name):
@@ -435,9 +433,12 @@ def add_analysis_name(analysis_name):
     global function_collection
     global string_collection
 
-    variable_collection.update_one({'Analysis Name': name} ,{ "$set":{'Analysis Name': analysis_name}})
-    function_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
-    string_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+    for c in variable_collection.find():
+        variable_collection.update_one({'Analysis Name': name} ,{ "$set":{'Analysis Name': analysis_name}})
+    for d in function_collection.find():
+        function_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
+    for e in string_collection.find():
+        string_collection.update_one({'Analysis Name': name}, {"$set": {'Analysis Name': analysis_name}})
 
 #gets the all POIs based on the analysis_name given (if given an empty string will return all POIs not assigned to an analysis)
 def find_analysis(analysis_name):
@@ -445,9 +446,12 @@ def find_analysis(analysis_name):
         global function_collection
         global string_collection
 
-        variable = variable_collection.find({'Analysis Name': analysis_name})
-        function = function_collection.find({'Analysis Name': analysis_name})
-        string = string_collection.find({'Analysis Name': analysis_name})
+        for c in variable_collection.find():
+            variable = variable_collection.find({'Analysis Name': analysis_name})
+        for d in variable_collection.find():
+            function = function_collection.find({'Analysis Name': analysis_name})
+        for e in variable_collection.find():
+            string = string_collection.find({'Analysis Name': analysis_name})
 
         return variable, function, string
 
@@ -458,9 +462,12 @@ def delete_analysis_by_name(analysis_name):
     global function_collection
     global string_collection
 
-    variable_collection.update_one({'Analysis Name': analysis_name} ,{ "$set":{'Analysis Name': name}})
-    function_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
-    string_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+    for c in variable_collection.find():
+        variable_collection.update_one({'Analysis Name': analysis_name} ,{ "$set":{'Analysis Name': name}})
+    for d in variable_collection.find():
+        function_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
+    for e in variable_collection.find():
+        string_collection.update_one({'Analysis Name': analysis_name}, {"$set": {'Analysis Name': name}})
 
     # close the connection to the database
 def end():
@@ -469,7 +476,22 @@ def end():
 # test code##############################################################################################
 #initialize_POI_collections("project 1")
 
+
 #save_variables("static", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")
 
-#save_variables("static", "integer 2", 254, "integer", 256, "some random section in binary", "here lies a binary address")
-#save_variables("dynamic", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")
+#save_variables("static", "Function", "integer 2", 256, "integer", "here lies a binary address")
+#save_variables("dynamic", "Function_1", "integer 7", 246, "integer", "here lies a binary address")
+
+#add_analysis_name("burritos")
+
+#name = "integer 2"
+#comment = "shy"
+#add_comment(name, comment)
+#name = "integer 7"
+#comment = "bye"
+#add_comment(name, comment)
+
+#print(find_analysis("burritos"))
+
+#delete_analysis_by_name("burritos")
+

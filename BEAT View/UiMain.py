@@ -492,7 +492,6 @@ class UiMain(UiView.Ui_BEAT):
         display_value = str(self.type_dropdown.currentText())
 
         if display_value == "All":
-            print("Have to do things here")
             self.set_auto_breakpoint_at_string()
         elif display_value == "Strings":
             self.set_auto_breakpoint_at_string()
@@ -737,29 +736,6 @@ class UiMain(UiView.Ui_BEAT):
             for item in range(self.points_of_interest_list_widget.count()):
                 self.points_of_interest_list_widget.item(item).setHidden(False)
 
-    # this method highlights the searched POI but breaks the program because it somehow calls the remove breakpoints method with the current listener it has
-    # def search_POI(self):
-    #     # clear background in left column
-    #     for i in range(self.points_of_interest_list_widget.count()):
-    #         self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
-    #     # clear background for detailed view
-    #     for i in range(self.detailed_points_of_interest_listWidget.count()):
-    #         self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
-    #
-    #     display_value = str(self.points_of_interest_line_edit.text())
-    #     # don't search if empty string
-    #     if display_value == "":
-    #         return
-    #     # highlights search in left column
-    #     search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
-    #     if len(search_result) > 0:
-    #         for item in search_result:
-    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
-    #     # highlights search in detailed view
-    #     search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
-    #     if len(search_result) > 0:
-    #         for item in search_result:
-    #             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
 
     #########################################################################################
     # Plugin Management Tab Functions
@@ -815,28 +791,7 @@ class UiMain(UiView.Ui_BEAT):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
         self.plugin_predefined_data_set_lineedit.setText(file_path)
 
-    # def add_poi_to_plugin(self):
-    #     print("Populating POIs in Plugin tab")
-    #     plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
-    #     poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
-    #     to_add = self.point_of_interest_content_area_textedit.toPlainText()
-    #     if poi_type == "Function":
-    #         data_manager.add_function_to_plugin(plugin,to_add)
-    #     elif poi_type == "String":
-    #         data_manager.add_string_to_plugin(plugin,to_add)
-    #     elif poi_type == "Variable":
-    #         data_manager.add_variable_to_plugin(plugin,to_add)
-    #     elif poi_type == "DLL":
-    #         data_manager.add_dll_to_plugin(plugin,to_add)
-    #     elif poi_type == "Packet Protocol":
-    #         data_manager.add_packet_to_plugin(plugin,to_add)
-    #     elif poi_type == "Struct":
-    #         data_manager.add_struct_to_plugin(plugin,to_add)
-    #
-    #     self.point_of_interest_content_area_textedit.clear()
-    #     self.populate_pois_in_poi()
 
-        #data_manager.add_string_to_plugin(plugin,poi_type)
     def populate_pois_in_poi(self):
         print("Populating POIs in POI tab")
         to_find = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
@@ -930,7 +885,7 @@ class UiMain(UiView.Ui_BEAT):
             self.poi_variable_type_lineedit.setText("")
 
         elif poi_detected == "DLL":
-            print("geting dlllllllllllllllllllllllll :D")
+            print("Getting dll")
             name = self.poi_dll_libraryname_lineedit.text()
             print(name)
             data_manager.add_dll_to_plugin(plugin, name)

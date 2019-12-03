@@ -27,7 +27,7 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
-
+        #self.file_path_lineedit.setEd
         ###########################
         # Resizing according to user's desktop
         ###########################
@@ -228,7 +228,7 @@ class UiMain(UiView.Ui_BEAT):
         self.project_desc_text.setDisabled(False)
         self.project_desc_text.setReadOnly(False)
 
-        self.file_path_lineedit.setDisabled(False)
+       # self.file_path_lineedit.setDisabled(False)
         self.file_path_lineedit.setReadOnly(False)
 
         self.save_project_button.setDisabled(False)

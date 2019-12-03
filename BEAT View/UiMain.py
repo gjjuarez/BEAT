@@ -791,7 +791,7 @@ class UiMain(UiView.Ui_BEAT):
         if not listItems: return
         for item in listItems:
            self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
-           data_manager.delete_plugin_given_name(item)
+           data_manager.delete_plugin_given_name(item.text())
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''

@@ -136,7 +136,7 @@ class UiMain(UiView.Ui_BEAT):
         # sets breakpoints on currently checked items
         self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
         # runs dynamic analysis on breakpoints then updates ui
-        self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
+        # self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
         self.dynamic_run_button.clicked.connect(self.display_dynamic_info)
         # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
         #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)

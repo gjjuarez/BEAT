@@ -69,7 +69,7 @@ def extract_vars_from_functions():
             for varTemp in variableTypes:
                 if varName in varTemp:
                     varType = varTemp.split()[1]
-            if filter.filter_var(varName, varValue, varType, "", varAddr):
+            if filter.filter_var(varName, varType):
                 data_manager.save_variables("static", funcName, varName, varValue, varType, varAddr)
 
     rlocal.cmd("s " + currentAddr)
@@ -111,7 +111,7 @@ def extract_global_vars():
         except:
             print("Problem getting value of global variable")
 
-        if filter.filter_var(name, value, "", size, address):
+        if filter.filter_var(name, ""):
             data_manager.save_global_variable("static", name, size, address, value)
 
     rlocal.cmd("s " + currentAddr)  # revert to previous address
@@ -288,7 +288,7 @@ def extract_strings():
         strSection = attr[5]
         strAddr = attr[2]
         # filter out strings
-        if filter.filter_string(strValue, strSection, strAddr):
+        if filter.filter_string(strValue):
             data_manager.save_strings("static", strValue, strSection, strAddr)
 
 def extract_imports():

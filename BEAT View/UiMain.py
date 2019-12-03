@@ -130,6 +130,24 @@ class UiMain(UiView.Ui_BEAT):
         '''
         Documentation Tab Listeners
         '''
+        self.point_of_interest_view_search_button.clicked.connect(self.search_POI_View)
+        self.point_of_interest_view_search_lineedit.returnPressed.connect(self.search_POI_View)
+        self.document_view_listwidget.itemClicked.connect(self.change_doc)
+        #self.document_view_listwidget.itemClicked.connect(self.display_ReadMe)
+        # Listens if Plugin Structure name is clicked.
+        #self.document_view_listwidget.itemSelectionChanged.connect(self.display_Plugin)
+        # searches Project in the left column
+        self.project_view_search_button.clicked.connect(self.search_Project)
+        self.project_search_lineedit.returnPressed.connect(self.search_Project)
+        # searches Plugin in the left column
+        self.plugin_view_search_button.clicked.connect(self.search_Plugin)
+        self.plugin_view_search_lineedit.returnPressed.connect(self.search_Plugin)
+        # searches POI View in the left column
+        self.point_of_interest_view_search_button.clicked.connect(self.search_POI_View)
+        self.point_of_interest_view_search_lineedit.returnPressed.connect(self.search_POI_View)
+        # searches Document in the left column
+        self.document_view_search_button.clicked.connect(self.search_Document)
+        self.document_view_search_lineedit.returnPressed.connect(self.search_Document)
         '''
         Analysis Run Tab Listeners
         '''
@@ -1039,7 +1057,113 @@ class UiMain(UiView.Ui_BEAT):
             self.points_of_interest_list_textedit.append("DLLs:"+ str(dll)+ "\n")
         except:
             return
+    def document_deletion_message(self):
+        name = self.document_view_listwidget.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this document?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            self.document_view_listwidget.clear()
+            print("Done Removing Document:", name)
+    def new_document(self):
+        self.textbox = QLineEdit(self)
+        self.textbox.move(20, 20)
+        self.textbox.resize(280,40)
+        os.path.join('./', filename + "." + 'txt')
+        open(filename, 'a').close()
+        self.document_view_listwidget.addItem(filename)
+    def remove_document(self):
+        os.remove(self.document_view_listwidget.itemClicked)
+        os.removed("Test")
+    def search_Project(self):
+        text = str(self.project_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.project_list.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.project_list.count()):
+                self.project_list.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.project_list.count()):
+                self.project_list.item(item).setHidden(False)
 
+
+    def fill_documents(self):
+        for file in os.listdir("./"):
+            if file.endswith(".txt"):
+                txt_list = os.path.join("", file)
+                stripped_txt_list = os.path.splitext(file)[0]
+                self.document_view_listwidget.addItem(stripped_txt_list)
+    def save_document(self):
+        document = open("README.txt", "a")
+        document.write(self.document_content_area_textedit.textChanged.connect(self.document_save_button))
+
+    def search_Plugin(self):
+        text = str(self.plugin_view_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.plugin_view_plugin_listwidget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.plugin_view_plugin_listwidget.count()):
+                self.plugin_view_plugin_listwidget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.points_of_interest_list_widget.count()):
+                self.points_of_interest_list_widget.item(item).setHidden(False)
+            for item in range(self.plugin_view_plugin_listwidget.count()):
+                self.plugin_view_plugin_listwidget.item(item).setHidden(False)
+
+    def search_POI_View(self):
+        text = str(self.point_of_interest_view_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.point_of_interest_view_listwidget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.point_of_interest_view_listwidget.count()):
+                self.point_of_interest_view_listwidget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.point_of_interest_view_listwidget.count()):
+                self.point_of_interest_view_search_lineedit.item(item).setHidden(False)
+
+    def search_Document(self):
+        text = str(self.document_view_search_lineedit.text())
+        if len(text) is not 0:
+            search_result = self.document_view_listwidget.findItems(text, QtCore.Qt.MatchContains)
+            for item in range(self.document_view_listwidget.count()):
+                self.document_view_listwidget.item(item).setHidden(True)
+            for item in search_result:
+                item.setHidden(False)
+        else:
+            for item in range(self.document_view_listwidget.count()):
+                self.document_view_listwidget.item(item).setHidden(False)
+
+    # This prints the contents of the documentation files found in the Document View.
+    def README_document(self, filename):
+        # This prints the BEAT Documentation Content as a README.
+        if filename in 'README':
+            with open('README.txt', 'r') as readMe:
+                ReadMeString = readMe.read()
+        return ReadMeString
+
+    def Plugin_document(self, filename):
+        # This prints the BEAT Documentation Content as a README.
+        if filename in 'Plugin':
+            with open('test_plugin.txt', 'r') as plugin:
+                pluginString = plugin.read()
+        return pluginString
+
+    def display_ReadMe(self):
+        self.document_content_area_textedit.setText(self.README_document('README'))
+
+    def display_Plugin(self):
+        self.document_content_area_textedit.setText(self.Plugin_document('Plugin'))
+
+    def change_doc(self):
+        doc = self.project_list.currentItem().text()
+        if doc == "README":
+            self.display_ReadMe()
+        if doc == "BEAT Documentation":
+            self.display
+        if doc == "         Plugin Structure":
+            self.display_Plugin()
 
 if __name__ == "__main__":
     import sys
@@ -1048,6 +1172,7 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
+    ui.fill_documents()
     #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

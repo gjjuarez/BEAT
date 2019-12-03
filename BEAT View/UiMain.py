@@ -29,6 +29,8 @@ class UiMain(UiView.Ui_BEAT):
 
     def setupUi(self, BEAT):
         super().setupUi(BEAT)
+        self.document_view_listwidget.clear()
+        self.document_view_listwidget.addItems(['README', 'BEAT Documentation', 'XML Structures', 'Tab Guide'])
         #self.file_path_lineedit.setEd
         ###########################
         # Resizing according to user's desktop
@@ -1214,14 +1216,35 @@ class UiMain(UiView.Ui_BEAT):
     def display_Plugin(self):
         self.document_content_area_textedit.setText(self.Plugin_document('Plugin'))
 
+    def display_documentation(self):
+        self.document_content_area_textedit.setText(self.documentation("BEAT Documentation"))
+
+    def documentation(self, filename):
+        if filename in 'BEAT Documentation':
+            with open('beat_documentation.txt', 'r') as plugin:
+                pluginString = plugin.read()
+        return pluginString
+
+    def display_tab_guide(self):
+        self.document_content_area_textedit.setText(self.tab_doc("Tab Guide"))
+
+    def tab_doc(self, filename):
+        if filename in 'Tab Guide':
+            with open('tab_guide.txt', 'r') as tab:
+                pluginString = tab.read()
+        return pluginString
+
     def change_doc(self):
-        doc = self.project_list.currentItem().text()
+        # ['README', 'BEAT Documentation', 'XML Structures', 'Tab Guide']
+        doc = self.document_view_listwidget.currentItem().text()
         if doc == "README":
             self.display_ReadMe()
         if doc == "BEAT Documentation":
-            self.display
-        if doc == "         Plugin Structure":
+            self.display_documentation()
+        if doc == "XML Structures":
             self.display_Plugin()
+        if doc == "Tab Guide":
+            self.display_tab_guide()
 
 if __name__ == "__main__":
     import sys
@@ -1230,7 +1253,7 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    ui.fill_documents()
+    #ui.fill_documents()
     #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

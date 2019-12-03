@@ -153,8 +153,8 @@ def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
     print("in get_poits_from_plugin_and__type")
     pois = []
     print("Looking for POI from plugin:", plugin, "of type:",type)
-
-    if True:
+    print("------------------------------------", type)
+    if type == 'DLL':
         print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
         plugin_collection.update(
             {'name': plugin},
@@ -162,18 +162,31 @@ def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
                  {'dll': {'Library': poi}}
              }
         )
+    elif type == 'Function':
+        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
+        plugin_collection.update(
+            {'name': plugin},
+            {'$pull':
+                 {'function': {'Function Name': poi}}
+             }
+        )
+    elif type == 'String':
+        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
+        plugin_collection.update(
+            {'name': plugin},
+            {'$pull':
+                 {'string': {'String Value': poi}}
+             }
+        )
+    elif type == 'Variables':
+        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
+        plugin_collection.update(
+            {'name': plugin},
+            {'$pull':
+                 {'variable': {'Variable Name': poi}}
+             }
+        )
 
-    for c in plugin_collection.find():
-        if c['name'] == plugin:
-            if type == "dll":
-
-                c[plugin][type].find_one_and_delete({'Library': poi})
-            if type == "variable":
-                c[plugin][type].find_one_and_delete({'Variable Name': poi})
-            if type == "function":
-                c[plugin][type].find_one_and_delete({'Function Name': poi})
-            if type == "string":
-                c[plugin][type].find_one_and_delete({'String Value' : poi})
 
 '''
 #################################################################################

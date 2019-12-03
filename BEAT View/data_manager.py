@@ -69,7 +69,7 @@ def get_plugin_from_name(to_find):
     for c in plugin_collection.find():
         print(c["name"])
         try :
-            if(c["name"] == to_find()):
+            if(c["name"] == to_find):
                 name = c["name"]
                 desc = c["desc"]
                 return name, desc

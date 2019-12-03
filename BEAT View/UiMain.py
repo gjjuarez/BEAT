@@ -843,7 +843,6 @@ class UiMain(UiView.Ui_BEAT):
             return
 
         else:
-            print("1234")
             name = self.plugin_name_lineedit.text()
             desc = self.plugin_description_textedit.toPlainText()
             self.plugin_view_plugin_listwidget.addItem(name)
@@ -988,16 +987,11 @@ class UiMain(UiView.Ui_BEAT):
                 self.point_of_interest_view_listwidget.addItem(QListWidgetItem("DLL:"+ str(d)))
 
     def populate_name_and_description(self):
-        print("HERE")
         try:
             to_find = self.plugin_view_plugin_listwidget.currentItem().text()
-            print(to_find)
             name, desc = data_manager.get_plugin_from_name(to_find)
-            print("zxcvbnm")
-            print(name)
-            print(desc)
-            # self.plugin_name_lineedit.setText(name)
-            # self.plugin_description_textedit.clear(desc)
+            self.plugin_name_lineedit.setText(name)
+            self.plugin_description_textedit.setText(desc)
         except:
             return
 

@@ -159,8 +159,8 @@ def extract_functions():
         regValue = regValue[0:len(regValue) - 1]
         # check if return exists in eax register
         if len(regValue) > 0:
-            print("List")
-            print(regValue)
+            # print("List")
+            # print(regValue)
             cols = regValue[len(regValue)-1].split()
             lastCol = len(cols)-1
             # if return value is determined at runtime use register value, should be 0x00 before running
@@ -173,8 +173,8 @@ def extract_functions():
         else:
             regValue = rlocal.cmd("pdf~rax,").split("\n")
             regValue = regValue[0:len(regValue)-1]
-            print("List")
-            print(regValue)
+            # print("List")
+            # print(regValue)
             if len(regValue) == 0:
                 returnValue = None
             # if return value is determined at runtime use register value, should be 0x00 before running
@@ -184,7 +184,7 @@ def extract_functions():
                 cols = regValue[len(regValue)-1].split()
                 lastCol = len(cols) - 1
                 lastValue = len(regValue) - 1
-                print(regValue)
+                # print(regValue)
                 # make sure rax is used as return value
                 if "rax" in cols[lastCol]:
                     returnValue = None
@@ -196,8 +196,8 @@ def extract_functions():
                 else:
                     returnValue = cols[lastCol]
 
-        print("Return value: ")
-        print(returnValue)
+        #print("Return value: ")
+        #print(returnValue)
 
         # print("Return value: " + returnValue)
         # (aer eax) or (aer rax) - to check return register value during dynamic

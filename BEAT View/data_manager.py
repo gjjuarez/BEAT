@@ -43,7 +43,6 @@ def get_pois_from_plugin_and_type(plugin, type):
 
 def get_pois_from_type(type):
     pois = []
-    print("Shouldnt be here")
     plugin = current_plugin_name
     for c in plugin_collection.find():
         try:

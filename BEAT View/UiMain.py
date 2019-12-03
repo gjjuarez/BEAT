@@ -830,16 +830,18 @@ class UiMain(UiView.Ui_BEAT):
     '''
     def save_plugin(self):
         print('in save plugin')
-        if self.plugin_name_lineedit.text() == "" or self.plugin_description_textedit.toPlainText() == "":
+        import xmlparser
+        if self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() == "":
+            print('about to call xmlparser')
+
+            xmlparser.parse_xml_plugin(self.plugin_structure_filepath_lineedit.text())
+        elif self.plugin_name_lineedit.text() == "" or self.plugin_description_textedit.toPlainText() == "":
             print('error')
             self.msg_error = QMessageBox(QMessageBox.Question, "Name and Description Error",
                                          "Plugin name or description are empty", QMessageBox.Ok)
             self.msg_error.exec()
             return
-        elif self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() == "":
-            print('about to call xmlparser')
-            import xmlparser
-            xmlparser.parse_xml_plugin(self.plugin_structure_filepath_lineedit.text())
+
 
         elif self.plugin_predefined_data_set_lineedit.text() != "" and self.plugin_structure_filepath_lineedit.text() == "":
             print('about to call xmlparser')
@@ -1013,7 +1015,7 @@ class UiMain(UiView.Ui_BEAT):
             self.msg_error = QMessageBox(QMessageBox.Question, "No Command Error", "A command must be given to run", QMessageBox.Ok)
             self.msg_error.exec()
             return
-        result = radare_commands_interface.run_cmd(cmd).split('{}')
+        result = radare_commands_interface.run_cmd(cmd)#.split('{}')
         self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
 
 

@@ -4011,6 +4011,12 @@
               </disabled>
              </palette>
             </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOn</enum>
+            </property>
+            <property name="verticalScrollMode">
+             <enum>QAbstractItemView::ScrollPerPixel</enum>
+            </property>
            </widget>
           </item>
           <item>
@@ -6100,9 +6106,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -6201,9 +6207,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -6557,9 +6563,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -6658,9 +6664,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -7285,19 +7291,6 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="point_of_interest_view_new_button">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>New</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -7656,9 +7649,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -7757,9 +7750,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>

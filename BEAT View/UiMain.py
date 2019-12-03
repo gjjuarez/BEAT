@@ -873,21 +873,43 @@ class UiMain(UiView.Ui_BEAT):
 
         self.detailed_point_of_interest_view_existing_plugin_dropdown.clear()
         self.detailed_point_of_interest_view_existing_plugin_dropdown.addItems(plugins)
+
+    '''
+        def project_deletion_message(self):
+        name = self.project_list.currentItem().text()
+        buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
+            "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            data_manager.delete_project_given_name(name)
+            # clear page
+            self.clear_detailed_project_view()
+            self.project_list.clear()
+            self.fill_projects()
+            print("Done Removing Project:", name)
+            # disable deletion
+            self.delete_project_button.setDisabled(True)
+    '''
+
     '''
     Removes a selected plugin from the plugin list within Plugin Management 
     '''
     def remove_plugin(self):
         listItems = self.plugin_view_plugin_listwidget.selectedItems()
         if not listItems: return
-        for item in listItems:
-           self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
-           data_manager.delete_plugin_given_name(item.text())
 
-        self.plugin_structure_filepath_lineedit.clear()
-        self.plugin_predefined_data_set_lineedit.clear()
-        self.plugin_name_lineedit.clear()
-        self.plugin_description_textedit.clear()
-        self.points_of_interest_list_textedit.clear()
+        buttonReply = QMessageBox.question(BEAT, 'Plugin Deletion Warning',
+            "Are you sure you want to permanently delete this plugin?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
+        if buttonReply == QMessageBox.Yes:
+            for item in listItems:
+               self.plugin_view_plugin_listwidget.takeItem(self.plugin_view_plugin_listwidget.row(item))
+               data_manager.delete_plugin_given_name(item.text())
+
+            self.plugin_structure_filepath_lineedit.clear()
+            self.plugin_predefined_data_set_lineedit.clear()
+            self.plugin_name_lineedit.clear()
+            self.plugin_description_textedit.clear()
+            self.points_of_interest_list_textedit.clear()
+
     '''
     Opens the file browser and writes the selected file's filepath in plugin_structure_filepath_lineedit 
     '''

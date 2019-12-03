@@ -215,7 +215,6 @@ class UiMain(UiView.Ui_BEAT):
         data_manager.update_current_project(name, desc, path, bin_info)
         # enable deletion
         self.delete_project_button.setDisabled(False)
-
         self.setCurrentProject()
 
     def setCurrentProject(self):
@@ -233,8 +232,8 @@ class UiMain(UiView.Ui_BEAT):
         #self.project_name_text.setReadOnly(True)
         # fill description test
         self.project_desc_text.setText(desc)
-        self.project_desc_text.setDisabled(False)
-        self.project_desc_text.setReadOnly(False)
+        self.project_desc_text.setDisabled(True)
+        self.project_desc_text.setReadOnly(True)
         # fill path text
         self.file_path_lineedit.setText(path)
         self.file_path_lineedit.setDisabled(True)

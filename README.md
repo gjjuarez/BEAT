@@ -30,7 +30,7 @@ To build, the only dependencies are
 	9. In the terminal type git clone https://github.com/mongodb/mongo.git
 	10. In the terminal type sudo apt install mongodb
 `	11.In the terminal type pip3 install pymongo
-	12.Go to https://github.com/radareorg/radare2-r2pipe.git and type into the terminal git clone 	https://github.com/radareorg/radare2-r2pipe.git 
+	12.Go to https://github.com/radareorg/radare2-r2pipe.git and type into the terminal git clone https://github.com/radareorg/radare2-r2pipe.git 
 	13. Go to https://github.com/gjjuarez/Team01_BEAT/tree/master and type into the terminal git clone https://github.com/gjjuarez/Team01_BEAT.git
 	14. Change directory to BEAT View with cd Team01_BEAT/’BEAT View’  
 	15. To run type python3 UiMain.py

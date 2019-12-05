@@ -19,29 +19,18 @@ To build, the only dependencies are
 * MongoDB Compass: GUI Representation & Control of Mongo Database - https://www.mongodb.com/products/compass
 
 ## TUTORIAL
-	1. Download Python3 from https://www.python.org/downloads.
-	2. Download Radare2 from https://wwww.radare.org/r/
-	3. Download Jinja from jinja.pocoo.org
-	
-	For Windows:
-		4. Navigate to the Downloads Folder an run the Python3 installation.
-		5. In the command prompt type pip install PyQt5
-		6. type pip install pyinstaller
-		7. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py` to build the python file.
-		8. type `pyinstaller main.py` to build the executable.
-	
-	For Linux:
-		4. Go into the terminal and type apt-get update
-		5. type cd Downloads
-		6. type tar -xvf Python-3.8.0.tar.xz
-		7. type cd Python3.8.0
-		8. type ./configure
-		9. type make
-		10. type make install
-		11. type python3 -v
-		12. type apt-get install python3-pip
-		13. type pip install PyQt5
-		14. type pip install pyinstaller
-		15. type git clone https://github.com/gjjuarez/Team01_BEAT.git
-		16. type `pyuic5 -x BEAT\:\ Behavior\ Extraction\ and\ Analysis\ Tool.ui -o main.py` to build the python file.
-		17. type `pyinstaller main.py` to build the executable.
+	1. In the terminal type sudo apt install python3-pip
+	2. In the terminal type pip3 install PyQt5 
+	3. In the terminal type sudo apt install git
+ 	4. Go to https://github.com/radareorg/radare2.git and type into the terminal git clone https://github.com/radareorg/radare2.git 
+	5. In the terminal change directory to radare2
+	6. In the terminal type sys/install.sh
+	7. In the terminal type cd ~
+	8. In the terminal type pip3 install r2pipe
+	9. In the terminal type git clone https://github.com/mongodb/mongo.git
+	10. In the terminal type sudo apt install mongodb
+`	11.In the terminal type pip3 install pymongo
+	12.Go to https://github.com/radareorg/radare2-r2pipe.git and type into the terminal git clone 	https://github.com/radareorg/radare2-r2pipe.git 
+	13. Go to https://github.com/gjjuarez/Team01_BEAT/tree/master and type into the terminal git clone https://github.com/gjjuarez/Team01_BEAT.git
+	14. Change directory to BEAT View with cd Team01_BEAT/’BEAT View’  
+	15. To run type python3 UiMain.py

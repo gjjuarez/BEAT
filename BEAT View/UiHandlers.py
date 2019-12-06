@@ -257,7 +257,7 @@ def replace_line(file_name, line_num, text):
     if not text:
         '''Do nothing'''
         print("Do nothing")
-    else:
+
 
 def static_analysis():
     global self

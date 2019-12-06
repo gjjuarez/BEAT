@@ -58,7 +58,6 @@ class UiMain(UiView.Ui_BEAT):
 
         # User cannot delete an unselected POI from the POI Tab
         self.detailed_point_of_interest_view_delete_button.setDisabled(True)
-
         UiHandlers.update_plugin_list()
 
         self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
@@ -69,14 +68,17 @@ class UiMain(UiView.Ui_BEAT):
         self.stacked.addWidget(self.terminal)
 
         UiHandlers.setCurrentProject()
-
         UiHandlers.populate_pois_in_poi()
 
+        self.setup_project_listeners()
+        self.setup_plugin_listeners()
+        self.setup_poi_listeners()
+        self.setup_analysis_listeners()
+        self.setup_documentation_listeners()
 
-        '''
-        Project Tab Listeners
-        '''
-        # calls new_project if new_project_bsutton is clicked
+        QtCore.QMetaObject.connectSlotsByName(BEAT)
+        
+    def setup_project_listeners(self):
         self.new_project_button.clicked.connect(UiHandlers.new_project)
         # calls remove_project if delete_project_button is clicked
         self.delete_project_button.clicked.connect(UiHandlers.project_deletion_message)
@@ -85,20 +87,9 @@ class UiMain(UiView.Ui_BEAT):
         # calls browse_path if file_browse_button is clicked
         self.file_browse_button.clicked.connect(UiHandlers.browse_path)
         # self.delete_project_button.connect(self.delete_current_project)
+        self.project_list.itemClicked.connect(UiHandlers.project_selected)
 
-        '''
-        Analysis Tab Listeners 
-        '''
-        # calls analysis_result aft er analysis_result_button is clicked
-        self.analysis_result_button.clicked.connect(UiHandlers.analysis_result)
-        # calls comment_view after comment_button is clicked
-        self.comment_button.clicked.connect(UiHandlers.comment_view)
-
-        self.run_button.clicked.connect(UiHandlers.run_command_from_cmd)
-
-        '''
-        Plugin Management Tab Listeners
-        '''
+    def setup_plugin_listeners(self):
         # calls save_plugin if detailed_plugin_view_save_button is clicked
         self.detailed_plugin_view_save_button.clicked.connect(UiHandlers.save_plugin)
         # calls remove_plugin  if detailed_plugin_view_delete_button is clicked
@@ -113,9 +104,7 @@ class UiMain(UiView.Ui_BEAT):
         #Allows you to create a new plugin
         self.plugin_view_new_button.clicked.connect(UiHandlers.new_plugin)
 
-        '''
-        Points of Interest Tab Listeners
-        '''        
+    def setup_poi_listeners(self):
         self.detailed_point_of_interest_view_type_dropdown.clear()
         self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL"])
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(UiHandlers.poi_type_changed_in_poi)
@@ -127,10 +116,8 @@ class UiMain(UiView.Ui_BEAT):
 
         self.point_of_interest_view_listwidget.itemClicked.connect(UiHandlers.poi_in_poitab_selected)
 
-        '''
-        Documentation Tab Listeners
-        '''
-        
+
+    def setup_documentation_listeners(self):
         self.document_view_listwidget.clear()
         self.document_view_listwidget.addItems(['README', 'BEAT Documentation', 'XML Structures', 'Tab Guide'])
         self.point_of_interest_view_search_button.clicked.connect(UiHandlers.search_POI_View)
@@ -148,10 +135,15 @@ class UiMain(UiView.Ui_BEAT):
         # searches Document in the left column
         self.document_view_search_button.clicked.connect(UiHandlers.search_Document)
         self.document_view_search_lineedit.returnPressed.connect(UiHandlers.search_Document)
-        '''
-        Analysis Run Tab Listeners
-        '''
-        # run static analysis and check which POI to display
+
+    def setup_analysis_listeners(self):
+        # calls analysis_result aft er analysis_result_button is clicked
+        self.analysis_result_button.clicked.connect(UiHandlers.analysis_result)
+        # calls comment_view after comment_button is clicked
+        self.comment_button.clicked.connect(UiHandlers.comment_view)
+
+        self.run_button.clicked.connect(UiHandlers.run_command_from_cmd)
+                # run static analysis and check which POI to display
         self.static_run_button.clicked.connect(UiHandlers.analyze_and_display_POI)
         # searches POI in the left column
         self.points_of_interest_search_button.clicked.connect(UiHandlers.search_POI)
@@ -165,13 +157,6 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.addItem("Strings")
         self.dynamic_run_button.clicked.connect(UiHandlers.display_dynamic_info)
         self.points_of_interest_list_widget.itemClicked.connect(UiHandlers.match_selected_POI)
-
-        QtCore.QMetaObject.connectSlotsByName(BEAT)
-        self.project_list.itemClicked.connect(UiHandlers.project_selected)
-
-    #########################################################################################
-    # QMessageBox Warning Functions
-    #########################################################################################
 
 
 if __name__ == "__main__":

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+
+	<name>Test Plugin</name>
+	<description> Test plugin to add through xml </description>
+
+	<pointsOfInterest>
+
+		<variable>
+			<VariableName>varname</VariableName>
+			<VariableType>vartype</VariableType>
+		</variable>
+
+		<dll>
+			<Library>dlllibrary</Library>
+		</dll>
+
+		<function>
+			<FunctionName>functionname</FunctionName>
+			<ParameterOrderAndType>Parameterorder/type</ParameterOrderAndType>
+			<ReturnType>functionreturntype</ReturnType>
+		</function>
+		<function>
+			<FunctionName>function name2</FunctionName>
+			<ParameterOrderAndType>Param2eterorder/type</ParameterOrderAndType>
+			<ReturnType>functionretur2ntype</ReturnType>
+		</function>
+
+		<string>
+			<StringName>nameofstring</StringName>
+		</string>
+
+	</pointsOfInterest>
+</plugin>

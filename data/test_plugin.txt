@@ -1,0 +1,68 @@
+==================================POI===================================
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pointsOfInterest>
+
+    <variable>
+        <VariableName>var name</VariableName>
+        <VariableType>var type</VariableType>
+    </variable>
+
+    <dll>
+        <Library>dll library</Library>
+    </dll>
+
+    <function>
+        <FunctionName>function name</FunctionName>
+        <ParameterOrderAndType>Parameter order/type</ParameterOrderAndType>
+        <ReturnType>function return type</ReturnType>
+    </function>
+    <function>
+        <FunctionName>function name2</FunctionName>
+        <ParameterOrderAndType>Param2eter order/type</ParameterOrderAndType>
+        <ReturnType>function retur2n type</ReturnType>
+    </function>
+
+    <string>
+        <StringName>name of string</StringName>
+    </string>
+
+</pointsOfInterest>
+
+=============================PLUGIN=====================================
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+
+	<name>Test Plugin</name>
+	<description> Test plugin to add through xml </description>
+
+	<pointsOfInterest>
+
+		<variable>
+			<VariableName>var name</VariableName>
+			<VariableType>var type</VariableType>
+		</variable>
+
+		<dll>
+			<Library>dll library</Library>
+		</dll>
+
+		<function>
+			<FunctionName>function name</FunctionName>
+			<ParameterOrderAndType>Parameter order/type</ParameterOrderAndType>
+			<ReturnType>function return type</ReturnType>
+		</function>
+		<function>
+			<FunctionName>function name2</FunctionName>
+			<ParameterOrderAndType>Param2eter order/type</ParameterOrderAndType>
+			<ReturnType>function retur2n type</ReturnType>
+		</function>
+
+		<string>
+			<StringName>name of string</StringName>
+		</string>
+
+	</pointsOfInterest>
+</plugin>

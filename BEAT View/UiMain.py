@@ -10,6 +10,7 @@ from Figure11CommentView import Ui_Figure11CommentView
 from Figure12AnalysisResultReview import Ui_Figure12AnalysisResultReview
 from Figure10OutputFieldView import Ui_Figure10OutputFieldView
 from ArchitectureError import Ui_ArchitectureError
+from DocumentFileName import Ui_DocumentFileName
 from PyQt5.QtWidgets import QListWidgetItem
 from Terminal import EmbTerminalLinux
 
@@ -142,9 +143,6 @@ class UiMain(UiView.Ui_BEAT):
         self.point_of_interest_view_search_button.clicked.connect(self.search_POI_View)
         self.point_of_interest_view_search_lineedit.returnPressed.connect(self.search_POI_View)
         self.document_view_listwidget.itemClicked.connect(self.change_doc)
-        #self.document_view_listwidget.itemClicked.connect(self.display_ReadMe)
-        # Listens if Plugin Structure name is clicked.
-        #self.document_view_listwidget.itemSelectionChanged.connect(self.display_Plugin)
         # searches Project in the left column
         self.project_view_search_button.clicked.connect(self.search_Project)
         self.project_search_lineedit.returnPressed.connect(self.search_Project)
@@ -157,6 +155,15 @@ class UiMain(UiView.Ui_BEAT):
         # searches Document in the left column
         self.document_view_search_button.clicked.connect(self.search_Document)
         self.document_view_search_lineedit.returnPressed.connect(self.search_Document)
+        
+        # calls save_document if save_document_button is clicked
+        self.save_document_button.clicked.connect(self.save_document)
+        #self.save_document_button.returnPressed.connect(self.save_document)
+        # calls remove_document if delete_document_button is clicked
+        self.delete_document_button.clicked.connect(self.document_deletion_message)
+        # calls document_file_name after new_document_button is clicked
+        self.new_document_button.clicked.connect(self.document_file_name)
+
         '''
         Analysis Run Tab Listeners
         '''
@@ -404,7 +411,7 @@ class UiMain(UiView.Ui_BEAT):
         # retrieves comment and poi type
         comment, poi_type = data_manager.get_comment_from_name(current_item_text)
 
-        comment_title = "Comment for POI " + current_item_text
+        commen_title = "Comment for POI " + current_item_text
 
         if not comment:
           comment = " "
@@ -1152,25 +1159,64 @@ class UiMain(UiView.Ui_BEAT):
             self.points_of_interest_list_textedit.append("DLLs:"+ str(dll)+ "\n")
         except:
             return
+
+    #########################################################################################
+    # Documentation Tab Functions
+    #########################################################################################
+    
+    '''
+    Opens Ui_DocumentFileName
+    '''
+    # This is the incomplete implementation to tie the New Document Buttton to the UI Window File Name and Document View Listwidget.
+    def document_file_name(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_DocumentFileName()
+        self.ui.setupUi(self.window)
+        self.window.show()
+        #self.ui.cancel_button.clicked.connect(self.window.close())
+        if(self.ui.confirm_button.clicked):
+            filename = str(self.project_search_lineedit.text())
+            self.ui.confirm_button.clicked.connect(self.new_document(filename))
+
+    # This is the message that displays when the Delete Document Button is clicked.
     def document_deletion_message(self):
         name = self.document_view_listwidget.currentItem().text()
         buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
             "Are you sure you want to permanently delete this document?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
         if buttonReply == QMessageBox.Yes:
+            self.remove_document()
             self.document_view_listwidget.clear()
-            print("Done Removing Document:", name)
-    def new_document(self):
-        self.textbox = QLineEdit(self)
-        self.textbox.move(20, 20)
-        self.textbox.resize(280,40)
-        os.path.join('./', filename + "." + 'txt')
-        open(filename, 'a').close()
-        self.document_view_listwidget.addItem(filename)
+            self.fill_documents()
+
+    # This is the functionality of the New Document Button.
+    def new_document(self, filename):
+        txt_file = os.path.join('./', filename)
+        open(txt_file, 'a').close()
+        stripped_txt_file = os.path.splitext(txt_file)[0]
+        self.document_view_listwidget.addItem(stripped_txt_file)
+    
+    # This is the funtionality of the Remove Document Button.
     def remove_document(self):
-        os.remove(self.document_view_listwidget.itemClicked)
-        os.removed("Test")
+        os.remove(self.document_view_listwidget.currentRow + "." + "txt")
+
+    # This fills the document view list widget with all .txt files in the current working directory.
+    def fill_documents(self):
+        for file in os.listdir("./"):
+            if file.endswith(".txt"):
+                txt_list = os.path.join("", file)
+                stripped_txt_list = os.path.splitext(file)[0]
+                self.document_view_listwidget.addItem(stripped_txt_list)
+    
+    # This is the functionality of the Save Document Button.
+    def save_document(self):
+        document = open("README.txt", "a")
+        content = self.document_content_area_textedit.toPlainText()
+        document.write("%d " % self.document_view_listwidget.currentRow())
+        document.write(content + "\n")
+        document.close()
+    
+    # This is the search function tied to the Plugin Tab.
     def search_Project(self):
-        text = str(self.project_search_lineedit.text())
         if len(text) is not 0:
             search_result = self.project_list.findItems(text, QtCore.Qt.MatchContains)
             for item in range(self.project_list.count()):
@@ -1181,17 +1227,7 @@ class UiMain(UiView.Ui_BEAT):
             for item in range(self.project_list.count()):
                 self.project_list.item(item).setHidden(False)
 
-
-    def fill_documents(self):
-        for file in os.listdir("./"):
-            if file.endswith(".txt"):
-                txt_list = os.path.join("", file)
-                stripped_txt_list = os.path.splitext(file)[0]
-                self.document_view_listwidget.addItem(stripped_txt_list)
-    def save_document(self):
-        document = open("README.txt", "a")
-        document.write(self.document_content_area_textedit.textChanged.connect(self.document_save_button))
-
+    # This is the search function tied to the Plugin Tab.
     def search_Plugin(self):
         text = str(self.plugin_view_search_lineedit.text())
         if len(text) is not 0:
@@ -1206,6 +1242,7 @@ class UiMain(UiView.Ui_BEAT):
             for item in range(self.plugin_view_plugin_listwidget.count()):
                 self.plugin_view_plugin_listwidget.item(item).setHidden(False)
 
+    # This is the search function tied to the Points of Interest Tab.
     def search_POI_View(self):
         text = str(self.point_of_interest_view_search_lineedit.text())
         if len(text) is not 0:
@@ -1218,6 +1255,8 @@ class UiMain(UiView.Ui_BEAT):
             for item in range(self.point_of_interest_view_listwidget.count()):
                 self.point_of_interest_view_search_lineedit.item(item).setHidden(False)
 
+
+    # This is the search function tied to the Document Tab.
     def search_Document(self):
         text = str(self.document_view_search_lineedit.text())
         if len(text) is not 0:
@@ -1230,21 +1269,21 @@ class UiMain(UiView.Ui_BEAT):
             for item in range(self.document_view_listwidget.count()):
                 self.document_view_listwidget.item(item).setHidden(False)
 
-    # This prints the contents of the documentation files found in the Document View.
+    # This prints the BEAT Documentation Content as a README.
     def README_document(self, filename):
-        # This prints the BEAT Documentation Content as a README.
         if filename in 'README':
             with open('README.txt', 'r') as readMe:
                 ReadMeString = readMe.read()
         return ReadMeString
 
+    # This prints the BEAT Documentation Content as a README.
     def Plugin_document(self, filename):
-        # This prints the BEAT Documentation Content as a README.
         if filename in 'Plugin':
             with open('test_plugin.txt', 'r') as plugin:
                 pluginString = plugin.read()
         return pluginString
 
+    # This block is hardcoded to test the functionality.
     def display_ReadMe(self):
         self.document_content_area_textedit.setText(self.README_document('README'))
 
@@ -1253,7 +1292,8 @@ class UiMain(UiView.Ui_BEAT):
 
     def display_documentation(self):
         self.document_content_area_textedit.setText(self.documentation("BEAT Documentation"))
-
+   
+    # This prints out the contents of the File.
     def documentation(self, filename):
         if filename in 'BEAT Documentation':
             with open('beat_documentation.txt', 'r') as plugin:
@@ -1288,7 +1328,7 @@ if __name__ == "__main__":
     ui = UiMain()
 
     ui.setupUi(BEAT)
-    #ui.fill_documents()
+    ui.fill_documents()
     #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

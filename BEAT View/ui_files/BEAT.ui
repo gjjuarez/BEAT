@@ -29,7 +29,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="Project">
       <attribute name="title">
@@ -6575,11 +6575,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -6685,11 +6685,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -6795,11 +6795,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -6813,6 +6813,12 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>Plugin</string>
             </property>
            </widget>
           </item>
@@ -6989,9 +6995,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -7059,11 +7065,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -7099,9 +7105,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -7169,11 +7175,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -7279,7 +7285,7 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
                   <red>203</red>
                   <green>203</green>
@@ -7297,6 +7303,12 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>Point of Interest</string>
             </property>
            </widget>
           </item>
@@ -8100,11 +8112,152 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Documentation</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_16" columnstretch="1,4">
+      <layout class="QGridLayout" name="gridLayout_16" columnstretch="1,0">
+       <item row="1" column="0" colspan="2">
+        <widget class="QGroupBox" name="document_dns_groupbox">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QPushButton" name="delete_document_button">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Delete</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="new_document_button">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>New</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="document_dns_horizontal_spacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="save_document_button">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="detailed_document_view_groupbox">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLineEdit" name="detailed_document_view_lineedit">
+            <property name="palette">
+             <palette>
+              <active>
+               <colorrole role="Base">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>114</red>
+                  <green>159</green>
+                  <blue>207</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="Base">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>114</red>
+                  <green>159</green>
+                  <blue>207</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled>
+               <colorrole role="Base">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>255</red>
+                  <green>255</green>
+                  <blue>255</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </disabled>
+             </palette>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Detailed Document View</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="document_content_area_textedit">
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans'; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="placeholderText">
+             <string>Document Content Area</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="document_view_groupbox">
          <property name="title">
           <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_15">
           <item row="1" column="0">
@@ -8142,9 +8295,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -8212,11 +8365,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -8252,9 +8405,9 @@ p, li { white-space: pre-wrap; }
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -8322,11 +8475,11 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
-                  <red>203</red>
-                  <green>203</green>
-                  <blue>203</blue>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -8432,7 +8585,7 @@ p, li { white-space: pre-wrap; }
                 </brush>
                </colorrole>
                <colorrole role="PlaceholderText">
-                <brush brushstyle="NoBrush">
+                <brush brushstyle="SolidPattern">
                  <color alpha="128">
                   <red>203</red>
                   <green>203</green>
@@ -8450,6 +8603,12 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>Document</string>
             </property>
            </widget>
           </item>
@@ -8950,99 +9109,6 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="spacing">
              <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>BEAT Documentation</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>         Plugin Structure</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QGroupBox" name="detailed_document_view_groupbox">
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QLineEdit" name="detailed_document_view_lineedit">
-            <property name="palette">
-             <palette>
-              <active>
-               <colorrole role="Base">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>114</red>
-                  <green>159</green>
-                  <blue>207</blue>
-                 </color>
-                </brush>
-               </colorrole>
-              </active>
-              <inactive>
-               <colorrole role="Base">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>114</red>
-                  <green>159</green>
-                  <blue>207</blue>
-                 </color>
-                </brush>
-               </colorrole>
-              </inactive>
-              <disabled>
-               <colorrole role="Base">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-              </disabled>
-             </palette>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Detailed Document View</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTextEdit" name="document_content_area_textedit">
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans'; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="placeholderText">
-             <string>Document Content Area</string>
             </property>
            </widget>
           </item>

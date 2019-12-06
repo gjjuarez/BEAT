@@ -8,7 +8,6 @@ from bson import ObjectId
 # database = project selected
 # collection = the POI selected (String, struct, etc.)
 # document = data related to the POI (type, size, etc.)
-
 # connect to database on a local machine
 connection = pymongo.MongoClient('localhost', 27017)
 
@@ -159,7 +158,6 @@ def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
     print("Looking for POI from plugin:", plugin, "of type:",type)
     print("------------------------------------", type)
     if type == 'DLL':
-        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
         plugin_collection.update(
             {'name': plugin},
             {'$pull':
@@ -167,7 +165,6 @@ def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
              }
         )
     elif type == 'Function':
-        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
         plugin_collection.update(
             {'name': plugin},
             {'$pull':
@@ -175,7 +172,6 @@ def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
              }
         )
     elif type == 'String':
-        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
         plugin_collection.update(
             {'name': plugin},
             {'$pull':
@@ -183,7 +179,6 @@ def delete_poi_given_plugin_poitype_and_poi(plugin, type, poi):
              }
         )
     elif type == 'Variables':
-        print("lllllllllllllllllllllllllllllllllllllllllllllllllllll", poi)
         plugin_collection.update(
             {'name': plugin},
             {'$pull':
@@ -376,7 +371,7 @@ def get_string_from_name(find_string):
         except KeyError:
             print("Key error")
 
-#saves a function document with the type of analysis run on it, the name of the point of interest, return type of the point of interest,
+# Saves a function document with the type of analysis run on it, the name of the point of interest, return type of the point of interest,
 # return value of the point of interest, destination address of the point of interest, address of the point of interest,
 # parameter order of function, type parameters of the function, the section in binary the funtcion is in, value of the parameters,
 # where the function is being called from, if the function has a breakpoint, comments based on the specific point of interest,
@@ -606,11 +601,3 @@ def delete_analysis_by_name(analysis_name):
 # close the connection to the database
 def end():
     connection.close()
-
-# test code##############################################################################################
-#initialize_POI_collections("project 1")
-
-#save_variables("static", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")
-
-#save_variables("static", "integer 2", 254, "integer", 256, "some random section in binary", "here lies a binary address")
-#save_variables("dynamic", "integer 1", 254, "integer", 256, "some random section in binary", "here lies a binary address")

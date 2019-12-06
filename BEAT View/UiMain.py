@@ -23,9 +23,7 @@ import threading
 import time
 
 class UiMain(UiView.Ui_BEAT):
-    global staticIsRun
-
-    
+    global staticIsRun   
 
     valid_extensions = ["exe", "dll"]
 
@@ -120,8 +118,6 @@ class UiMain(UiView.Ui_BEAT):
         '''        
         self.detailed_point_of_interest_view_type_dropdown.clear()
         self.detailed_point_of_interest_view_type_dropdown.addItems(["Function","String", "Variable", "DLL"])
-        #self.detailed_point_of_interest_view_save_button.clicked.connect(self.add_poi_to_plugin)
-
         self.detailed_point_of_interest_view_type_dropdown.currentIndexChanged.connect(UiHandlers.poi_type_changed_in_poi)
         self.detailed_point_of_interest_view_save_button.clicked.connect(UiHandlers.save_poi)
 
@@ -167,14 +163,7 @@ class UiMain(UiView.Ui_BEAT):
         self.type_dropdown.addItem("Function Call")
         self.type_dropdown.addItem("Variables")
         self.type_dropdown.addItem("Strings")
-        # sets breakpoints on currently checked items
-        # self.points_of_interest_list_widget.itemChanged.connect(self.remove_breakpoints) #this is breaking the program when you search something
-        # runs dynamic analysis on breakpoints then updates ui
-        # self.dynamic_run_button.clicked.connect(self.set_right_breakpoint)
         self.dynamic_run_button.clicked.connect(UiHandlers.display_dynamic_info)
-        # self.dynamic_run_button.clicked.connect(self.set_auto_breakpoint)
-        #self.dynamic_run_button.clicked.connect(self.run_dynamic_then_display)
-        # match detailed view with left column when selected
         self.points_of_interest_list_widget.itemClicked.connect(UiHandlers.match_selected_POI)
 
         QtCore.QMetaObject.connectSlotsByName(BEAT)
@@ -190,9 +179,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     BEAT = QtWidgets.QGroupBox()
     ui = UiMain()
-
     ui.setupUi(BEAT)
-    #ui.fill_documents()
-    #ui.new_project()
     BEAT.show()
     sys.exit(app.exec_())

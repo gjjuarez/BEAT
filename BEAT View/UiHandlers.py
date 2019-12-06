@@ -75,7 +75,6 @@ def setCurrentProject():
     # fill name text
     self.project_name_text.setText(name)
     self.project_name_text.setDisabled(True)
-    #self.project_name_text.setReadOnly(True)
     # fill description test
     self.project_desc_text.setText(desc)
     self.project_desc_text.setDisabled(True)
@@ -92,22 +91,14 @@ def setCurrentProject():
 '''
 Sets settings for new project viewer
 '''
-
 def new_project():
     global self
-    # self.detailed_project_view_groupbox.show()
-    # self.label.show()
     clear_detailed_project_view()
 
     self.project_name_text.setDisabled(False)
-    #self.project_name_text.setReadOnly(False)
-
     self.project_desc_text.setDisabled(False)
     self.project_desc_text.setReadOnly(False)
-
     self.file_path_lineedit.setDisabled(False)
-    # self.file_path_lineedit.setReadOnly(False)
-
     self.save_project_button.setDisabled(False)
     self.file_browse_button.setDisabled(False)
 
@@ -125,7 +116,6 @@ def clear_detailed_project_view():
 '''
 Removes a project after it has been selected and the Delete button is clicked in Project
 '''
-
 def remove_project():
     global self
     name = self.project_list.currentItem().text()
@@ -138,7 +128,6 @@ def remove_project():
 '''
 Fills projects list
 '''
-
 def fill_projects():
     global self
     self.project_list.clear()
@@ -147,7 +136,6 @@ def fill_projects():
 '''
 Adds a project name to the projdynamic_runect list within Project
 '''
-
 def save_project():
     global self
     name = self.project_name_text.text()
@@ -159,13 +147,6 @@ def save_project():
         buttonReply = QMessageBox.warning(BEAT, 'x86 Architecture Error',
                                            "The selected binary is not of x86 architecture.", QMessageBox.Ok, QMessageBox.Ok)
         return
-        '''
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_ArchitectureError()
-        self.ui.setupUi(self.window)
-        self.window.show()
-        '''
-
     else:
         data_manager.save_project(name, desc, path, bin_info)
         data_manager.update_current_project(name, desc, path, bin_info)
@@ -185,7 +166,6 @@ def check_binary_arch(path):
 '''
 Opens the file browser and writes the selected file's filepath in file_path_lineedit 
 '''
-
 def browse_path():
     global self
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
@@ -211,7 +191,6 @@ def fill_binary_info(bi):
 #########################################################################################
 # Analysis Tab Functions
 #########################################################################################
-
 '''
 Enables Run and Stop buttons for dynamic analysis
 '''
@@ -279,14 +258,6 @@ def replace_line(file_name, line_num, text):
         '''Do nothing'''
         print("Do nothing")
     else:
-        print("SHOULD REPLACE HERE")
-        '''lines = open(file_name, 'r').readlines()
-        lines[line_num] = text
-        out = open(file_name, 'w')
-        out.writelines(lines)
-        out.close()'''
-
-
 
 def static_analysis():
     global self
@@ -363,7 +334,6 @@ def set_right_breakpoint():
     display_value = str(self.type_dropdown.currentText())
 
     if display_value == "All":
-        print("Have to do things here")
         set_auto_breakpoint_at_string()
     elif display_value == "Strings":
         set_auto_breakpoint_at_string()
@@ -422,27 +392,19 @@ def display_dynamic_info():
         self.detailed_points_of_interest_dynamic_info_listWidget.addItem(t)
 
 
+'''
+Runs analysis and displays results
+'''
 def run_dynamic_then_display():
     global self
     # radare_commands_interface.run_dynamic_and_update()
     self.dynamic_run_button.setDisabled(True)
     self.dynamic_stop_button.setDisabled(False)
     print("Running dynamic analysis!")
-    
-    # self.terminal.kill_process()
-    # self.terminal = EmbTerminalLinux(self.detailed_point_of_interest_view_groupbox)
-    # self.terminal.setGeometry(QtCore.QRect(15, 310, 561, 90))
-    # self.terminal.setObjectName("Terminal")
-    # self.terminal.begin_dynamic()
     print("Done with dynamic analysis!")
     change_displayed_POI()  # updates ui
     self.dynamic_run_button.setDisabled(False)
     self.dynamic_stop_button.setDisabled(True)
-
-'''
-Runs analysis and displays results
-'''
-
 '''
 Opens imports text file and displays it on detailed POI view
 '''
@@ -470,13 +432,11 @@ def display_imports_in_left_column():
 
 def read_and_display_all_functions():
     global self
-    # functions = open("functions.txt", "r")
     functions = data_manager.get_functions()
 
     for func in functions:
         if func["Analysis Run"] != "static":
             continue
-        # item = QListWidgetItem("Function name: " + func['Function Name'])
         paramTypes = ""
         try:
             for pt in func["Parameter Type"]:
@@ -521,12 +481,9 @@ def read_and_display_all_functions():
                                + '\tParameter Value: ' + paramValue + "\n"
                                + '\tBinary Section: ' + func['Binary Section'] + "\n"
                                + '\tCalled From: ' + callFrom)
-        # + '\tParameter Type' + paramTypes)
         self.detailed_points_of_interest_listWidget.addItem(item)
         # display all variables related to current function
-        # varIndex = self.read_and_display_variables_with_functions(varIndex)
         read_and_display_variables_with_functions(func["Function Name"])
-    # functions.close()
     display_functions_in_left_column()
 
 def read_and_display_variables_with_functions(func_name):
@@ -562,7 +519,6 @@ def read_and_display_variables_with_functions_left_column(func_name):
 
 def display_functions_in_left_column():
     global self
-    # breakPoints = radare_commands_interface.get_all_breakpoints()
     comment_icon = QIcon.fromTheme("accessories-dictionary")
     no_comment_icon = QIcon.fromTheme("accessories-text-editor")
     functions = data_manager.get_functions()
@@ -575,9 +531,6 @@ def display_functions_in_left_column():
             item = QListWidgetItem(no_comment_icon, value)
         else:
             item = QListWidgetItem(comment_icon, value)
-
-        # Don't know if we need this following line
-        # item.setFlags(item.flags()|QtCore.Qt.ItemIsUserCheckable)
         item.setCheckState(QtCore.Qt.Unchecked)
         self.points_of_interest_list_widget.addItem(item)
 
@@ -612,7 +565,6 @@ def display_strings_in_left_column():
         else:
             item = QListWidgetItem(comment_icon, value)
 
-        # item.setCheckState(QtCore.Qt.Unchecked)
         self.points_of_interest_list_widget.addItem(item)
 
 def read_and_display_global_variables():
@@ -643,7 +595,6 @@ def display_global_variables_in_left_column():
         else:
             item = QListWidgetItem(comment_icon, value)
 
-        # item.setCheckState(QtCore.Qt.Unchecked)
         self.points_of_interest_list_widget.addItem(item)
 
 def search_POI():
@@ -658,30 +609,6 @@ def search_POI():
     else:
         for item in range(self.points_of_interest_list_widget.count()):
             self.points_of_interest_list_widget.item(item).setHidden(False)
-
-# this method highlights the searched POI but breaks the program because it somehow calls the remove breakpoints method with the current listener it has
-# def search_POI(self):
-#     # clear background in left column
-#     for i in range(self.points_of_interest_list_widget.count()):
-#         self.points_of_interest_list_widget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
-#     # clear background for detailed view
-#     for i in range(self.detailed_points_of_interest_listWidget.count()):
-#         self.detailed_points_of_interest_listWidget.item(i).setBackground(QtGui.QBrush(QtCore.Qt.color0))
-#
-#     display_value = str(self.points_of_interest_line_edit.text())
-#     # don't search if empty string
-#     if display_value == "":
-#         return
-#     # highlights search in left column
-#     search_result = self.points_of_interest_list_widget.findItems(display_value, QtCore.Qt.MatchContains)
-#     if len(search_result) > 0:
-#         for item in search_result:
-#             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
-#     # highlights search in detailed view
-#     search_result = self.detailed_points_of_interest_listWidget.findItems(display_value, QtCore.Qt.MatchContains)
-#     if len(search_result) > 0:
-#         for item in search_result:
-#             item.setBackground(QtGui.QBrush(QtCore.Qt.magenta))
 
 #########################################################################################
 # Plugin Management Tab Functions
@@ -703,7 +630,7 @@ Adds a plugin name to the plugin list in Plugin Management
 '''
 def save_plugin():
     global self
-    print('in save plugin')
+    print('In save plugin...')
     import xmlparser
     if self.plugin_structure_filepath_lineedit.text() != "" and self.plugin_predefined_data_set_lineedit.text() == "":
         print('about to call xmlparser')
@@ -798,28 +725,7 @@ def browse_plugin_dataset():
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName()
     self.plugin_predefined_data_set_lineedit.setText(file_path)
 
-# def add_poi_to_plugin(self):
-#     print("Populating POIs in Plugin tab")
-#     plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
-#     poi_type = str(self.detailed_point_of_interest_view_type_dropdown.currentText())
-#     to_add = self.point_of_interest_content_area_textedit.toPlainText()
-#     if poi_type == "Function":
-#         data_manager.add_function_to_plugin(plugin,to_add)
-#     elif poi_type == "String":
-#         data_manager.add_string_to_plugin(plugin,to_add)
-#     elif poi_type == "Variable":
-#         data_manager.add_variable_to_plugin(plugin,to_add)
-#     elif poi_type == "DLL":
-#         data_manager.add_dll_to_plugin(plugin,to_add)
-#     elif poi_type == "Packet Protocol":
-#         data_manager.add_packet_to_plugin(plugin,to_add)
-#     elif poi_type == "Struct":
-#         data_manager.add_struct_to_plugin(plugin,to_add)
-#
-#     self.point_of_interest_content_area_textedit.clear()
-#     self.populate_pois_in_poi()
 
-    #data_manager.add_string_to_plugin(plugin,poi_type)
 def populate_pois_in_poi():
     global self
     print("Populating POIs in POI tab")
@@ -902,22 +808,6 @@ def run_command_from_cmd():
     self.detailed_points_of_interest_dynamic_info_listWidget.addItem(result)
 
 
-'''
-    def project_deletion_message(self):
-    name = self.project_list.currentItem().text()
-    buttonReply = QMessageBox.question(BEAT, 'PyQt5 message',
-        "Are you sure you want to permanently delete this project?", QMessageBox.Cancel | QMessageBox.Yes, QMessageBox.Cancel)
-    if buttonReply == QMessageBox.Yes:
-        data_manager.delete_project_given_name(name)
-        # clear page
-        self.clear_detailed_project_view()
-        self.project_list.clear()
-        self.fill_projects()
-        print("Done Removing Project:", name)
-        # disable deletion
-        self.delete_project_button.setDisabled(True)
-'''
-
 def poi_in_poitab_selected():
     global self
     self.detailed_point_of_interest_view_delete_button.setDisabled(False)
@@ -932,10 +822,8 @@ def delete_poi():
         name = self.point_of_interest_view_listwidget.currentItem().text()
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
         a = name.split(":")
-        print(a)
         type = a[0]
         poi = a[2].strip(" ',}")
-        print(plugin, type, poi)
         data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
         populate_pois_in_poi()
         self.detailed_point_of_interest_view_delete_button.setDisabled(True)
@@ -958,10 +846,8 @@ def delete_pois():
             return
         plugin = str(self.detailed_point_of_interest_view_existing_plugin_dropdown.currentText())
         a = name.split(":")
-        print(a)
         type = a[0]
         poi = a[2].strip(" ',}")
-        print(plugin, type, poi)
         data_manager.delete_poi_given_plugin_poitype_and_poi(plugin, type, poi)
         populate_pois_in_poi()
 
@@ -999,14 +885,11 @@ def save_poi():
         self.poi_variable_type_lineedit.setText("")
 
     elif poi_detected == "DLL":
-        print("geting dlllllllllllllllllllllllll :D")
         name = self.poi_dll_libraryname_lineedit.text()
-        print(name)
         data_manager.add_dll_to_plugin(plugin, name)
 
         self.poi_dll_libraryname_lineedit.setText("")
 
-    #self.point_of_interest_content_area_textedit.clear()
     populate_pois_in_poi()
 
 def populate_pois_in_plugin():

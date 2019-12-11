@@ -1,4 +1,4 @@
-# BEAT Version 1.2
+# BEAT version 5
 Currently, this repository contains the UI files of BEAT, and also a version of the main window that combines many of the other UI pages and meant to filter the results of a binary analysis.
 
 ## BUILD

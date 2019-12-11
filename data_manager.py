@@ -432,7 +432,7 @@ def update_current_project(name, desc, path, binary_info):
 
 # Get current projects info
 # If there is no project, returns three null strings
-def getCurrentProjectInfo():
+def get_current_project_info():
     name = ""
     path = ""
     desc = ""

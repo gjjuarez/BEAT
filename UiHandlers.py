@@ -63,7 +63,7 @@ def project_selected():
 def setCurrentProject():
     global self
     global BEAT
-    name, desc, path, bin_info = data_manager.getCurrentProjectInfo()
+    name, desc, path, bin_info = data_manager.get_current_project_info()
     data_manager.initialize_POI_collections(name)
 
     # If no project set...
